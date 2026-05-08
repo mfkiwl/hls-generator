@@ -6,5 +6,18 @@ authors:
   - family-names: "Liu"
     given-names: "Jiyuan"
     email: "erie@seu.edu.cn"
+abstract: "HLS Generator is a Codex-ready agent skill package for structured AMD/Xilinx Vitis HLS workflows, including requirement confirmation, staged generation, deterministic runtime helpers, and validation evidence."
+keywords:
+  - agent skill
+  - Codex
+  - Vitis HLS
+  - AMD Xilinx
+  - FPGA
+  - high-level synthesis
+  - hardware generation
+repository-code: "https://github.com/Eriemon/hls-generator"
+url: "https://github.com/Eriemon/hls-generator"
+version: "0.1.1"
+date-released: "2026-05-08"
 year: 2026
 license: "Apache-2.0"
