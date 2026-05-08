@@ -17,7 +17,7 @@ from pathlib import Path
 from typing import Iterable
 
 SKILL_ROOT = Path(__file__).resolve().parents[1]
-REPO_ROOT = SKILL_ROOT.parent
+REPO_ROOT = SKILL_ROOT
 PACKAGE_NAME = "erie-hls-generator"
 SEMVER_RE = re.compile(r"^(0|[1-9]\d*)\.(0|[1-9]\d*)\.(0|[1-9]\d*)(?:-[0-9A-Za-z.-]+)?(?:\+[0-9A-Za-z.-]+)?$")
 
@@ -47,10 +47,10 @@ EXCLUDED_GLOBS = (
     "solution*",
 )
 VALIDATION_COMMANDS = [
-    r"python .\erie-hls-generator\smoke\run_smoke.py",
-    r"python -m compileall .\erie-hls-generator\runtime\hls_generator",
-    r"python <skill-creator>/scripts/quick_validate.py .\erie-hls-generator",
-    r"python .\erie-hls-generator\scripts\confidence_loop.py --skip-remote --json-out reports\confidence-loop\latest-local.json",
+    r"python .\smoke\run_smoke.py",
+    r"python -m compileall .\runtime\hls_generator",
+    r"python <skill-creator>/scripts/quick_validate.py .",
+    r"python .\scripts\confidence_loop.py --skip-remote --json-out reports\confidence-loop\latest-local.json",
 ]
 
 

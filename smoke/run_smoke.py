@@ -964,9 +964,9 @@ def _run_release_packaging_checks(base: Path) -> None:
     release_dir = Path(payload["release_dir"])
     zip_path = Path(payload["zip_path"])
     assert release_dir.exists() and zip_path.exists(), payload
-    assert (release_dir / "erie-hls-generator" / "SKILL.md").exists()
+    assert (release_dir / "SKILL.md").exists()
     assert not (release_dir / "ref").exists()
-    assert not (release_dir / "erie-hls-generator" / "reports").exists()
+    assert not (release_dir / "reports").exists()
     assert not list(release_dir.rglob("__pycache__"))
     assert (release_dir / "RELEASE_MANIFEST.json").exists()
     assert (release_dir / "checksums.sha256").exists()
