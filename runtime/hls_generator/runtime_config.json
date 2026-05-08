@@ -1,0 +1,87 @@
+{
+  "version": 1,
+  "paths": {
+    "default_workflow_config": "integration/default_workflow_config.json",
+    "workflow_state_file": "workflow-state.json",
+    "examples_dir": "assets/examples",
+    "smoke_root": "_smoke_runs",
+    "generated_roots": [
+      "_smoke_runs",
+      "reports"
+    ],
+    "protected_roots": [
+      "agents",
+      "assets",
+      "integration",
+      "references",
+      "runtime",
+      "scripts",
+      "smoke"
+    ],
+    "protected_files": [
+      "DESIGN_GOALS.md",
+      "SKILL.md"
+    ]
+  },
+  "vitis": {
+    "missing_tool_id": "vitis",
+    "tools": [
+      {
+        "name": "vitis-run",
+        "which": "vitis-run",
+        "label": "vitis-run Tcl flow",
+        "command": [
+          "vitis-run",
+          "--mode",
+          "hls",
+          "--tcl",
+          "{tcl}"
+        ]
+      },
+      {
+        "name": "vitis_hls",
+        "which": "vitis_hls",
+        "label": "vitis_hls Tcl flow",
+        "command": [
+          "vitis_hls",
+          "-f",
+          "{tcl}"
+        ]
+      }
+    ],
+    "tcl": {
+      "temp_tcl_prefix": ".hls_generator_",
+      "project_dir_prefix": ".hls_generator_vitis_",
+      "solution_name": "solution1"
+    },
+    "timeouts_s": {
+      "compile": 180,
+      "execute": 180,
+      "implement": 600,
+      "cosim": 900
+    }
+  },
+  "remote_validation": {
+    "erie_skill_dir": "${home}/.codex/skills/erie-remote-ssh",
+    "erie_settings_path": "${erie_skill_dir}/config/defaults.json",
+    "local_run_root": "reports/remote-validation",
+    "remote_tmp_dir": ".hls-generator-remote-validation",
+    "default_timeout_s": 60,
+    "python_env": {
+      "PYTHONUTF8": "1",
+      "PYTHONIOENCODING": "utf-8"
+    },
+    "link_probe_command": [
+      "bash",
+      "-lc",
+      "printf 'HLS_REMOTE_LINK_OK\\n'; printf 'host='; hostname; printf '\\npwd='; pwd; printf '\\npython='; python3 --version 2>&1"
+    ],
+    "vitis_profiles": {
+      "vitis_2022": {
+        "settings_script": "/tools/Xilinx/Vitis/2022.2/settings64.sh",
+        "expected_tool": "vitis_hls",
+        "target_part": "xcu50-fsvh2104-2-e"
+      }
+    }
+  }
+}

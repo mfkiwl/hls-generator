@@ -1,0 +1,55 @@
+# Erie HLS Generator Design Goals
+
+## Why HLS-only
+
+This skill exists to help Codex generate AMD-Xilinx/Vitis HLS C/C++ kernels with supporting local workflow automation. The previous implementation mixed HLS and Verilog RTL paths, which made the skill harder to trigger correctly, harder to validate, and easier for agents to drift into direct RTL generation. This project intentionally narrows the skill to HLS so every prompt, example, validation rule, and command path reinforces the same target.
+
+The final hardware-facing artifacts must be Vitis HLS source, headers, C++ testbenches, configuration files, and HLS reports. Python reference models and vectors are allowed as intermediate validation artifacts because they improve semantic checking before HLS generation, but they are not the generated hardware deliverable.
+
+## Non-goals
+
+- Do not generate Verilog, SystemVerilog, or handwritten RTL.
+- Do not provide ResearchAssistant or GUI Code Design host integration.
+- Do not support local RTL tools such as `iverilog`, `vvp`, or `yosys`.
+- Do not add broad user-facing documentation outside the standard Skill files, except this root design-goal record requested for engineering alignment.
+- Do not modify files outside this skill directory.
+
+## AMD-Xilinx Target
+
+Target Vitis HLS workflows for C/C++ kernels, including:
+
+- `ap_int`, `ap_uint`, `ap_fixed`, and `hls::stream`-oriented code.
+- `#pragma HLS INTERFACE`, `PIPELINE`, `DATAFLOW`, `ARRAY_PARTITION`, and `STREAM` guidance.
+- AXI memory, AXI4-Stream, native scalar, and custom interface contracts when confirmed by the user or calling spec.
+- Local validation through AMD-Xilinx HLS tooling.
+
+The validator must prefer the first configured Vitis tool and then fall back through the configured tool list. The default policy prefers `vitis-run` and falls back to `vitis_hls`. If no configured command is available on PATH, Vitis validation must fail with a clear toolchain preflight error.
+
+## Skill Design Pattern
+
+This skill follows the standard Skill structure: `SKILL.md` for concise routing and workflow instructions, `agents/openai.yaml` for UI metadata, `references/` for details loaded on demand, `assets/` for examples, `runtime/` for deterministic workflow code, `integration/` for stable local APIs, and `smoke/` for validation.
+
+The design uses the local Skill-pattern reference reviewed during planning:
+
+- Tool Wrapper: wrap Vitis HLS command execution and report parsing behind deterministic runtime helpers.
+- Generator: produce a fixed manifest plus HLS files from a structured spec.
+- Reviewer: validate generated HLS artifacts with static checks, interface-contract checks, testbench checks, and Vitis report checks.
+- Inversion: require confirmed requirements and interface choices before generation.
+- Pipeline: enforce `requirements -> codegen_plan -> tests -> python -> hls` instead of letting the agent skip stages.
+
+## Workflow Stages
+
+1. Normalize confirmed requirements and interface profile.
+2. Build a code generation plan with open-question gating.
+3. Generate semantic test vectors.
+4. Generate a Python oracle and vector contract as intermediate validation support.
+5. Generate HLS C/C++ and configuration artifacts.
+6. Validate statically and then through Vitis tooling.
+
+## Version Control And Locality
+
+All development must stay inside the current repository directory; the formal Skill root is the `erie-hls-generator/` subdirectory so the folder name matches `name: erie-hls-generator`. Git is the source of change tracking for this directory. Use commit-sized changes, keep generated caches ignored, and never modify sibling or external folders while implementing this skill.
+
+Runtime path policy, generated-output roots, protected source areas, Vitis tool command templates, and validation timeouts are centralized in `runtime/hls_generator/runtime_config.json` and described in `references/configuration.md`. Avoid adding new hard-coded machine paths to scripts or Skill instructions.
+
+Remote validation must go through the configured `erie-remote-ssh` helper and its server-list JSON. UC-style link checks prove SSH helper connectivity only; they do not count as Vitis acceptance unless the remote profile exposes the expected AMD-Xilinx HLS tool and the HLS readiness run completes.

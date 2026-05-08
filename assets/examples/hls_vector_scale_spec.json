@@ -1,0 +1,77 @@
+{
+  "name": "vector_scale",
+  "target": "hls",
+  "design_requirements": {
+    "target": "hls",
+    "pipeline_required": true,
+    "streamability": "streamable",
+    "interface_family": "axi4",
+    "interface_profile": {
+      "axi4_variant": "axi4_full",
+      "role": "master",
+      "read_write_mode": "read_write",
+      "data_width": 32,
+      "addr_width": 32,
+      "id_width": 1,
+      "burst_support": false,
+      "clock_reset_domain": {
+        "clock": "i_axi_aclk",
+        "reset": "i_axi_arstn"
+      }
+    },
+    "confirmed_by_user": true,
+    "confirmation_notes": "Use a pipelined memory-mapped implementation."
+  },
+  "streamability": "streamable",
+  "interface_family": "axi4",
+  "interface_profile": {
+    "axi4_variant": "axi4_full",
+    "role": "master",
+    "read_write_mode": "read_write",
+    "data_width": 32,
+    "addr_width": 32,
+    "id_width": 1,
+    "burst_support": false,
+    "clock_reset_domain": {
+      "clock": "i_axi_aclk",
+      "reset": "i_axi_arstn"
+    }
+  },
+  "pipeline_required": true,
+  "codegen_plan_required": true,
+  "description": "Scale a vector of 32-bit unsigned values by a runtime scalar.",
+  "interfaces": {
+    "top_function": "vector_scale_kernel",
+    "arguments": [
+      {"name": "input", "type": "const ap_uint<32> *", "direction": "input", "interface": "m_axi", "bundle": "gmem0"},
+      {"name": "output", "type": "ap_uint<32> *", "direction": "output", "interface": "m_axi", "bundle": "gmem1"},
+      {"name": "scale", "type": "ap_uint<16>", "direction": "input", "interface": "s_axilite"},
+      {"name": "length", "type": "int", "direction": "input", "interface": "s_axilite"}
+    ],
+    "control": "s_axilite"
+  },
+  "behavior": [
+    "For each index below length, output[index] equals input[index] multiplied by scale.",
+    "Use a pipelined loop with II=1 if memory bandwidth permits.",
+    "Ignore elements at indexes greater than or equal to length."
+  ],
+  "clock": {"period_ns": 10.0, "uncertainty_ns": 1.0},
+  "reset": {"strategy": "tool_default"},
+  "constraints": [
+    "Use Vitis HLS compatible C++.",
+    "Avoid dynamic allocation and recursion."
+  ],
+  "outputs": [
+    {"path": "src/vector_scale_kernel.h", "kind": "header", "language": "cpp"},
+    {"path": "src/vector_scale_kernel.cpp", "kind": "source", "language": "cpp"},
+    {"path": "tb/vector_scale_kernel_tb.cpp", "kind": "testbench", "language": "cpp"},
+    {"path": "hls_config.cfg", "kind": "config", "language": "ini"}
+  ],
+  "notes": [],
+  "subfunctions": [],
+  "workflow": {},
+  "performance": {
+    "target_ii": 1
+  },
+  "hls_profile": {}
+}

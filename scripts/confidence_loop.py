@@ -1,0 +1,198 @@
+#!/usr/bin/env python3
+"""Run repeatable Erie HLS Generator confidence gates."""
+
+from __future__ import annotations
+
+import argparse
+import datetime as dt
+import json
+import subprocess
+import sys
+from pathlib import Path
+from typing import Any
+
+SKILL_ROOT = Path(__file__).resolve().parents[1]
+if str(SKILL_ROOT) not in sys.path:
+    sys.path.insert(0, str(SKILL_ROOT))
+
+from integration.hls_adapter import run_hls_workflow, validate_hls_artifacts  # noqa: E402
+from runtime.hls_generator.config import skill_config_path  # noqa: E402
+
+SOURCE_NOTE_PATHS = {
+    "references/vitis-hls-2024-2-script-guide.md",
+    "references/vitis-hls-official-patterns.md",
+}
+REF_DEPENDENCY_PATTERN = "ref[/\\\\]|" + "Vitis-" + "Tutorials|" + "Vitis-HLS" + r"\.md|" + "UG" + "1399"
+
+
+def main(argv: list[str] | None = None) -> int:
+    parser = argparse.ArgumentParser(description="Run Erie HLS Generator local and optional remote confidence gates.")
+    parser.add_argument("--server", help="Optional erie-remote-ssh server for real remote Vitis validation.")
+    parser.add_argument("--readiness", default="cosim", choices=("static", "compile", "execute", "implement", "cosim"))
+    parser.add_argument("--example-spec", action="append", help="Example spec to use for optional remote validation. Can be repeated.")
+    parser.add_argument("--skip-smoke", action="store_true")
+    parser.add_argument("--skip-compileall", action="store_true")
+    parser.add_argument("--skip-quick-validate", action="store_true")
+    parser.add_argument("--skip-remote", action="store_true")
+    parser.add_argument("--json-out", help="Write JSON summary to this path.")
+    args = parser.parse_args(argv)
+
+    run_root = SKILL_ROOT / "reports" / "confidence-loop" / dt.datetime.utcnow().strftime("%Y%m%dT%H%M%SZ")
+    run_root.mkdir(parents=True, exist_ok=True)
+
+    gates: dict[str, dict[str, Any]] = {}
+    if not args.skip_smoke:
+        gates["smoke"] = _run_command([sys.executable, "smoke/run_smoke.py"], cwd=SKILL_ROOT)
+    if not args.skip_compileall:
+        gates["compileall"] = _run_command([sys.executable, "-m", "compileall", "runtime/hls_generator"], cwd=SKILL_ROOT)
+    if not args.skip_quick_validate:
+        gates["quick_validate"] = _run_command([sys.executable, str(_quick_validate_path()), str(SKILL_ROOT)], cwd=SKILL_ROOT)
+    gates["ref_dependency_scan"] = _ref_dependency_scan()
+    examples_gate, example_specs = _validate_examples(run_root)
+    gates["example_mock_validation"] = examples_gate
+    remote_results: list[dict[str, Any]] = []
+    if args.server and not args.skip_remote:
+        for spec_name in args.example_spec or ["hls_partition_vector_scale_spec.json"]:
+            remote_results.append(_run_remote(args.server, args.readiness, spec_name))
+        gates["remote_vitis"] = _summarize_remote(remote_results)
+
+    confidence_status = "factual_high_confidence" if all(item["status"] == "passed" for item in gates.values()) else "needs_attention"
+    payload = {
+        "version": 1,
+        "confidence_status": confidence_status,
+        "run_root": str(run_root),
+        "gates": gates,
+        "example_specs": example_specs,
+        "remote_results": remote_results,
+        "residual_risks": _residual_risks(confidence_status, bool(args.server and not args.skip_remote)),
+    }
+    if args.json_out:
+        output_path = Path(args.json_out)
+        if not output_path.is_absolute():
+            output_path = (SKILL_ROOT / output_path).resolve()
+        output_path.parent.mkdir(parents=True, exist_ok=True)
+        output_path.write_text(json.dumps(payload, indent=2, ensure_ascii=False) + "\n", encoding="utf-8")
+    print(json.dumps(payload, indent=2, ensure_ascii=False))
+    return 0 if confidence_status == "factual_high_confidence" else 1
+
+
+def _run_command(command: list[str], *, cwd: Path) -> dict[str, Any]:
+    result = subprocess.run(command, cwd=cwd, capture_output=True, text=True, encoding="utf-8", errors="replace", check=False)
+    return {
+        "status": "passed" if result.returncode == 0 else "failed",
+        "command": command,
+        "returncode": result.returncode,
+        "stdout_tail": _tail(result.stdout),
+        "stderr_tail": _tail(result.stderr),
+    }
+
+
+def _quick_validate_path() -> Path:
+    return Path.home() / ".codex" / "skills" / ".system" / "skill-creator" / "scripts" / "quick_validate.py"
+
+
+def _ref_dependency_scan() -> dict[str, Any]:
+    result = subprocess.run(
+        ["rg", REF_DEPENDENCY_PATTERN, "."],
+        cwd=SKILL_ROOT,
+        capture_output=True,
+        text=True,
+        encoding="utf-8",
+        errors="replace",
+        check=False,
+    )
+    lines = [line for line in result.stdout.splitlines() if line.strip()]
+    unexpected = [line for line in lines if _relative_match_path(line) not in SOURCE_NOTE_PATHS]
+    return {
+        "status": "passed" if result.returncode in {0, 1} and not unexpected else "failed",
+        "command": ["rg", REF_DEPENDENCY_PATTERN, "."],
+        "matches": lines,
+        "unexpected_matches": unexpected,
+    }
+
+
+def _relative_match_path(line: str) -> str:
+    path_text = line.split(":", 1)[0].replace("\\", "/")
+    if path_text.startswith("./"):
+        path_text = path_text[2:]
+    root = SKILL_ROOT.as_posix().rstrip("/") + "/"
+    if path_text.startswith(root):
+        return path_text[len(root) :]
+    marker = "erie-hls-generator/"
+    if marker in path_text:
+        return path_text.split(marker, 1)[1]
+    return path_text
+
+
+def _validate_examples(run_root: Path) -> tuple[dict[str, Any], list[str]]:
+    examples_dir = skill_config_path("examples_dir")
+    spec_paths = sorted(examples_dir.glob("*.json"))
+    results: list[dict[str, Any]] = []
+    for spec_path in spec_paths:
+        spec = json.loads(spec_path.read_text(encoding="utf-8"))
+        out_dir = run_root / spec_path.stem
+        result = run_hls_workflow(spec, out_dir=out_dir, provider_name="mock", readiness="static", run_external=False, comment_language="zh")
+        artifact_dir = Path(result["run_dir"]) / "attempt-001" / "hls" / "artifacts"
+        report = validate_hls_artifacts(spec, artifact_dir, readiness="static", run_external=False, comment_language="zh") if artifact_dir.exists() else {"ok": False, "errors": 1, "warnings": 0}
+        results.append(
+            {
+                "spec": spec_path.name,
+                "workflow_status": result.get("status"),
+                "validation_ok": bool(report.get("ok")),
+                "errors": report.get("errors"),
+                "warnings": report.get("warnings"),
+            }
+        )
+    passed = all(item["workflow_status"] == "passed" and item["validation_ok"] for item in results)
+    return {"status": "passed" if passed else "failed", "results": results}, [path.name for path in spec_paths]
+
+
+def _run_remote(server: str, readiness: str, spec_name: str) -> dict[str, Any]:
+    command = [
+        sys.executable,
+        "scripts/remote_vitis_acceptance.py",
+        "--mode",
+        "vitis",
+        "--server",
+        server,
+        "--profile",
+        "vitis_2022",
+        "--readiness",
+        readiness,
+        "--example-spec",
+        spec_name,
+        "--comment-language",
+        "zh",
+        "--json",
+    ]
+    result = subprocess.run(command, cwd=SKILL_ROOT, capture_output=True, text=True, encoding="utf-8", errors="replace", timeout=900, check=False)
+    try:
+        payload = json.loads(result.stdout)
+    except json.JSONDecodeError:
+        payload = {"status": "failed", "stdout_tail": _tail(result.stdout), "stderr_tail": _tail(result.stderr)}
+    payload["returncode"] = result.returncode
+    payload["example_spec"] = spec_name
+    return payload
+
+
+def _summarize_remote(remote_results: list[dict[str, Any]]) -> dict[str, Any]:
+    passed = bool(remote_results) and all(item.get("status") == "passed" and item.get("remote_artifacts_retained") is True for item in remote_results)
+    return {"status": "passed" if passed else "failed", "results": remote_results}
+
+
+def _residual_risks(confidence_status: str, remote_requested: bool) -> list[str]:
+    risks: list[str] = []
+    if confidence_status != "factual_high_confidence":
+        risks.append("At least one confidence gate failed; inspect gates for details.")
+    if not remote_requested:
+        risks.append("Remote Vitis validation was skipped for this confidence-loop invocation.")
+    risks.append("Unified HLS open_component and direct v++ flows remain documented extension points, not active execution paths.")
+    return risks
+
+
+def _tail(text: str, *, limit: int = 4000) -> str:
+    return text[-limit:] if len(text) > limit else text
+
+
+if __name__ == "__main__":
+    raise SystemExit(main())

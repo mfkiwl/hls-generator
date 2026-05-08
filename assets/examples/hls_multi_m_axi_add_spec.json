@@ -1,0 +1,80 @@
+{
+  "name": "multi_m_axi_add",
+  "target": "hls",
+  "design_requirements": {
+    "target": "hls",
+    "pipeline_required": true,
+    "streamability": "streamable",
+    "interface_family": "axi4",
+    "interface_profile": {
+      "axi4_variant": "axi4_full",
+      "role": "master",
+      "read_write_mode": "read_write",
+      "data_width": 32,
+      "addr_width": 32,
+      "id_width": 1,
+      "burst_support": false,
+      "clock_reset_domain": {
+        "clock": "i_axi_aclk",
+        "reset": "i_axi_arstn"
+      }
+    },
+    "confirmed_by_user": true,
+    "confirmation_notes": "Use separate m_axi bundles for independent input and output memory channels."
+  },
+  "streamability": "streamable",
+  "interface_family": "axi4",
+  "interface_profile": {
+    "axi4_variant": "axi4_full",
+    "role": "master",
+    "read_write_mode": "read_write",
+    "data_width": 32,
+    "addr_width": 32,
+    "id_width": 1,
+    "burst_support": false,
+    "clock_reset_domain": {
+      "clock": "i_axi_aclk",
+      "reset": "i_axi_arstn"
+    }
+  },
+  "pipeline_required": true,
+  "codegen_plan_required": true,
+  "description": "Add two vectors using separate AXI4 memory bundles.",
+  "interfaces": {
+    "top_function": "multi_m_axi_add_kernel",
+    "arguments": [
+      {"name": "input_a", "type": "const ap_uint<32> *", "direction": "input", "interface": "m_axi", "bundle": "gmem_a", "depth": 1024},
+      {"name": "input_b", "type": "const ap_uint<32> *", "direction": "input", "interface": "m_axi", "bundle": "gmem_b", "depth": 1024},
+      {"name": "output", "type": "ap_uint<32> *", "direction": "output", "interface": "m_axi", "bundle": "gmem_out", "depth": 1024},
+      {"name": "length", "type": "int", "direction": "input", "interface": "s_axilite"}
+    ],
+    "control": "s_axilite"
+  },
+  "behavior": [
+    "For each index below length, output[index] equals input_a[index] plus input_b[index].",
+    "Keep input_a, input_b, and output on distinct m_axi bundles to preserve independent memory bandwidth.",
+    "Use concrete depth values for every m_axi port."
+  ],
+  "clock": {"period_ns": 10.0, "uncertainty_ns": 1.0},
+  "reset": {"strategy": "tool_default"},
+  "constraints": [
+    "Use Vitis HLS compatible C++.",
+    "Avoid dynamic allocation and recursion."
+  ],
+  "outputs": [
+    {"path": "src/multi_m_axi_add_kernel.h", "kind": "header", "language": "cpp"},
+    {"path": "src/multi_m_axi_add_kernel.cpp", "kind": "source", "language": "cpp"},
+    {"path": "tb/multi_m_axi_add_kernel_tb.cpp", "kind": "testbench", "language": "cpp"},
+    {"path": "hls_config.cfg", "kind": "config", "language": "ini"}
+  ],
+  "notes": [],
+  "subfunctions": [],
+  "workflow": {},
+  "performance": {
+    "target_ii": 1,
+    "max_length": 1024
+  },
+  "hls_profile": {
+    "example_pattern": "multi_m_axi"
+  }
+}

@@ -1,0 +1,81 @@
+{
+  "name": "fixed_point_scale",
+  "target": "hls",
+  "design_requirements": {
+    "target": "hls",
+    "pipeline_required": true,
+    "streamability": "streamable",
+    "interface_family": "axi4",
+    "interface_profile": {
+      "axi4_variant": "axi4_full",
+      "role": "master",
+      "read_write_mode": "read_write",
+      "data_width": 32,
+      "addr_width": 32,
+      "id_width": 1,
+      "burst_support": false,
+      "clock_reset_domain": {
+        "clock": "i_axi_aclk",
+        "reset": "i_axi_arstn"
+      }
+    },
+    "confirmed_by_user": true,
+    "confirmation_notes": "Use fixed-point math when the numeric range is explicit and compatible with the oracle."
+  },
+  "streamability": "streamable",
+  "interface_family": "axi4",
+  "interface_profile": {
+    "axi4_variant": "axi4_full",
+    "role": "master",
+    "read_write_mode": "read_write",
+    "data_width": 32,
+    "addr_width": 32,
+    "id_width": 1,
+    "burst_support": false,
+    "clock_reset_domain": {
+      "clock": "i_axi_aclk",
+      "reset": "i_axi_arstn"
+    }
+  },
+  "pipeline_required": true,
+  "codegen_plan_required": true,
+  "description": "Scale a vector using explicit ap_fixed numeric widths.",
+  "interfaces": {
+    "top_function": "fixed_point_scale_kernel",
+    "arguments": [
+      {"name": "input", "type": "const ap_fixed<16,8, AP_RND, AP_SAT> *", "direction": "input", "interface": "m_axi", "bundle": "gmem0", "depth": 1024},
+      {"name": "output", "type": "ap_fixed<16,8, AP_RND, AP_SAT> *", "direction": "output", "interface": "m_axi", "bundle": "gmem1", "depth": 1024},
+      {"name": "scale", "type": "ap_fixed<16,4, AP_RND, AP_SAT>", "direction": "input", "interface": "s_axilite"},
+      {"name": "length", "type": "int", "direction": "input", "interface": "s_axilite"}
+    ],
+    "control": "s_axilite"
+  },
+  "behavior": [
+    "For each index below length, output[index] equals input[index] multiplied by scale.",
+    "Use ap_fixed widths intentionally and keep range assumptions visible in comments.",
+    "Do not enable unsafe math unless the user explicitly allows the approximation."
+  ],
+  "clock": {"period_ns": 10.0, "uncertainty_ns": 1.0},
+  "reset": {"strategy": "tool_default"},
+  "constraints": [
+    "Use Vitis HLS compatible C++.",
+    "Avoid dynamic allocation and recursion.",
+    "Document fixed-point range and precision intent."
+  ],
+  "outputs": [
+    {"path": "src/fixed_point_scale_kernel.h", "kind": "header", "language": "cpp"},
+    {"path": "src/fixed_point_scale_kernel.cpp", "kind": "source", "language": "cpp"},
+    {"path": "tb/fixed_point_scale_kernel_tb.cpp", "kind": "testbench", "language": "cpp"},
+    {"path": "hls_config.cfg", "kind": "config", "language": "ini"}
+  ],
+  "notes": [],
+  "subfunctions": [],
+  "workflow": {},
+  "performance": {
+    "target_ii": 1,
+    "max_length": 1024
+  },
+  "hls_profile": {
+    "example_pattern": "fixed_point"
+  }
+}

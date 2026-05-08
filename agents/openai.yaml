@@ -1,0 +1,6 @@
+interface:
+  display_name: "Erie HLS Generator"
+  short_description: "Develop, debug, and validate Vitis HLS kernels and HLS-generated RTL."
+  default_prompt: "Use $erie-hls-generator for HLS development, HLS design changes, HLS debug, high-level synthesis, Vitis HLS validation, and HLS-generated RTL/Verilog interface issues."
+policy:
+  allow_implicit_invocation: true
