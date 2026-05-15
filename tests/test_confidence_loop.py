@@ -98,6 +98,33 @@ class ConfidenceLoopTests(unittest.TestCase):
         self.assertEqual(result["status"], "failed")
         self.assertGreaterEqual(len(result["matches"]), 2)
 
+    def test_release_sensitivity_scan_catches_fixed_remote_defaults(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            (root / "runtime" / "hls_generator").mkdir(parents=True)
+            (root / "runtime" / "hls_generator" / "runtime_config.json").write_text(
+                json_text := (
+                    "{\n"
+                    '  "remote_validation": {\n'
+                    '    "erie_settings_path": "${erie_skill_dir}/config/defaults.json",\n'
+                    '    "vitis_profiles": {\n'
+                    '      "vitis_2022": {\n'
+                    '        "settings_script": "/' + "tools" + '/Xilinx/Vitis/2022.2/settings64.sh",\n'
+                    '        "expected_tool": "vitis_hls",\n'
+                    '        "target_part": "' + "xcu50" + '-fsvh2104-2-e"\n'
+                    "      }\n"
+                    "    }\n"
+                    "  }\n"
+                    "}\n"
+                ),
+                encoding="utf-8",
+            )
+            result = self.module._release_sensitivity_scan(root=root)
+
+        self.assertEqual(result["status"], "failed")
+        self.assertTrue(any(("/" + "tools" + "/Xilinx/") in item for item in result["matches"]))
+        self.assertTrue(any("xcu50" in item for item in result["matches"]))
+
 
 if __name__ == "__main__":
     unittest.main()

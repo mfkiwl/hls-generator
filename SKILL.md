@@ -44,13 +44,18 @@ When local `vitis-run`/`vitis_hls` is missing, inspect the workflow's `remote_to
 
 ```powershell
 python .\scripts\remote_vitis_acceptance.py --mode link --server <erie-server>
-python .\scripts\remote_vitis_acceptance.py --mode vitis --server <erie-server> --readiness <execute|implement|cosim>
+python .\scripts\remote_vitis_acceptance.py --mode vitis --server <erie-server> --profile <configured-profile> --readiness <execute|implement|cosim>
 ```
 
 Remote Vitis acceptance refreshes erie software scan data. If multiple Vitis
 versions are detected and no version has been saved for that server in
 `~/.hls-generator/config.json`, ask the user to choose a version and rerun with
 `--vitis-version <version>`.
+
+If no remote Vitis profile has been configured and no previously saved remote
+selection provides the required tool path, expected tool, and target part,
+stop and ask the user to configure those values before continuing. Do not guess
+or fall back to a package default path.
 
 Vitis remote acceptance keeps the remote validation directory by default and reports
 `remote_dir` relative to the selected erie server workdir. Pass

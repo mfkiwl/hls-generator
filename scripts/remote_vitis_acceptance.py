@@ -32,6 +32,7 @@ PASS_STATUS = "passed"
 DRY_RUN_STATUS = "dry_run"
 BLOCKED_VITIS_STATUS = "blocked_vitis_server"
 BLOCKED_VERSION_STATUS = "blocked_remote_version_choice"
+BLOCKED_PROFILE_STATUS = "blocked_remote_profile_config"
 FAILED_STATUS = "failed"
 UTF8_HINT = "Set PYTHONUTF8=1 and PYTHONIOENCODING=utf-8 when calling erie-remote-ssh."
 
@@ -44,7 +45,7 @@ def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(description="Validate HLS generator remote confidence through erie-remote-ssh.")
     parser.add_argument("--mode", required=True, choices=("link", "vitis"))
     parser.add_argument("--server", required=True, help="Server id or name from erie-remote-ssh config.")
-    parser.add_argument("--profile", default="vitis_2022", help="remote_validation.vitis_profiles key for Vitis mode.")
+    parser.add_argument("--profile", help="Optional remote_validation.vitis_profiles key for Vitis mode.")
     parser.add_argument("--vitis-version", help="Explicit remote Vitis version to use and remember for this server.")
     parser.add_argument("--readiness", default="cosim", choices=READINESS_LEVELS)
     parser.add_argument("--example-spec", default="hls_vector_scale_mock_spec.json", help="Example spec from assets/examples used for Vitis acceptance artifacts.")
@@ -69,6 +70,8 @@ def main(argv: list[str] | None = None) -> int:
 
     if result["status"] in {PASS_STATUS, DRY_RUN_STATUS}:
         return 0
+    if result["status"] == BLOCKED_PROFILE_STATUS:
+        return 5
     if result["status"] == BLOCKED_VERSION_STATUS:
         return 4
     if result["status"] == BLOCKED_VITIS_STATUS:
@@ -115,15 +118,22 @@ def _run_link_mode(args: argparse.Namespace, config: dict[str, Any], helper: "Er
 
 
 def _run_vitis_mode(args: argparse.Namespace, config: dict[str, Any], helper: "ErieHelper", plan: list[str]) -> dict[str, Any]:
-    profiles = config["vitis_profiles"]
-    if args.profile not in profiles:
-        raise RemoteAcceptanceError(f"Unknown remote Vitis profile {args.profile!r}.")
-    profile = profiles[args.profile]
+    profiles = config.get("vitis_profiles", {})
     run_dir = _new_run_dir(config, "vitis")
     settings = _write_erie_settings_overlay(config, run_dir)
     helper.preflight(args.server, settings=settings)
     helper.scan_software(args.server, settings=settings)
-    candidates = _vitis_version_candidates(config, settings, args.server, profile)
+    candidates = _vitis_version_candidates(config, settings, args.server)
+    profile = _resolve_profile_config(
+        args,
+        run_dir,
+        candidates=candidates,
+        configured_profiles=profiles,
+        required_fields=("settings_script", "expected_tool", "target_part"),
+    )
+    if profile.get("status") == BLOCKED_PROFILE_STATUS:
+        _write_report(run_dir, profile)
+        return profile
     selected_profile = _select_vitis_profile(args, run_dir, candidates, profile)
     if selected_profile.get("status") == BLOCKED_VERSION_STATUS:
         _write_report(run_dir, selected_profile)
@@ -295,7 +305,87 @@ def _select_vitis_profile(args: argparse.Namespace, run_dir: Path, candidates: l
     }
 
 
-def _vitis_version_candidates(config: dict[str, Any], settings_path: Path, server: str, fallback_profile: dict[str, Any]) -> list[dict[str, Any]]:
+def _resolve_profile_config(
+    args: argparse.Namespace,
+    run_dir: Path,
+    *,
+    candidates: list[dict[str, Any]],
+    configured_profiles: dict[str, Any],
+    required_fields: tuple[str, ...],
+) -> dict[str, Any]:
+    explicit_profile = str(args.profile or "").strip()
+    if explicit_profile:
+        profile = configured_profiles.get(explicit_profile)
+        if not isinstance(profile, dict):
+            return _blocked_profile_config(args, run_dir, missing_fields=list(required_fields), configured_profiles=configured_profiles)
+        resolved = {**profile, "version": str(profile.get("version") or explicit_profile)}
+        missing = [field for field in required_fields if not str(resolved.get(field) or "").strip()]
+        if missing:
+            return _blocked_profile_config(args, run_dir, missing_fields=missing, configured_profiles=configured_profiles)
+        return resolved
+
+    saved = get_vitis_selection(args.server)
+    if saved:
+        missing = [field for field in required_fields if not str(saved.get(field) or "").strip()]
+        if not missing:
+            return saved
+
+    complete_profiles: list[tuple[str, dict[str, Any]]] = []
+    for name, profile in configured_profiles.items():
+        if not isinstance(profile, dict):
+            continue
+        resolved = {**profile, "version": str(profile.get("version") or name)}
+        missing = [field for field in required_fields if not str(resolved.get(field) or "").strip()]
+        if not missing:
+            complete_profiles.append((name, resolved))
+    if len(complete_profiles) == 1:
+        return complete_profiles[0][1]
+
+    return _blocked_profile_config(args, run_dir, missing_fields=list(required_fields), configured_profiles=configured_profiles)
+
+
+def _blocked_profile_config(
+    args: argparse.Namespace,
+    run_dir: Path,
+    *,
+    missing_fields: list[str],
+    configured_profiles: dict[str, Any],
+) -> dict[str, Any]:
+    request = {
+        "version": 1,
+        "action": "ask_remote_vitis_profile_config",
+        "question": "Remote Vitis validation requires an explicit configured profile or a previously saved remote selection. Configure the missing values before retrying.",
+        "server": args.server,
+        "profile": args.profile,
+        "readiness": args.readiness,
+        "example_spec": args.example_spec,
+        "missing_fields": missing_fields,
+        "configured_profiles": sorted(str(name) for name in configured_profiles),
+        "user_config_path": str(user_config_path()),
+        "recommended_commands": [
+            f"python .\\scripts\\remote_vitis_acceptance.py --mode vitis --server {args.server} --profile <configured-profile> --readiness {args.readiness} --example-spec {args.example_spec} --json",
+            f"python .\\scripts\\remote_vitis_acceptance.py --mode vitis --server {args.server} --vitis-version <version> --readiness {args.readiness} --example-spec {args.example_spec} --json",
+        ],
+    }
+    request_path = run_dir / "remote_vitis_profile_request.json"
+    _write_json(request_path, request)
+    return {
+        "status": BLOCKED_PROFILE_STATUS,
+        "mode": "vitis",
+        "server": args.server,
+        "profile": args.profile,
+        "readiness": args.readiness,
+        "example_spec": args.example_spec,
+        "run_dir": str(run_dir),
+        "missing_fields": missing_fields,
+        "configured_profiles": sorted(str(name) for name in configured_profiles),
+        "remote_vitis_profile_request": str(request_path),
+        "user_config_path": str(user_config_path()),
+        "uses_erie_remote_ssh": True,
+    }
+
+
+def _vitis_version_candidates(config: dict[str, Any], settings_path: Path, server: str) -> list[dict[str, Any]]:
     settings = json.loads(settings_path.read_text(encoding="utf-8"))
     server_list_path = _resolve_erie_server_list(settings, settings_path, Path(config["erie_skill_dir"]))
     try:
@@ -317,13 +407,13 @@ def _vitis_version_candidates(config: dict[str, Any], settings_path: Path, serve
         install_path = str(item.get("install_path") or "").strip()
         executable_path = str(item.get("path") or "").strip()
         version = _version_label(item)
-        settings_script = (install_path.rstrip("/") + "/settings64.sh") if install_path else str(fallback_profile.get("settings_script") or "")
+        settings_script = (install_path.rstrip("/") + "/settings64.sh") if install_path else ""
         candidates.append(
             {
                 "version": version,
                 "settings_script": settings_script,
                 "expected_tool": "vitis_hls",
-                "target_part": str(fallback_profile.get("target_part", "")),
+                "target_part": str(item.get("target_part") or ""),
                 "install_path": install_path,
                 "executable_path": executable_path,
             }
@@ -513,7 +603,9 @@ def _write_erie_settings_overlay(config: dict[str, Any], run_dir: Path) -> Path:
 
 
 def _resolve_erie_server_list(settings: dict[str, Any], settings_path: Path, erie_skill_dir: Path) -> Path:
-    raw = str(settings.get("paths", {}).get("default_server_list") or erie_skill_dir / "config" / "server_list.local.json")
+    raw = str(settings.get("paths", {}).get("default_server_list") or "").strip()
+    if not raw:
+        raise RemoteAcceptanceError("erie-remote-ssh settings are missing paths.default_server_list. Ask the user to configure the remote server list before continuing.")
     replacements = {
         "skill_dir": str(erie_skill_dir),
         "settings_dir": str(settings_path.parent),
@@ -545,7 +637,8 @@ def _planned_steps(mode: str, server: str, profile: str, readiness: str, *, clea
     if mode == "link":
         steps.append("erie exec read-only UTF-8 link probe")
     else:
-        steps.extend([f"erie exec Vitis profile probe {profile}", f"generate local HLS mock artifacts from {example_spec or 'default example'}", "erie request mkdir", "erie request command payload transfer", f"erie request command Vitis {readiness}"])
+        profile_label = profile or "<user-configured-profile>"
+        steps.extend([f"erie exec Vitis profile probe {profile_label}", f"generate local HLS mock artifacts from {example_spec or 'default example'}", "erie request mkdir", "erie request command payload transfer", f"erie request command Vitis {readiness}"])
         if cleanup_remote:
             steps.append("erie request delete cleanup")
         else:
@@ -567,11 +660,13 @@ def _reject_decode_noise(output: str) -> None:
 
 def _format_result(result: dict[str, Any]) -> str:
     lines = [f"status: {result.get('status')}"]
-    for key in ("mode", "server", "profile", "vitis_version", "readiness", "example_spec", "run_dir", "remote_dir", "remote_vitis_version_request"):
+    for key in ("mode", "server", "profile", "vitis_version", "readiness", "example_spec", "run_dir", "remote_dir", "remote_vitis_version_request", "remote_vitis_profile_request"):
         if result.get(key) is not None:
             lines.append(f"{key}: {result[key]}")
     if result.get("error"):
         lines.append(f"error: {result['error']}")
+    if result.get("missing_fields"):
+        lines.append("missing_fields: " + ", ".join(str(item) for item in result["missing_fields"]))
     if result.get("probe"):
         lines.append(f"probe: {result['probe'].get('status')}")
     if result.get("remote_artifacts_retained") is not None:

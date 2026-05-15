@@ -82,13 +82,7 @@
       "-lc",
       "printf 'HLS_REMOTE_LINK_OK\\n'; printf 'host='; hostname; printf '\\npwd='; pwd; printf '\\npython='; python3 --version 2>&1"
     ],
-    "vitis_profiles": {
-      "vitis_2022": {
-        "settings_script": "/tools/Xilinx/Vitis/2022.2/settings64.sh",
-        "expected_tool": "vitis_hls",
-        "target_part": "xcu50-fsvh2104-2-e"
-      }
-    }
+    "vitis_profiles": {}
   },
   "skill_dependencies": [
     {

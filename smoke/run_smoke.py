@@ -375,7 +375,7 @@ def _run_remote_acceptance_checks(base: Path) -> None:
     assert dry_payload["uses_erie_remote_ssh"] is True
 
     dry_vitis = REAL_SUBPROCESS_RUN(
-        [sys.executable, "scripts/remote_vitis_acceptance.py", "--mode", "vitis", "--server", "vitis-server", "--profile", "vitis_2022", "--readiness", "cosim", "--dry-run", "--json"],
+        [sys.executable, "scripts/remote_vitis_acceptance.py", "--mode", "vitis", "--server", "vitis-server", "--profile", "configured_profile", "--readiness", "cosim", "--dry-run", "--json"],
         cwd=ROOT,
         env=env,
         capture_output=True,
@@ -391,8 +391,30 @@ def _run_remote_acceptance_checks(base: Path) -> None:
     assert "retain remote validation directory" in dry_vitis_payload["steps"], dry_vitis_payload
     assert "erie request delete cleanup" not in dry_vitis_payload["steps"], dry_vitis_payload
 
+    no_profile_config = runtime_config()
+    no_profile_config["remote_validation"]["erie_skill_dir"] = "${skill_root}/" + (base / "fake_erie").relative_to(ROOT).as_posix()
+    no_profile_config["remote_validation"]["erie_settings_path"] = "${erie_skill_dir}/config/defaults.json"
+    no_profile_config["remote_validation"]["vitis_profiles"] = {}
+    no_profile_path = base / "fake_remote_runtime_config.no_profile.json"
+    no_profile_path.write_text(json.dumps(no_profile_config, indent=2), encoding="utf-8")
+    no_profile_env = env.copy()
+    no_profile_env["HLS_GENERATOR_RUNTIME_CONFIG"] = str(no_profile_path.relative_to(ROOT))
+    blocked_profile = REAL_SUBPROCESS_RUN(
+        [sys.executable, "scripts/remote_vitis_acceptance.py", "--mode", "vitis", "--server", "vitis-server", "--readiness", "cosim", "--json"],
+        cwd=ROOT,
+        env=no_profile_env,
+        capture_output=True,
+        text=True,
+        encoding="utf-8",
+        check=False,
+    )
+    assert blocked_profile.returncode == 5, blocked_profile
+    blocked_profile_payload = json.loads(blocked_profile.stdout)
+    assert blocked_profile_payload["status"] == "blocked_remote_profile_config", blocked_profile_payload
+    assert blocked_profile_payload["missing_fields"] == ["settings_script", "expected_tool", "target_part"], blocked_profile_payload
+
     blocked = REAL_SUBPROCESS_RUN(
-        [sys.executable, "scripts/remote_vitis_acceptance.py", "--mode", "vitis", "--server", "link-server", "--profile", "vitis_2022", "--readiness", "cosim", "--json"],
+        [sys.executable, "scripts/remote_vitis_acceptance.py", "--mode", "vitis", "--server", "link-server", "--profile", "configured_profile", "--readiness", "cosim", "--json"],
         cwd=ROOT,
         env=env,
         capture_output=True,
@@ -406,7 +428,7 @@ def _run_remote_acceptance_checks(base: Path) -> None:
     assert blocked_payload["uses_erie_remote_ssh"] is True
 
     version_blocked = REAL_SUBPROCESS_RUN(
-        [sys.executable, "scripts/remote_vitis_acceptance.py", "--mode", "vitis", "--server", "vitis-server", "--profile", "vitis_2022", "--readiness", "cosim", "--json"],
+        [sys.executable, "scripts/remote_vitis_acceptance.py", "--mode", "vitis", "--server", "vitis-server", "--profile", "configured_profile", "--readiness", "cosim", "--json"],
         cwd=ROOT,
         env=env,
         capture_output=True,
@@ -423,7 +445,7 @@ def _run_remote_acceptance_checks(base: Path) -> None:
     assert "2022.2" in version_request.read_text(encoding="utf-8")
 
     retained = REAL_SUBPROCESS_RUN(
-        [sys.executable, "scripts/remote_vitis_acceptance.py", "--mode", "vitis", "--server", "vitis-server", "--profile", "vitis_2022", "--vitis-version", "2022.2", "--readiness", "cosim", "--json"],
+        [sys.executable, "scripts/remote_vitis_acceptance.py", "--mode", "vitis", "--server", "vitis-server", "--profile", "configured_profile", "--vitis-version", "2022.2", "--readiness", "cosim", "--json"],
         cwd=ROOT,
         env=env,
         capture_output=True,
@@ -443,7 +465,7 @@ def _run_remote_acceptance_checks(base: Path) -> None:
     assert saved_user_config["vitis_version_selection"]["vitis-server"]["version"] == "2022.2", saved_user_config
 
     retained_from_config = REAL_SUBPROCESS_RUN(
-        [sys.executable, "scripts/remote_vitis_acceptance.py", "--mode", "vitis", "--server", "vitis-server", "--profile", "vitis_2022", "--readiness", "cosim", "--json"],
+        [sys.executable, "scripts/remote_vitis_acceptance.py", "--mode", "vitis", "--server", "vitis-server", "--profile", "configured_profile", "--readiness", "cosim", "--json"],
         cwd=ROOT,
         env=env,
         capture_output=True,
@@ -460,7 +482,7 @@ def _run_remote_acceptance_checks(base: Path) -> None:
     assert retained_report["remote_artifacts_retained"] is True, retained_report
 
     cleaned = REAL_SUBPROCESS_RUN(
-        [sys.executable, "scripts/remote_vitis_acceptance.py", "--mode", "vitis", "--server", "vitis-server", "--profile", "vitis_2022", "--readiness", "cosim", "--cleanup-remote", "--json"],
+        [sys.executable, "scripts/remote_vitis_acceptance.py", "--mode", "vitis", "--server", "vitis-server", "--profile", "configured_profile", "--readiness", "cosim", "--cleanup-remote", "--json"],
         cwd=ROOT,
         env=env,
         capture_output=True,
@@ -502,8 +524,8 @@ def _write_fake_remote_config(base: Path) -> Path:
     fake_erie = base / "fake_erie"
     (fake_erie / "scripts").mkdir(parents=True)
     (fake_erie / "config").mkdir(parents=True)
-    (fake_erie / "config" / "defaults.json").write_text('{"version":1,"paths":{"default_server_list":"${settings_dir}/server_list.local.json"}}\n', encoding="utf-8")
-    (fake_erie / "config" / "server_list.local.json").write_text(
+    (fake_erie / "config" / "defaults.json").write_text('{"version":1,"paths":{"default_server_list":"${settings_dir}/local_servers.json"}}\n', encoding="utf-8")
+    (fake_erie / "config" / "local_servers.json").write_text(
         json.dumps(
             {
                 "version": 1,
@@ -556,7 +578,7 @@ def _write_fake_remote_config(base: Path) -> Path:
                 "    data = json.loads(path.read_text(encoding='utf-8'))",
                 "    for server in data.get('servers', []):",
                 "        if server.get('id') == server_arg() and server_arg() == 'vitis-server':",
-                "            server['software_scan'] = {'status':'ok','tools':{'vitis':{'status':'installed','path':'/tools/Xilinx/Vitis/2022.2/bin/vitis','version':'Vitis v2022.2','install_path':'/tools/Xilinx/Vitis/2022.2','versions':[{'status':'installed','path':'/tools/Xilinx/Vitis/2022.2/bin/vitis','version':'Vitis v2022.2','install_path':'/tools/Xilinx/Vitis/2022.2'},{'status':'installed','path':'/tools/Xilinx/Vitis/2023.2/bin/vitis','version':'Vitis v2023.2','install_path':'/tools/Xilinx/Vitis/2023.2'}]}}}",
+                "            server['software_scan'] = {'status':'ok','tools':{'vitis':{'status':'installed','path':'/user/configured/vitis/2022.2/bin/vitis','version':'Vitis v2022.2','install_path':'/user/configured/vitis/2022.2','versions':[{'status':'installed','path':'/user/configured/vitis/2022.2/bin/vitis','version':'Vitis v2022.2','install_path':'/user/configured/vitis/2022.2'},{'status':'installed','path':'/user/configured/vitis/2023.2/bin/vitis','version':'Vitis v2023.2','install_path':'/user/configured/vitis/2023.2'}]}}}",
                 "    path.write_text(json.dumps(data, indent=2), encoding='utf-8')",
                 "    print('software_scan_status: ok')",
                 "elif cmd in {'request-mkdir', 'request-command', 'request-delete'}:",
@@ -574,6 +596,13 @@ def _write_fake_remote_config(base: Path) -> Path:
     config = runtime_config()
     config["remote_validation"]["erie_skill_dir"] = "${skill_root}/" + fake_erie.relative_to(ROOT).as_posix()
     config["remote_validation"]["erie_settings_path"] = "${erie_skill_dir}/config/defaults.json"
+    config["remote_validation"]["vitis_profiles"] = {
+        "configured_profile": {
+            "settings_script": "/user/configured/settings64.sh",
+            "expected_tool": "vitis_hls",
+            "target_part": "user-configured-part",
+        }
+    }
     config_path = base / "fake_remote_runtime_config.json"
     config_path.write_text(json.dumps(config, indent=2), encoding="utf-8")
     return config_path
@@ -1045,7 +1074,7 @@ def _run_release_packaging_checks(base: Path) -> None:
 
     dist_root = base / "release-dist"
     valid = REAL_SUBPROCESS_RUN(
-        [sys.executable, str(script), "--version", "0.1.7", "--dist-root", str(dist_root)],
+        [sys.executable, str(script), "--version", "0.1.8", "--dist-root", str(dist_root)],
         cwd=ROOT.parent,
         capture_output=True,
         text=True,

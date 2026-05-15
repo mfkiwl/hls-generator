@@ -115,17 +115,20 @@ credentials into this skill. Server ids and names must come from the
 - `remote_tmp_dir` is a relative directory under the selected erie server's
   configured `workdir`.
 - `python_env` must force UTF-8 output on Windows callers.
-- `vitis_profiles` stores environment setup scripts and expected HLS tools by
-  profile name.
+- `vitis_profiles` optionally stores user-configured remote Vitis profiles by
+  name. The shipped skill may leave this object empty; in that case remote
+  acceptance must stop and ask the user to configure the missing values.
 
 Use `scripts/remote_vitis_acceptance.py --mode link --server <erie-server>` for
 UC-style SSH helper link checks. This mode is read-only on the remote host and
 does not claim Vitis acceptance.
 
 Use `scripts/remote_vitis_acceptance.py --mode vitis --server <erie-server>
---profile vitis_2022 --readiness cosim` only with a server whose erie config is
-already validated and whose sourced profile exposes the expected Vitis tool. If
-the expected tool is missing, the script reports `blocked_vitis_server`.
+--profile <configured-profile> --readiness cosim` only with a server whose erie
+config is already validated and whose configured or previously saved profile
+exposes the expected Vitis tool. If no complete profile is available, the
+script reports `blocked_remote_profile_config`. If the expected tool is
+missing, the script reports `blocked_vitis_server`.
 
 Vitis mode runs `erie scan-software` before selecting a remote Vitis install. If
 the scan reports multiple versions and `~/.hls-generator/config.json` has no

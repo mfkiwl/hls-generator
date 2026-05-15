@@ -235,15 +235,11 @@ def remote_validation_config() -> dict[str, Any]:
     if not isinstance(link_probe, list) or not link_probe or not all(isinstance(item, str) and item for item in link_probe):
         raise ValueError("Runtime config remote_validation.link_probe_command must be a non-empty list of strings.")
     profiles = config.get("vitis_profiles", {})
-    if not isinstance(profiles, dict) or not profiles:
-        raise ValueError("Runtime config remote_validation.vitis_profiles must be a non-empty object.")
+    if not isinstance(profiles, dict):
+        raise ValueError("Runtime config remote_validation.vitis_profiles must be a JSON object when set.")
     for name, profile in profiles.items():
         if not str(name).strip() or not isinstance(profile, dict):
             raise ValueError("Each remote Vitis profile must be a named JSON object.")
-        settings_script = str(profile.get("settings_script") or "").strip()
-        expected_tool = str(profile.get("expected_tool") or "").strip()
-        if not settings_script or not expected_tool:
-            raise ValueError(f"Remote Vitis profile {name!r} requires settings_script and expected_tool.")
     return config
 
 

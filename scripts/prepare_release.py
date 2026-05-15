@@ -53,7 +53,7 @@ EXCLUDED_GLOBS = (
 VALIDATION_COMMANDS = [
     r"python .\skills\erie-hls-generator\smoke\run_smoke.py",
     r"python -m compileall .\skills\erie-hls-generator\runtime\hls_generator",
-    r"python C:\Users\17677\.codex\skills\.system\skill-creator\scripts\quick_validate.py .\skills\erie-hls-generator",
+    r"python %CODEX_HOME%\skills\.system\skill-creator\scripts\quick_validate.py .\skills\erie-hls-generator",
     r"python .\skills\erie-hls-generator\scripts\confidence_loop.py --skip-remote --json-out reports\confidence-loop\latest-local.json",
 ]
 

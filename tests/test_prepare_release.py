@@ -29,8 +29,8 @@ class PrepareReleaseTests(unittest.TestCase):
         with tempfile.TemporaryDirectory(dir=SKILL_ROOT.parents[1]) as tmp:
             dist_root = Path(tmp) / "dist"
             with patch.object(self.module, "_git_output", side_effect=self.module.ReleaseError("git unavailable")):
-                payload = self.module.prepare_release("0.1.7", dist_root)
-            self.assertTrue(str(payload["release_dir"]).endswith("erie-hls-generator-v0.1.7"))
+                payload = self.module.prepare_release("0.1.8", dist_root)
+            self.assertTrue(str(payload["release_dir"]).endswith("erie-hls-generator-v0.1.8"))
             release_manifest = json.loads((Path(payload["release_dir"]) / "RELEASE_MANIFEST.json").read_text(encoding="utf-8"))
             self.assertEqual(release_manifest["source_commit"], "unavailable")
             self.assertEqual(release_manifest["source_branch"], "unavailable")

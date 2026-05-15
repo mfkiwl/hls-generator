@@ -41,42 +41,64 @@ class RemoteVitisAcceptanceTests(unittest.TestCase):
     def test_select_vitis_profile_blocks_when_multiple_versions_need_choice(self) -> None:
         args = argparse.Namespace(
             server="server-a",
-            profile="vitis_2022",
+            profile="configured_profile",
             readiness="cosim",
             example_spec="hls_vector_scale_mock_spec.json",
             vitis_version=None,
         )
         candidates = [
-            {"version": "2022.1", "settings_script": "/tools/Xilinx/Vitis/2022.1/settings64.sh", "expected_tool": "vitis_hls"},
-            {"version": "2022.2", "settings_script": "/tools/Xilinx/Vitis/2022.2/settings64.sh", "expected_tool": "vitis_hls"},
+            {"version": "2022.1", "settings_script": "/user/configured/vitis-2022.1/settings64.sh", "expected_tool": "vitis_hls"},
+            {"version": "2022.2", "settings_script": "/user/configured/vitis-2022.2/settings64.sh", "expected_tool": "vitis_hls"},
         ]
         with tempfile.TemporaryDirectory() as tmp:
             run_dir = Path(tmp)
             with patch.object(self.module, "get_vitis_selection", return_value=None):
-                result = self.module._select_vitis_profile(args, run_dir, candidates, {"settings_script": "/fallback/settings64.sh", "expected_tool": "vitis_hls"})
+                result = self.module._select_vitis_profile(args, run_dir, candidates, {"settings_script": "/user/configured/fallback/settings64.sh", "expected_tool": "vitis_hls"})
             self.assertTrue(Path(result["remote_vitis_version_request"]).exists())
 
         self.assertEqual(result["status"], self.module.BLOCKED_VERSION_STATUS)
         self.assertEqual(len(result["candidate_versions"]), 2)
 
+    def test_resolve_profile_config_blocks_when_user_must_provide_settings(self) -> None:
+        args = argparse.Namespace(
+            server="server-a",
+            profile=None,
+            readiness="cosim",
+            example_spec="hls_vector_scale_mock_spec.json",
+            vitis_version=None,
+        )
+        with tempfile.TemporaryDirectory() as tmp:
+            run_dir = Path(tmp)
+            with patch.object(self.module, "get_vitis_selection", return_value=None):
+                result = self.module._resolve_profile_config(
+                    args,
+                    run_dir,
+                    candidates=[],
+                    configured_profiles={},
+                    required_fields=("settings_script", "expected_tool", "target_part"),
+                )
+
+        self.assertEqual(result["status"], self.module.BLOCKED_PROFILE_STATUS)
+        self.assertEqual(result["missing_fields"], ["settings_script", "expected_tool", "target_part"])
+
     def test_select_vitis_profile_persists_explicit_version(self) -> None:
         args = argparse.Namespace(
             server="server-a",
-            profile="vitis_2022",
+            profile="configured_profile",
             readiness="cosim",
             example_spec="hls_vector_scale_mock_spec.json",
             vitis_version="2022.2",
         )
         candidate = {
             "version": "2022.2",
-            "settings_script": "/tools/Xilinx/Vitis/2022.2/settings64.sh",
+            "settings_script": "/user/configured/settings64.sh",
             "expected_tool": "vitis_hls",
-            "target_part": "xcu50-fsvh2104-2-e",
+            "target_part": "user-configured-part",
         }
         with tempfile.TemporaryDirectory() as tmp:
             run_dir = Path(tmp)
             with patch.object(self.module, "set_vitis_selection") as set_selection:
-                result = self.module._select_vitis_profile(args, run_dir, [candidate], {"settings_script": "/fallback/settings64.sh", "expected_tool": "vitis_hls"})
+                result = self.module._select_vitis_profile(args, run_dir, [candidate], {"settings_script": "/user/configured/fallback/settings64.sh", "expected_tool": "vitis_hls"})
 
         self.assertEqual(result["version"], "2022.2")
         set_selection.assert_called_once()

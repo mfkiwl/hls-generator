@@ -17,6 +17,7 @@ SKILL_ROOT = Path(__file__).resolve().parents[1]
 if str(SKILL_ROOT) not in sys.path:
     sys.path.insert(0, str(SKILL_ROOT))
 
+from runtime.hls_generator import __version__  # noqa: E402
 from integration.hls_adapter import run_hls_workflow, validate_hls_artifacts  # noqa: E402
 from runtime.hls_generator.config import generated_roots, skill_config_path, skill_dependencies_config  # noqa: E402
 from runtime.hls_generator.skill_dependencies import check_skill_dependencies  # noqa: E402
@@ -30,6 +31,12 @@ COPYRIGHT_TERM_PARTS = (
 )
 TEXT_SCAN_EXTENSIONS = {".md", ".py", ".json", ".yaml", ".yml", ".txt"}
 SKIP_SCAN_DIRS = {".git", "__pycache__", ".pytest_cache", "reports", *generated_roots()}
+RELEASE_SENSITIVITY_PATTERNS = (
+    re.compile(re.escape("/" + "tools" + "/Xilinx/"), re.IGNORECASE),
+    re.compile(re.escape(r"C:" + "\\" + "Users" + "\\"), re.IGNORECASE),
+    re.compile(re.escape("server_list" + ".local" + ".json"), re.IGNORECASE),
+    re.compile(re.escape("xcu50" + "-fsvh2104-2-e"), re.IGNORECASE),
+)
 
 
 def repo_root() -> Path:
@@ -64,6 +71,7 @@ def main(argv: list[str] | None = None) -> int:
         gates["quick_validate"] = _run_command([sys.executable, str(_quick_validate_path()), str(SKILL_ROOT)], cwd=SKILL_ROOT)
     gates["skill_dependencies"] = _skill_dependency_gate()
     gates["copyright_term_scan"] = _copyright_term_scan()
+    gates["release_sensitivity_scan"] = _release_sensitivity_scan()
     gates["forbidden_reference_names"] = _forbidden_reference_name_scan()
     if gates["skill_dependencies"]["status"] == "passed":
         examples_gate, example_specs = _validate_examples(run_root)
@@ -172,6 +180,35 @@ def _forbidden_reference_name_scan() -> dict[str, Any]:
     }
 
 
+def _release_sensitivity_scan(*, root: Path | None = None) -> dict[str, Any]:
+    scan_root = (root or SKILL_ROOT).resolve()
+    roots = [scan_root]
+    if root is None:
+        release_dir = repo_root() / "dist" / f"erie-hls-generator-v{__version__}"
+        if release_dir.exists():
+            roots.append(release_dir)
+    matches: list[str] = []
+    for active_root in roots:
+        for path in [active_root, *active_root.rglob("*")]:
+            if path != active_root and any(part in SKIP_SCAN_DIRS for part in path.relative_to(active_root).parts):
+                continue
+            rel_path = path.relative_to(active_root).as_posix() if path != active_root else "."
+            for pattern in RELEASE_SENSITIVITY_PATTERNS:
+                if pattern.search(rel_path):
+                    matches.append(f"path:{active_root.name}:{rel_path}:{pattern.pattern}")
+            if not path.is_file() or path.suffix.lower() not in TEXT_SCAN_EXTENSIONS:
+                continue
+            text = path.read_text(encoding="utf-8", errors="replace")
+            for pattern in RELEASE_SENSITIVITY_PATTERNS:
+                if pattern.search(text):
+                    matches.append(f"content:{active_root.name}:{rel_path}:{pattern.pattern}")
+    return {
+        "status": "passed" if not matches else "failed",
+        "roots": [str(item) for item in roots],
+        "matches": matches,
+    }
+
+
 def _relative_match_path(line: str) -> str:
     path_text = line.split(":", 1)[0].replace("\\", "/")
     if path_text.startswith("./"):
@@ -248,21 +285,19 @@ def _run_remote_acceptance(server: str, readiness: str, example_specs: list[str]
 def _run_remote(server: str, readiness: str, spec_name: str) -> dict[str, Any]:
     payload = _run_remote_command(
         [
-        sys.executable,
-        "scripts/remote_vitis_acceptance.py",
-        "--mode",
-        "vitis",
-        "--server",
-        server,
-        "--profile",
-        "vitis_2022",
-        "--readiness",
-        readiness,
-        "--example-spec",
-        spec_name,
-        "--comment-language",
-        "zh",
-        "--json",
+            sys.executable,
+            "scripts/remote_vitis_acceptance.py",
+            "--mode",
+            "vitis",
+            "--server",
+            server,
+            "--readiness",
+            readiness,
+            "--example-spec",
+            spec_name,
+            "--comment-language",
+            "zh",
+            "--json",
         ]
     )
     payload["example_spec"] = spec_name
