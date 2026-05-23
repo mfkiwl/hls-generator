@@ -1,5 +1,13 @@
 # Runtime Configuration
 
+## Contents
+
+- [Path Policy](#path-policy)
+- [Vitis Tool Policy](#vitis-tool-policy)
+- [Skill Dependency Policy](#skill-dependency-policy)
+- [Remote Validation Policy](#remote-validation-policy)
+- [Inspection](#inspection)
+
 The runtime configuration lives at `runtime/hls_generator/runtime_config.json`.
 Keep this file inside the skill root. To test an alternate config, set
 `HLS_GENERATOR_RUNTIME_CONFIG` to another JSON file under this same skill root.
@@ -112,8 +120,20 @@ credentials into this skill. Server ids and names must come from the
   list, check, workspace-check, exec, and request execution.
 - `local_run_root` is the generated local report root for remote validation
   plans, overlays, requests, and reports.
-- `remote_tmp_dir` is a relative directory under the selected erie server's
-  configured `workdir`.
+- `directory_contract.project_root_dirname` is the governed remote project root
+  relative to the selected erie server workdir. The default is
+  `erie-hls-generator`.
+- `directory_contract.conda_prefix_path` is the project-local prefix conda
+  environment path relative to that governed project root. The default is
+  `.conda/hls-generator`.
+- `directory_contract.platform_root_path_template` is the governed remote root
+  for user-supplied board platform payloads. The default is
+  `platforms/alveo/<platform-name>`.
+- `directory_contract.active_run_path_template` and
+  `directory_contract.backup_run_path_template` define the active and archived
+  run layout. The defaults are `runs/<run-id>` and `backups/<run-id>`.
+- `directory_contract.archive_trigger` records when a verified run must move
+  from the active run area into `backups/`.
 - `python_env` must force UTF-8 output on Windows callers.
 - `vitis_profiles` optionally stores user-configured remote Vitis profiles by
   name. The shipped skill may leave this object empty; in that case remote
@@ -138,13 +158,29 @@ Rerun with `--vitis-version <version>` to save and use that version. The user
 config stores only the selected version, settings script, expected tool,
 target part, and timestamp.
 
+Board mode also uses `~/.hls-generator/config.json` when the user provides an
+explicit uploaded platform payload. The user config stores
+`board_platform_selection.<server>.platform_name`,
+`board_platform_selection.<server>.remote_platform_root`,
+`board_platform_selection.<server>.remote_xpfm`, and
+`board_platform_selection.<server>.source`. When board mode is rerun without
+explicit board platform arguments, the saved board platform selection is used
+before governed remote-path discovery and before system-level platform scans.
+
 For Vitis mode, local HLS artifacts remain under this skill's configured
 generated root. The script transfers the small tarball through reviewed erie
 `request-command` chunks instead of copying files into the erie skill's own
-project root for `request-upload`. Successful Vitis mode runs keep the remote
-directory by default and write `remote_dir` to `result.json`; the path is
-relative to the selected erie server workdir. Use `--cleanup-remote` only for
-explicit cleanup runs.
+project root for `request-upload`. Successful Vitis mode runs must stage work
+under the governed project root, keep the project-local conda prefix under
+that root, and archive verified run directories into `backups/<run-id>`. The
+JSON result records both active and archived relative paths plus the retained
+`remote_dir`.
+
+For board mode, a user-provided U55C platform payload must live under the
+governed remote platform root and not under `/tools/Xilinx` by default. The
+preferred shape is an uploaded extracted directory such as
+`erie-hls-generator/platforms/alveo/xilinx_u55c_gen3x16_xdma_3_202210_1/`
+containing the matching `.xpfm`.
 
 ## Inspection
 

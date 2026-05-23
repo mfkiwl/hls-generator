@@ -35,9 +35,24 @@
   "interfaces": {
     "top_function": "streamofblocks_axis_increment_kernel",
     "arguments": [
-      {"name": "in_stream", "type": "hls::stream<ap_uint<32> >&", "direction": "input", "interface": "axis"},
-      {"name": "out_stream", "type": "hls::stream<ap_uint<32> >&", "direction": "output", "interface": "axis"},
-      {"name": "length", "type": "int", "direction": "input", "interface": "s_axilite"}
+      {
+        "name": "in_stream",
+        "type": "hls::stream<ap_uint<32> >&",
+        "direction": "input",
+        "interface": "axis"
+      },
+      {
+        "name": "out_stream",
+        "type": "hls::stream<ap_uint<32> >&",
+        "direction": "output",
+        "interface": "axis"
+      },
+      {
+        "name": "length",
+        "type": "int",
+        "direction": "input",
+        "interface": "s_axilite"
+      }
     ],
     "control": "s_axilite"
   },
@@ -46,36 +61,75 @@
     "Keep block ownership explicit in comments and helper names.",
     "Emit one incremented output token for each input token."
   ],
-  "clock": {"period_ns": 8.0, "uncertainty_ns": 0.8},
-  "reset": {"strategy": "tool_default"},
+  "clock": {
+    "period_ns": 8.0,
+    "uncertainty_ns": 0.8
+  },
+  "reset": {
+    "strategy": "tool_default"
+  },
   "constraints": [
     "Use block-stream metadata only when block size and ownership are explicit.",
     "Avoid hidden state sharing across block-processing stages."
   ],
   "outputs": [
-    {"path": "src/streamofblocks_axis_increment_kernel.h", "kind": "header", "language": "cpp"},
-    {"path": "src/streamofblocks_axis_increment_kernel.cpp", "kind": "source", "language": "cpp"},
-    {"path": "tb/streamofblocks_axis_increment_kernel_tb.cpp", "kind": "testbench", "language": "cpp"},
-    {"path": "hls_config.cfg", "kind": "config", "language": "ini"}
+    {
+      "path": "src/streamofblocks_axis_increment_kernel.h",
+      "kind": "header",
+      "language": "cpp"
+    },
+    {
+      "path": "src/streamofblocks_axis_increment_kernel.cpp",
+      "kind": "source",
+      "language": "cpp"
+    },
+    {
+      "path": "tb/streamofblocks_axis_increment_kernel_tb.cpp",
+      "kind": "testbench",
+      "language": "cpp"
+    },
+    {
+      "path": "hls_config.cfg",
+      "kind": "config",
+      "language": "ini"
+    }
   ],
   "notes": [],
   "subfunctions": [],
-  "workflow": {},
+  "workflow": {
+    "board_acceptance": {
+      "profile": "not_board_runnable",
+      "reason": "Stream-of-blocks sample requires a block-stream host harness beyond the generic board scaffold."
+    }
+  },
   "performance": {
     "target_ii": 1,
     "block_size": 4
   },
   "hls_profile": {
     "example_pattern": "streamofblocks",
-    "allowed_libraries": ["ap_int.h", "hls_stream.h", "hls_streamofblocks.h"],
-    "required_headers": ["hls_streamofblocks.h"],
-    "required_pragmas": ["#pragma HLS DATAFLOW"],
-    "required_metadata_fields": ["block_size", "block_ownership"],
+    "allowed_libraries": [
+      "ap_int.h",
+      "hls_stream.h",
+      "hls_streamofblocks.h"
+    ],
+    "required_headers": [
+      "hls_streamofblocks.h"
+    ],
+    "required_pragmas": [
+      "#pragma HLS DATAFLOW"
+    ],
+    "required_metadata_fields": [
+      "block_size",
+      "block_ownership"
+    ],
     "metadata": {
       "block_size": 4,
       "block_ownership": "reader owns input blocks; writer owns output blocks"
     },
     "forbidden_combinations": [],
-    "required_cfg_entries": ["clock=8.0"]
+    "required_cfg_entries": [
+      "clock=8.0"
+    ]
   }
 }

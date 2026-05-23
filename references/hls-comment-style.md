@@ -12,16 +12,33 @@ policy for generated C/C++ comments.
   `~/.hls-generator/config.json`. If no value is configured, ask the user to
   choose `en` or `zh` before generation.
 
-## Required Coverage
+## Required Typed Placement
 
-Generated HLS C/C++ should comment hardware intent at these points:
+Generated HLS C/C++ must satisfy typed comment placement. The validator checks
+the structure being commented, not just the presence of `//`. Generic,
+misplaced, or type-mismatched comments are blocking errors.
 
-- Top function role and hardware boundary.
-- Every external argument's protocol, direction, and bundle/control role.
-- Each `#pragma HLS` directive and why it is safe for the access pattern.
-- Key loops, including pipeline/dataflow intent and boundary behavior.
-- Local buffers, especially partitioned, streamed, or memory-mapped buffers.
-- Testbench case setup, expected checks, and PASS/FAIL reporting.
+- File header: every `.h`, `.hpp`, `.cpp`, `.cc`, and `.cxx` file starts with a
+  short comment describing the file role. This does not replace local comments.
+- Functions and methods: place the contract comment on the immediately
+  preceding comment-only line. Explain top role, hardware boundary, interface
+  summary, or testbench entrypoint.
+- Includes, macros, and `#pragma HLS`: use same-line intent comments. Explain
+  dependency purpose, compile-time contract, or synthesis/interface safety.
+- Types: place struct/class/typedef/using/enum contract comments immediately
+  before the definition. Field comments may stay same-line for width,
+  direction, or protocol role.
+- Local variables, loops, assignments, and functional steps: use a block-leading
+  comment for the step and same-line comments for critical writes, boundary
+  checks, or protocol conversions.
+- Testbenches: comment `main()`, case setup, expected values, kernel calls, and
+  PASS/FAIL reporting with the same typed placement policy.
+- Trivial lines: do not force comments onto plain braces, ordinary closing
+  lines, or simple `return` statements.
+
+The comments should preserve hardware intent at these points: top function
+role and hardware boundary, every external argument's protocol/direction/bundle
+role, each HLS pragma, key loops, local buffers, and testbench checks.
 
 ## Style Rules
 
@@ -29,5 +46,6 @@ Generated HLS C/C++ should comment hardware intent at these points:
 - Use `/* ... */` only for a file header or a multi-line hardware constraint.
 - Explain why the hardware structure exists; do not restate the next C token.
 - Keep comments consistent with generated code and the confirmed HLS spec.
-- Do not add commented-out old code, TODO/FIXME placeholders, or line-by-line
-  noise comments.
+- Do not add filler comments such as "generic generated line", commented-out old
+  code, TODO/FIXME placeholders, contradictory comments, misplaced top-function
+  notes, or forced translations of protocol/tool names.

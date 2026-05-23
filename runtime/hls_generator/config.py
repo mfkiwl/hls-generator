@@ -240,6 +240,7 @@ def remote_validation_config() -> dict[str, Any]:
     for name, profile in profiles.items():
         if not str(name).strip() or not isinstance(profile, dict):
             raise ValueError("Each remote Vitis profile must be a named JSON object.")
+    config["directory_contract"] = _remote_directory_contract(config)
     return config
 
 
@@ -358,3 +359,55 @@ def _remote_positive_int(value: Any, key: str) -> int:
     if parsed < 1:
         raise ValueError(f"Runtime config remote_validation.{key} must be a positive integer.")
     return parsed
+
+
+def _remote_directory_contract(config: dict[str, Any]) -> dict[str, Any]:
+    raw = config.get("directory_contract", {})
+    if not isinstance(raw, dict):
+        raise ValueError("Runtime config remote_validation.directory_contract must be a JSON object.")
+    project_root_dirname = _remote_top_level_name(str(raw.get("project_root_dirname") or "").strip(), "directory_contract.project_root_dirname")
+    conda_prefix_path = _remote_relative_path(str(raw.get("conda_prefix_path") or "").strip(), "directory_contract.conda_prefix_path")
+    active_run_path_template = _remote_relative_path(
+        str(raw.get("active_run_path_template") or "").strip(),
+        "directory_contract.active_run_path_template",
+        require_run_id=True,
+    )
+    backup_run_path_template = _remote_relative_path(
+        str(raw.get("backup_run_path_template") or "").strip(),
+        "directory_contract.backup_run_path_template",
+        require_run_id=True,
+    )
+    platform_root_path_template = _remote_relative_path(
+        str(raw.get("platform_root_path_template") or "").strip(),
+        "directory_contract.platform_root_path_template",
+        require_platform_name=True,
+    )
+    archive_after_verification = raw.get("archive_after_verification")
+    if not isinstance(archive_after_verification, bool):
+        raise ValueError("Runtime config remote_validation.directory_contract.archive_after_verification must be a boolean.")
+    archive_trigger = str(raw.get("archive_trigger") or "").strip()
+    if not archive_trigger:
+        raise ValueError("Runtime config remote_validation.directory_contract.archive_trigger must be set.")
+    return {
+        "project_root_dirname": project_root_dirname,
+        "conda_prefix_path": conda_prefix_path,
+        "active_run_path_template": active_run_path_template,
+        "backup_run_path_template": backup_run_path_template,
+        "platform_root_path_template": platform_root_path_template,
+        "archive_after_verification": archive_after_verification,
+        "archive_trigger": archive_trigger,
+    }
+
+
+def _remote_relative_path(value: str, key: str, *, require_run_id: bool = False, require_platform_name: bool = False) -> str:
+    normalized = value.replace("\\", "/").strip()
+    if not normalized:
+        raise ValueError(f"Runtime config remote_validation.{key} must be set.")
+    path = Path(normalized)
+    if path.is_absolute() or normalized.startswith("~/") or any(part in {"", ".", ".."} for part in path.parts):
+        raise ValueError(f"Runtime config remote_validation.{key} must be a relative POSIX path.")
+    if require_run_id and "<run-id>" not in normalized:
+        raise ValueError(f"Runtime config remote_validation.{key} must include <run-id>.")
+    if require_platform_name and "<platform-name>" not in normalized:
+        raise ValueError(f"Runtime config remote_validation.{key} must include <platform-name>.")
+    return normalized

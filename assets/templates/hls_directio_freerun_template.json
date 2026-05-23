@@ -35,36 +35,90 @@
   "interfaces": {
     "top_function": "template_directio_freerun_kernel",
     "arguments": [
-      {"name": "in_stream", "type": "hls::stream<ap_uint<32> >&", "direction": "input", "interface": "axis"},
-      {"name": "out_stream", "type": "hls::stream<ap_uint<32> >&", "direction": "output", "interface": "axis"}
+      {
+        "name": "in_stream",
+        "type": "hls::stream<ap_uint<32> >&",
+        "direction": "input",
+        "interface": "axis"
+      },
+      {
+        "name": "out_stream",
+        "type": "hls::stream<ap_uint<32> >&",
+        "direction": "output",
+        "interface": "axis"
+      }
     ],
     "control": "ap_ctrl_none"
   },
-  "behavior": ["Replace these sample semantics with the confirmed free-running behavior."],
-  "clock": {"period_ns": 8.0, "uncertainty_ns": 0.8},
-  "reset": {"strategy": "tool_default"},
-  "constraints": ["Only use hls_directio.h when the free-running control surface is explicit and the target toolchain actually provides it."],
+  "behavior": [
+    "Replace these sample semantics with the confirmed free-running behavior."
+  ],
+  "clock": {
+    "period_ns": 8.0,
+    "uncertainty_ns": 0.8
+  },
+  "reset": {
+    "strategy": "tool_default"
+  },
+  "constraints": [
+    "Only use hls_directio.h when the free-running control surface is explicit and the target toolchain actually provides it."
+  ],
   "outputs": [
-    {"path": "src/template_directio_freerun_kernel.h", "kind": "header", "language": "cpp"},
-    {"path": "src/template_directio_freerun_kernel.cpp", "kind": "source", "language": "cpp"},
-    {"path": "tb/template_directio_freerun_kernel_tb.cpp", "kind": "testbench", "language": "cpp"},
-    {"path": "hls_config.cfg", "kind": "config", "language": "ini"}
+    {
+      "path": "src/template_directio_freerun_kernel.h",
+      "kind": "header",
+      "language": "cpp"
+    },
+    {
+      "path": "src/template_directio_freerun_kernel.cpp",
+      "kind": "source",
+      "language": "cpp"
+    },
+    {
+      "path": "tb/template_directio_freerun_kernel_tb.cpp",
+      "kind": "testbench",
+      "language": "cpp"
+    },
+    {
+      "path": "hls_config.cfg",
+      "kind": "config",
+      "language": "ini"
+    }
   ],
   "notes": [],
   "subfunctions": [],
-  "workflow": {},
-  "performance": {"target_ii": 1},
+  "workflow": {
+    "board_acceptance": {
+      "profile": "not_board_runnable",
+      "reason": "Template requires a dedicated free-running direct-I/O host harness."
+    }
+  },
+  "performance": {
+    "target_ii": 1
+  },
   "hls_profile": {
     "example_pattern": "directio_freerun",
-    "allowed_libraries": ["ap_int.h", "hls_stream.h"],
+    "allowed_libraries": [
+      "ap_int.h",
+      "hls_stream.h"
+    ],
     "required_headers": [],
-    "required_pragmas": ["#pragma HLS INTERFACE ap_ctrl_none port=return", "#pragma HLS INTERFACE axis port=in_stream", "#pragma HLS INTERFACE axis port=out_stream"],
-    "required_metadata_fields": ["free_running", "control_protocol"],
+    "required_pragmas": [
+      "#pragma HLS INTERFACE ap_ctrl_none port=return",
+      "#pragma HLS INTERFACE axis port=in_stream",
+      "#pragma HLS INTERFACE axis port=out_stream"
+    ],
+    "required_metadata_fields": [
+      "free_running",
+      "control_protocol"
+    ],
     "metadata": {
       "free_running": true,
       "control_protocol": "ap_ctrl_none"
     },
     "forbidden_combinations": [],
-    "required_cfg_entries": ["clock=8.0"]
+    "required_cfg_entries": [
+      "clock=8.0"
+    ]
   }
 }

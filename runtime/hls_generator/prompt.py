@@ -233,9 +233,11 @@ def _hls_rules(spec: dict[str, Any], comment_language: str, hls_profile: dict[st
         "Add PIPELINE, DATAFLOW, ARRAY_PARTITION, ARRAY_RESHAPE, UNROLL, or STREAM pragmas only when justified by loop structure, memory access pattern, or explicit performance evidence.",
         "Use report-driven reasoning: target II, achieved II, loop interval, load/store bottlenecks, timing slack, interface bandwidth, and resource growth should explain each optimization choice.",
         "When pipelining an outer loop, account for implied inner-loop concurrency; if the bottleneck is parallel memory access, choose partition, reshape, or banking based on the accessed dimension.",
+        "Keep compile/link boundaries conceptually clear: generated HLS source should express kernel behavior and interface intent without absorbing host or package-stage orchestration.",
         "For variable-bound loops, keep the control structure honest: require a justified maximum bound before aggressive unroll or complete banking, and use tripcount guidance only as reporting support.",
         "Treat pointer aliasing, template expansion, and vector-style packed operations as modeling choices that must preserve explicit interface intent and testability.",
         "Place #pragma HLS directives at the function or loop scope they control, keep dataflow regions free of global-state coupling and recursion, and do not combine array_partition and array_reshape on the same variable.",
+        "Prefer concentrating dense pragma usage in a small number of hotspot helper/source files instead of spreading complex directives uniformly across every file in a multi-module kernel layout.",
         "For DATAFLOW designs, split read/compute/write stages with clear hls::stream FIFO boundaries and explicit stream depth when producer and consumer rates can differ.",
         "Distinguish control-driven orchestration from data-driven task graphs; only introduce task-level parallel structure when restart behavior, channel ownership, and stage boundaries are explicit.",
         "For fixed-point or floating-point designs, document the range/precision tradeoff and explicitly decide whether unsafe_math_optimizations is allowed.",
@@ -386,10 +388,18 @@ def _comment_rules_for(comment_language: str) -> list[str]:
         language_rule = "Use English comments only."
     return [
         language_rule,
+        "Use typed comment placement, not line-count padding: key HLS structures must have comments at the required position with matching hardware intent.",
+        "Add a short file-header comment to every generated .h/.hpp/.cpp/.cc/.cxx file; it describes the file role and does not replace local comments.",
+        "Place function and method contract comments on the immediately preceding comment-only line; explain the hardware boundary, top role, interface summary, or testbench entrypoint.",
+        "Place include, macro, and #pragma HLS comments on the same line; explain dependency purpose, compile-time contract, or synthesis/interface intent.",
+        "Place struct/class/typedef/using/enum contract comments immediately before the definition; field comments may stay same-line when they explain width, direction, or protocol role.",
+        "For variables, loops, assignments, and functional datapath steps, use a block-leading comment for the step and same-line comments for critical writes, boundary checks, or protocol conversions.",
+        "For C++ testbenches, comment main(), case setup, expected values, kernel calls, and PASS/FAIL reporting with the same typed placement policy.",
+        "Do not force comments onto plain braces, ordinary closing lines, or simple return statements.",
         "Comment hardware intent rather than restating syntax: explain the top function role, every external argument protocol, each HLS pragma, key loops, boundary conditions, local buffers, and testbench case checks.",
         "Use short // comments for C/C++ by default; use /* ... */ only for file headers or multi-line hardware constraints.",
-        "Do not add line-by-line noise comments, contradictory comments, commented-out old code, or forced translations of tool/protocol names.",
-        "Use the manifest checks.reviewability_assessment field to summarize comment coverage and limitations.",
+        "Do not add generic filler, contradictory comments, misplaced top-function comments, commented-out old code, TODO/FIXME placeholders, or forced translations of tool/protocol names.",
+        "Use the manifest checks.reviewability_assessment field to summarize typed comment placement and limitations.",
     ]
 
 

@@ -1,6 +1,6 @@
 # HLS Memory Burst And Layout Notes
 
-Source note: distilled from imported HLS memory-layout references. Keep this file generic and reusable.
+Source note: keep this file generic and reusable as HLS memory-layout guidance.
 
 ## Burst Discipline
 

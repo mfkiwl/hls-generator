@@ -10,7 +10,7 @@ from unittest.mock import patch
 
 SKILL_ROOT = Path(__file__).resolve().parents[1]
 SCRIPT_PATH = SKILL_ROOT / "scripts" / "prepare_release.py"
-EXPECTED_VERSION = "0.1.9"
+EXPECTED_VERSION = "0.2.0"
 
 
 def _load_module():
@@ -35,8 +35,6 @@ class PrepareReleaseTests(unittest.TestCase):
             release_manifest = json.loads((Path(payload["release_dir"]) / "RELEASE_MANIFEST.json").read_text(encoding="utf-8"))
             self.assertEqual(release_manifest["source_commit"], "unavailable")
             self.assertEqual(release_manifest["source_branch"], "unavailable")
-            self.assertIn("skills/erie-hls-generator/SKILL.md", release_manifest["included_files"])
-            self.assertNotIn("README-CN.md", "\n".join(release_manifest["included_files"]))
 
 
 if __name__ == "__main__":

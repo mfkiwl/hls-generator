@@ -1,6 +1,6 @@
 # HLS Modeling Strategy Notes
 
-Source note: distilled from imported starter HLS examples and converted into stable skill guidance. Keep this file concise and reusable.
+Source note: keep this file concise and reusable as stable HLS modeling guidance.
 
 ## Variable-Bound Loops
 

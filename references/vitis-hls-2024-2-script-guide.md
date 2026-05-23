@@ -1,6 +1,17 @@
 # Vitis HLS 2022.2+ Script Guide
 
-This reference distills imported Vitis HLS scripting notes into stable rules for this HLS-only skill. Load it when changing Vitis command execution, `.cfg` parsing, Tcl rendering, prompt rules, or validation policy.
+This reference records stable Vitis HLS scripting rules for this HLS-only skill. Load it when changing Vitis command execution, `.cfg` parsing, Tcl rendering, prompt rules, or validation policy.
+
+## Contents
+
+- [Supported Script Surfaces](#supported-script-surfaces)
+- [Tcl Command Pattern](#tcl-command-pattern)
+- [Accepted Config Keys](#accepted-config-keys)
+- [Pragma And Interface Rules](#pragma-and-interface-rules)
+- [Forbidden Or Deprecated Features](#forbidden-or-deprecated-features)
+- [Out-of-Scope Script Surfaces](#out-of-scope-script-surfaces)
+- [Migration Surface Policy](#migration-surface-policy)
+- [Common Diagnostics](#common-diagnostics)
 
 ## Supported Script Surfaces
 

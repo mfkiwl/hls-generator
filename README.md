@@ -11,7 +11,7 @@
 <p align="center">
   <a href="LICENSE"><img alt="License" src="https://img.shields.io/badge/license-Apache--2.0-1f6feb"></a>
   <a href="pyproject.toml"><img alt="Python" src="https://img.shields.io/badge/python-3.10%2B-2f81f7"></a>
-  <img alt="Version" src="https://img.shields.io/badge/version-v0.1.9-7c3aed">
+  <img alt="Version" src="https://img.shields.io/badge/version-v0.2.0-7c3aed">
   <a href="SKILL.md"><img alt="Agent Skill" src="https://img.shields.io/badge/agent-skill-16a34a"></a>
   <a href="references/vitis-hls-2024-2-script-guide.md"><img alt="Target" src="https://img.shields.io/badge/target-Vitis%20HLS-f59e0b"></a>
 </p>
@@ -50,6 +50,12 @@ Use it when an agent needs to work on:
   <img src="docs/assets/workflow.svg" alt="HLS Generator workflow" width="100%">
 </p>
 
+## What's New In v0.2.0
+
+- Adds board-acceptance support, validation-board host templates, and remote board/platform upload guidance for stronger end-to-end validation flows.
+- Expands reusable examples and templates with 2D block transform, host-kernel split, minimal Vitis pipeline, array partition/reshape, fixed-point, and multi-`m_axi` coverage.
+- Introduces comment-policy, route-contract, and remote-directory helpers plus repo-local validation scripts to tighten release and runtime governance.
+
 ## Repository Map
 
 | Path | Purpose |
@@ -59,7 +65,22 @@ Use it when an agent needs to work on:
 | `runtime/hls_generator/` | Deterministic scaffolding, prompt rendering, extraction, validation, reports, and workflow state. |
 | `integration/hls_adapter.py` | Stable host-facing facade for workflow, prompt, and validation calls. |
 | `assets/examples/` | Reusable structured HLS specs for stream, memory, dataflow, partition, reshape, fixed-point, and multi-`m_axi` cases. |
+| `assets/validation-board/` | Board-side host templates and payload helpers for remote validation runs. |
 | `references/` | Vitis HLS policies, configuration rules, workflow contracts, integration notes, and comment style guidance. |
+
+## Install
+
+Tell your AI assistant: install https://github.com/Eriemon/hls-generator
+
+Manual setup:
+
+```powershell
+git clone https://github.com/Eriemon/hls-generator.git
+cd .\hls-generator
+python -m pip install -e .
+```
+
+For Codex skill usage, place this repository in the host's skill search path and restart the host after installation.
 
 ## Quick Start
 
@@ -126,8 +147,8 @@ If this skill helps your research, teaching, or engineering workflow, please cit
   author       = {Jiyuan Liu and He Li},
   title        = {{HLS Generator}: An Agent Skill for Vitis HLS Workflows},
   year         = {2026},
-  version      = {0.1.9},
-  date         = {2026-05-09},
+  version      = {0.2.0},
+  date         = {2026-05-22},
   url          = {https://github.com/Eriemon/hls-generator},
   license      = {Apache-2.0},
   note         = {Agent skill package for structured AMD/Xilinx Vitis HLS workflows}

@@ -1,0 +1,150 @@
+{
+  "name": "template_dataflow_memory_kernel",
+  "target": "hls",
+  "design_requirements": {
+    "target": "hls",
+    "pipeline_required": true,
+    "streamability": "streamable",
+    "interface_family": "axi4",
+    "interface_profile": {
+      "axi4_variant": "axi4_full",
+      "role": "master",
+      "read_write_mode": "read_write",
+      "data_width": 32,
+      "addr_width": 32,
+      "id_width": 1,
+      "burst_support": false,
+      "clock_reset_domain": {
+        "clock": "i_axi_aclk",
+        "reset": "i_axi_arstn"
+      }
+    },
+    "confirmed_by_user": true,
+    "confirmation_notes": "Use DATAFLOW only after confirming stage boundaries, FIFO depth, and the need for co-simulation review."
+  },
+  "streamability": "streamable",
+  "interface_family": "axi4",
+  "interface_profile": {
+    "axi4_variant": "axi4_full",
+    "role": "master",
+    "read_write_mode": "read_write",
+    "data_width": 32,
+    "addr_width": 32,
+    "id_width": 1,
+    "burst_support": false,
+    "clock_reset_domain": {
+      "clock": "i_axi_aclk",
+      "reset": "i_axi_arstn"
+    }
+  },
+  "pipeline_required": true,
+  "codegen_plan_required": true,
+  "description": "Template for a read-compute-write DATAFLOW kernel over memory-backed inputs and outputs.",
+  "interfaces": {
+    "top_function": "template_dataflow_memory_kernel",
+    "arguments": [
+      {
+        "name": "input",
+        "type": "const ap_uint<32> *",
+        "direction": "input",
+        "interface": "m_axi",
+        "bundle": "gmem0",
+        "depth": 1024
+      },
+      {
+        "name": "output",
+        "type": "ap_uint<32> *",
+        "direction": "output",
+        "interface": "m_axi",
+        "bundle": "gmem1",
+        "depth": 1024
+      },
+      {
+        "name": "length",
+        "type": "int",
+        "direction": "input",
+        "interface": "s_axilite"
+      }
+    ],
+    "control": "s_axilite"
+  },
+  "behavior": [
+    "Replace these sample semantics with the confirmed staged DATAFLOW behavior.",
+    "Keep helper stages small and explicit so FIFO sizing remains reviewable."
+  ],
+  "clock": {
+    "period_ns": 8.0,
+    "uncertainty_ns": 0.8
+  },
+  "reset": {
+    "strategy": "tool_default"
+  },
+  "constraints": [
+    "Use hls::stream channels only where stage boundaries are explicit.",
+    "Preserve a read-compute-write structure that can be reviewed in co-simulation."
+  ],
+  "outputs": [
+    {
+      "path": "src/template_dataflow_memory_kernel.h",
+      "kind": "header",
+      "language": "cpp"
+    },
+    {
+      "path": "src/template_dataflow_memory_kernel.cpp",
+      "kind": "source",
+      "language": "cpp"
+    },
+    {
+      "path": "tb/template_dataflow_memory_kernel_tb.cpp",
+      "kind": "testbench",
+      "language": "cpp"
+    },
+    {
+      "path": "hls_config.cfg",
+      "kind": "config",
+      "language": "ini"
+    }
+  ],
+  "notes": [],
+  "subfunctions": [],
+  "workflow": {
+    "board_acceptance": {
+      "profile": "not_board_runnable",
+      "reason": "Template keeps DATAFLOW guidance but does not guarantee a shared board stream harness."
+    }
+  },
+  "performance": {
+    "target_ii": 1,
+    "max_length": 1024
+  },
+  "hls_profile": {
+    "example_pattern": "dataflow",
+    "allowed_libraries": [
+      "ap_int.h",
+      "hls_stream.h"
+    ],
+    "required_headers": [
+      "hls_stream.h"
+    ],
+    "required_pragmas": [
+      "#pragma HLS DATAFLOW",
+      "#pragma HLS STREAM variable=mid_stream depth=16"
+    ],
+    "required_metadata_fields": [
+      "stage_boundaries",
+      "channel_kind",
+      "channel_depth",
+      "cosim_required"
+    ],
+    "metadata": {
+      "stage_boundaries": "read_template_dataflow_memory_kernel -> compute_template_dataflow_memory_kernel -> write_template_dataflow_memory_kernel",
+      "channel_kind": "fifo",
+      "channel_depth": 16,
+      "cosim_required": true
+    },
+    "forbidden_combinations": [],
+    "required_cfg_entries": [
+      "clock=8.0"
+    ]
+  }
+}

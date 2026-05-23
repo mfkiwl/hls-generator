@@ -17,9 +17,10 @@ Use this skill for local AMD-Xilinx/Vitis HLS C/C++ kernel generation. The bundl
    - `validate_hls_artifacts(...)` before using generated files downstream.
 4. Require a confirmed requirement contract before generation: `pipeline_required`, `streamability`, `interface_family`, `interface_profile`, `confirmed_by_user`, and `confirmation_notes`. When throughput targets, numeric strategy, task parallelism, or device portability are in scope, confirm those constraints before code generation.
 5. Run the fixed HLS pipeline: `requirements -> codegen_plan -> tests -> python -> hls -> report_review -> remote_acceptance`.
-6. Keep final hardware-facing artifacts limited to HLS C/C++ headers, sources, C++ testbenches, `.cfg` files, and reports. Python models and vectors are validation intermediates.
-7. Validate with AMD-Xilinx tooling. The validator prefers `vitis-run` and falls back to `vitis_hls`; missing local tools block with a remote-server request so the caller can ask the user to choose an `erie-remote-ssh` server with Vitis available.
-8. For Vitis development, simulation, cosim, and debug guidance, follow `runtime_config.json` skill routing: prefer `vitis-developer` when installed, otherwise fall back to `vitis-hls-synthesis`.
+6. Treat generated HLS C/C++ typed comment placement as a hard gate: file headers, function contracts, type contracts, includes, macros, HLS pragmas, loops, datapath steps, and testbench PASS/FAIL behavior must have comments at the required position with matching hardware intent; generic or misplaced comments block validation.
+7. Keep final hardware-facing artifacts limited to HLS C/C++ headers, sources, C++ testbenches, `.cfg` files, and reports. Python models and vectors are validation intermediates.
+8. Validate with AMD-Xilinx tooling. The validator prefers `vitis-run` and falls back to `vitis_hls`; missing local tools block with a remote-server request so the caller can ask the user to choose an `erie-remote-ssh` server with Vitis available.
+9. For Vitis development, simulation, cosim, and debug guidance, follow `runtime_config.json` skill routing: prefer `vitis-developer` when installed, otherwise fall back to `vitis-hls-synthesis`.
 
 ## Local Commands
 
@@ -46,6 +47,7 @@ When local `vitis-run`/`vitis_hls` is missing, inspect the workflow's `remote_to
 python .\scripts\remote_vitis_acceptance.py --mode link --server <erie-server>
 python .\scripts\remote_vitis_acceptance.py --mode vitis --server <erie-server> --profile <configured-profile> --readiness <execute|implement|cosim>
 python .\scripts\remote_vitis_acceptance.py --mode vitis --build-server <erie-build-server> --validate-server <erie-validate-server> --vitis-version <shared-version> --readiness <execute|implement|cosim>
+python .\scripts\remote_vitis_acceptance.py --mode board --server <erie-server> --platform-name <platform-name> --remote-platform-root <remote-platform-root> --remote-xpfm <remote-xpfm> --example-spec <board-runnable-example> --comment-language <en|zh> --json
 ```
 
 Remote Vitis acceptance refreshes erie software scan data. If multiple Vitis
@@ -81,9 +83,12 @@ deleted after a successful run.
 - Load `references/hls-task-parallel-strategy.md` before changing task-level parallelism guidance, channel semantics, restart behavior, or stream/dataflow positioning.
 - Load `references/hls-stencil-reduction-gemm-patterns.md` before changing stencil/window, reduction-tree, or tiled-GEMM guidance and templates.
 - Load `references/hls-advanced-library-patterns.md` before changing hls_task, hls_streamofblocks, hls_directio, or hls_fence guidance and validation.
+- Load `references/hls-project-structure-patterns.md` before changing project structure patterns such as minimal Vitis kernel flow, host-kernel-package staging, kernel variant trees, or hotspot-file organization rules.
 - Load `references/hls-device-migration-strategy.md` before changing target-part migration guidance, QoR comparison rules, or floating-point/fixed-point portability advice.
 - Load `references/hls-library-policy.md` before changing HLS include choices, advanced HLS library usage, or generated library examples.
 - Load `references/hls-comment-style.md` before changing generated C/C++ comment language, comment coverage, or comment validation rules.
+- Load `references/remote-board-platform-upload.md` before handling uploaded remote U55C platform/xpfm payloads or when board validation is blocked on a missing platform package.
+- Load `references/hls-tutorial-derived-templates.md` before changing imported template families, 2D block-transform skeletons, or report-driven optimization cues distilled from the local reference corpus.
 - Use `assets/examples/` for minimal HLS memory, burst, stencil, reduction, tiled-GEMM, lane-packed, task-graph, stream-of-blocks, free-running, fence-ordering, stream, partition, dataflow, multi-`m_axi`, and numeric-strategy specs.
 - Use `assets/templates/` for reusable HLS JSON skeletons that already include `design_requirements`, `interface_profile`, `performance`, `hls_profile`, and confirmation notes.
 

@@ -43,10 +43,34 @@
   "interfaces": {
     "top_function": "array_reshape_vector_scale_kernel",
     "arguments": [
-      {"name": "input", "type": "const ap_uint<32> *", "direction": "input", "interface": "m_axi", "bundle": "gmem0", "depth": 1024},
-      {"name": "output", "type": "ap_uint<32> *", "direction": "output", "interface": "m_axi", "bundle": "gmem1", "depth": 1024},
-      {"name": "scale", "type": "ap_uint<16>", "direction": "input", "interface": "s_axilite"},
-      {"name": "length", "type": "int", "direction": "input", "interface": "s_axilite"}
+      {
+        "name": "input",
+        "type": "const ap_uint<32> *",
+        "direction": "input",
+        "interface": "m_axi",
+        "bundle": "gmem0",
+        "depth": 1024
+      },
+      {
+        "name": "output",
+        "type": "ap_uint<32> *",
+        "direction": "output",
+        "interface": "m_axi",
+        "bundle": "gmem1",
+        "depth": 1024
+      },
+      {
+        "name": "scale",
+        "type": "ap_uint<16>",
+        "direction": "input",
+        "interface": "s_axilite"
+      },
+      {
+        "name": "length",
+        "type": "int",
+        "direction": "input",
+        "interface": "s_axilite"
+      }
     ],
     "control": "s_axilite"
   },
@@ -55,26 +79,66 @@
     "Use a reshaped local tile buffer for adjacent element access.",
     "Do not combine ARRAY_RESHAPE and ARRAY_PARTITION on the same buffer."
   ],
-  "clock": {"period_ns": 10.0, "uncertainty_ns": 1.0},
-  "reset": {"strategy": "tool_default"},
+  "clock": {
+    "period_ns": 10.0,
+    "uncertainty_ns": 1.0
+  },
+  "reset": {
+    "strategy": "tool_default"
+  },
   "constraints": [
     "Use Vitis HLS compatible C++.",
     "Avoid dynamic allocation and recursion."
   ],
   "outputs": [
-    {"path": "src/array_reshape_vector_scale_kernel.h", "kind": "header", "language": "cpp"},
-    {"path": "src/array_reshape_vector_scale_kernel.cpp", "kind": "source", "language": "cpp"},
-    {"path": "tb/array_reshape_vector_scale_kernel_tb.cpp", "kind": "testbench", "language": "cpp"},
-    {"path": "hls_config.cfg", "kind": "config", "language": "ini"}
+    {
+      "path": "src/array_reshape_vector_scale_kernel.h",
+      "kind": "header",
+      "language": "cpp"
+    },
+    {
+      "path": "src/array_reshape_vector_scale_kernel.cpp",
+      "kind": "source",
+      "language": "cpp"
+    },
+    {
+      "path": "tb/array_reshape_vector_scale_kernel_tb.cpp",
+      "kind": "testbench",
+      "language": "cpp"
+    },
+    {
+      "path": "hls_config.cfg",
+      "kind": "config",
+      "language": "ini"
+    }
   ],
   "notes": [],
   "subfunctions": [],
-  "workflow": {},
+  "workflow": {
+    "board_acceptance": {
+      "profile": "u55c_m_axi_host",
+      "host_template": "vector_scale_host"
+    }
+  },
   "performance": {
     "target_ii": 1,
     "max_length": 1024
   },
   "hls_profile": {
-    "example_pattern": "array_reshape"
+    "example_pattern": "array_reshape",
+    "required_metadata_fields": [
+      "target_buffer",
+      "reshape_dim",
+      "reshape_type",
+      "adjacent_access_reason",
+      "bandwidth_bottleneck"
+    ],
+    "metadata": {
+      "target_buffer": "wide_buf",
+      "reshape_dim": 1,
+      "reshape_type": "complete",
+      "adjacent_access_reason": "Adjacent tile elements are consumed together inside the unrolled inner region.",
+      "bandwidth_bottleneck": "Schedule-viewer evidence points to a load bottleneck on the widened local buffer path."
+    }
   }
 }

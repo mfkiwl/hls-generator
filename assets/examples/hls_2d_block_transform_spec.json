@@ -1,0 +1,359 @@
+{
+  "name": "block_transform_2d",
+  "target": "hls",
+  "design_requirements": {
+    "target": "hls",
+    "pipeline_required": true,
+    "streamability": "streamable",
+    "interface_family": "axi4",
+    "interface_profile": {
+      "axi4_variant": "axi4_full",
+      "role": "master",
+      "read_write_mode": "read_write",
+      "data_width": 32,
+      "addr_width": 32,
+      "id_width": 1,
+      "burst_support": false,
+      "clock_reset_domain": {
+        "clock": "i_axi_aclk",
+        "reset": "i_axi_arstn"
+      }
+    },
+    "confirmed_by_user": true,
+    "confirmation_notes": "Use a DCT-like 2D block transform skeleton with explicit read, row, reorder, column, and write stages."
+  },
+  "streamability": "streamable",
+  "interface_family": "axi4",
+  "interface_profile": {
+    "axi4_variant": "axi4_full",
+    "role": "master",
+    "read_write_mode": "read_write",
+    "data_width": 32,
+    "addr_width": 32,
+    "id_width": 1,
+    "burst_support": false,
+    "clock_reset_domain": {
+      "clock": "i_axi_aclk",
+      "reset": "i_axi_arstn"
+    }
+  },
+  "pipeline_required": true,
+  "codegen_plan_required": true,
+  "description": "Apply a reusable 2D block-transform skeleton over flat memory-backed input and output buffers.",
+  "interfaces": {
+    "top_function": "block_transform_2d_kernel",
+    "arguments": [
+      {
+        "name": "input",
+        "type": "const ap_uint<32> *",
+        "direction": "input",
+        "interface": "m_axi",
+        "bundle": "gmem0",
+        "depth": 1024
+      },
+      {
+        "name": "output",
+        "type": "ap_uint<32> *",
+        "direction": "output",
+        "interface": "m_axi",
+        "bundle": "gmem1",
+        "depth": 1024
+      },
+      {
+        "name": "rows",
+        "type": "int",
+        "direction": "input",
+        "interface": "s_axilite"
+      },
+      {
+        "name": "cols",
+        "type": "int",
+        "direction": "input",
+        "interface": "s_axilite"
+      }
+    ],
+    "control": "s_axilite"
+  },
+  "behavior": [
+    "Treat the flat input buffer as a sequence of 2D blocks described by rows and cols.",
+    "Use explicit read_block, row_pass, transpose_or_reorder, col_pass, and write_block stages.",
+    "Keep the dataflow structure reviewable in C/RTL co-simulation and FIFO sizing analysis."
+  ],
+  "clock": {
+    "period_ns": 8.0,
+    "uncertainty_ns": 0.8
+  },
+  "reset": {
+    "strategy": "tool_default"
+  },
+  "constraints": [
+    "Use Vitis HLS compatible C++.",
+    "Keep the 2D block transform skeleton generic rather than hard-coding DCT constants.",
+    "Preserve explicit stage boundaries and named FIFOs."
+  ],
+  "outputs": [
+    {
+      "path": "src/block_transform_2d_kernel.h",
+      "kind": "header",
+      "language": "cpp"
+    },
+    {
+      "path": "src/block_transform_2d_kernel.cpp",
+      "kind": "source",
+      "language": "cpp"
+    },
+    {
+      "path": "tb/block_transform_2d_kernel_tb.cpp",
+      "kind": "testbench",
+      "language": "cpp"
+    },
+    {
+      "path": "hls_config.cfg",
+      "kind": "config",
+      "language": "ini"
+    }
+  ],
+  "notes": [
+    "Use a reusable 2D transform structure, not a fixed algorithm body."
+  ],
+  "subfunctions": [
+    {
+      "name": "read_block",
+      "inputs": [
+        "input",
+        "rows",
+        "cols"
+      ],
+      "outputs": [
+        "read_stream"
+      ],
+      "behavior": [
+        {
+          "id": "read_block_behavior",
+          "text": "Read one flat 2D block from memory into the first DATAFLOW channel.",
+          "evidence": [],
+          "verification_cases": []
+        }
+      ],
+      "constraints": [
+        {
+          "id": "read_block_constraint",
+          "text": "Keep memory access simple and sequential for report-driven review.",
+          "evidence": [],
+          "verification_cases": []
+        }
+      ],
+      "dependencies": [],
+      "source_references": [
+        "reusable_2d_transform_baseline"
+      ],
+      "test_intent": [
+        {
+          "id": "read_block_test",
+          "text": "Verify the first stage emits exactly rows * cols values.",
+          "evidence": [],
+          "verification_cases": []
+        }
+      ]
+    },
+    {
+      "name": "row_pass",
+      "inputs": [
+        "read_stream",
+        "rows",
+        "cols"
+      ],
+      "outputs": [
+        "row_stream"
+      ],
+      "behavior": [
+        {
+          "id": "row_pass_behavior",
+          "text": "Model the row-wise pass of the 2D block transform.",
+          "evidence": [],
+          "verification_cases": []
+        }
+      ],
+      "constraints": [
+        {
+          "id": "row_pass_constraint",
+          "text": "Keep the row stage isolated so DATAFLOW can overlap it with surrounding stages.",
+          "evidence": [],
+          "verification_cases": []
+        }
+      ],
+      "dependencies": [],
+      "source_references": [
+        "reusable_2d_transform_baseline"
+      ],
+      "test_intent": [
+        {
+          "id": "row_pass_test",
+          "text": "Verify the row stage preserves the bounded block size.",
+          "evidence": [],
+          "verification_cases": []
+        }
+      ]
+    },
+    {
+      "name": "transpose_or_reorder",
+      "inputs": [
+        "row_stream",
+        "rows",
+        "cols"
+      ],
+      "outputs": [
+        "reorder_stream"
+      ],
+      "behavior": [
+        {
+          "id": "reorder_behavior",
+          "text": "Model the explicit transpose or reorder boundary between row and column passes.",
+          "evidence": [],
+          "verification_cases": []
+        }
+      ],
+      "constraints": [
+        {
+          "id": "reorder_constraint",
+          "text": "Keep the intermediate storage story explicit for report review.",
+          "evidence": [],
+          "verification_cases": []
+        }
+      ],
+      "dependencies": [],
+      "source_references": [
+        "reusable_2d_transform_baseline"
+      ],
+      "test_intent": [
+        {
+          "id": "reorder_test",
+          "text": "Verify that the reorder stage does not change block cardinality.",
+          "evidence": [],
+          "verification_cases": []
+        }
+      ]
+    },
+    {
+      "name": "col_pass",
+      "inputs": [
+        "reorder_stream",
+        "rows",
+        "cols"
+      ],
+      "outputs": [
+        "col_stream"
+      ],
+      "behavior": [
+        {
+          "id": "col_pass_behavior",
+          "text": "Model the column-wise pass of the 2D block transform.",
+          "evidence": [],
+          "verification_cases": []
+        }
+      ],
+      "constraints": [
+        {
+          "id": "col_pass_constraint",
+          "text": "Keep the column stage independently pipelinable.",
+          "evidence": [],
+          "verification_cases": []
+        }
+      ],
+      "dependencies": [],
+      "source_references": [
+        "reusable_2d_transform_baseline"
+      ],
+      "test_intent": [
+        {
+          "id": "col_pass_test",
+          "text": "Verify the column stage drains and produces the same number of tokens.",
+          "evidence": [],
+          "verification_cases": []
+        }
+      ]
+    },
+    {
+      "name": "write_block",
+      "inputs": [
+        "col_stream",
+        "rows",
+        "cols"
+      ],
+      "outputs": [
+        "output"
+      ],
+      "behavior": [
+        {
+          "id": "write_block_behavior",
+          "text": "Write the transformed flat block back to memory.",
+          "evidence": [],
+          "verification_cases": []
+        }
+      ],
+      "constraints": [
+        {
+          "id": "write_block_constraint",
+          "text": "Preserve bounded flat-memory writeback for validation and debug.",
+          "evidence": [],
+          "verification_cases": []
+        }
+      ],
+      "dependencies": [],
+      "source_references": [
+        "reusable_2d_transform_baseline"
+      ],
+      "test_intent": [
+        {
+          "id": "write_block_test",
+          "text": "Verify the final output length equals rows * cols.",
+          "evidence": [],
+          "verification_cases": []
+        }
+      ]
+    }
+  ],
+  "workflow": {
+    "board_acceptance": {
+      "profile": "u55c_m_axi_host",
+      "host_template": "matrix_unary_host"
+    }
+  },
+  "performance": {
+    "target_ii": 1,
+    "max_length": 1024,
+    "block_rows": 8,
+    "block_cols": 8
+  },
+  "hls_profile": {
+    "example_pattern": "dataflow",
+    "allowed_libraries": [
+      "ap_int.h",
+      "hls_stream.h"
+    ],
+    "required_headers": [
+      "hls_stream.h"
+    ],
+    "required_pragmas": [
+      "#pragma HLS DATAFLOW",
+      "#pragma HLS STREAM variable=read_stream depth=16",
+      "#pragma HLS STREAM variable=col_stream depth=16"
+    ],
+    "required_metadata_fields": [
+      "stage_boundaries",
+      "channel_kind",
+      "channel_depth",
+      "cosim_required"
+    ],
+    "metadata": {
+      "stage_boundaries": "read_block -> row_pass -> transpose_or_reorder -> col_pass -> write_block",
+      "channel_kind": "fifo",
+      "channel_depth": 16,
+      "cosim_required": true
+    },
+    "forbidden_combinations": [],
+    "required_cfg_entries": [
+      "clock=8.0"
+    ]
+  }
+}

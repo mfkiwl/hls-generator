@@ -12,6 +12,7 @@ from dataclasses import dataclass
 from pathlib import Path
 from typing import Any
 
+from .comment_policy import validate_hls_comment_policy
 from .config import missing_vitis_tool_id, vitis_command, vitis_tcl_config, vitis_tool_names, vitis_tool_timeout, vitis_tools
 from .hls_cfg import cfg_relative_path_issue, clock_period_ns, parse_hls_cfg_entries
 from .hls_profile import validate_hls_profile
@@ -153,7 +154,9 @@ def validate_generated(
     issues.extend(_contract_gate_issues(plan_contract_interface_issues(normalized, audit_interface("hls", root))))
     profile = hls_profile or normalized.get("hls_profile") or {}
     issues.extend(_profile_issues(validate_hls_profile(profile, root, normalized)))
-    issues.extend(_validate_hls_reviewability(normalized, root, comment_language))
+    reviewability_issues, comment_metrics = _validate_hls_reviewability(normalized, root, comment_language)
+    issues.extend(reviewability_issues)
+    metrics["comment_policy"] = comment_metrics
     issues.extend(_validate_hls_testbench(normalized, root, reference_cases))
     issues.extend(_validate_placeholders(root, _hls_files(root)))
     issues.extend(_validate_vitis_rules(root))
@@ -610,7 +613,7 @@ def _validate_performance(spec: dict[str, Any], metrics: dict[str, Any], readine
     return [ValidationIssue("info", "Performance constraints have collected HLS metrics for review.", stage="implement", source="toolchain_issue")]
 
 
-def _validate_hls_reviewability(spec: dict[str, Any], root: Path, comment_language: str) -> list[ValidationIssue]:
+def _validate_hls_reviewability(spec: dict[str, Any], root: Path, comment_language: str) -> tuple[list[ValidationIssue], dict[str, Any]]:
     issues: list[ValidationIssue] = []
     hls_files = [path for path in _hls_files(root) if path.suffix.lower() in {".cpp", ".cc", ".cxx", ".h", ".hpp"}]
     all_comments = [comment for path in hls_files for comment in _all_comment_texts(path.read_text(encoding="utf-8", errors="ignore").splitlines())]
@@ -619,13 +622,69 @@ def _validate_hls_reviewability(spec: dict[str, Any], root: Path, comment_langua
     if comment_language == "en" and any(_contains_cjk(comment) for comment in all_comments):
         issues.append(ValidationIssue("warning", "Reviewability warning: expected English comments, but Chinese comment text was found.", stage="static"))
     top = str(spec.get("interfaces", {}).get("top_function") or spec["name"])
-    for path in hls_files:
-        text = path.read_text(encoding="utf-8", errors="ignore")
-        rel_path = path.relative_to(root).as_posix()
-        if top in text and not all_comments:
-            issues.append(ValidationIssue("warning", "Reviewability warning: HLS files should contain explanatory comments.", rel_path))
-            break
-    return issues
+    if any(top in path.read_text(encoding="utf-8", errors="ignore") for path in hls_files) and not all_comments:
+        issues.append(ValidationIssue("warning", "Reviewability warning: HLS files should contain explanatory comments.", stage="static"))
+    policy_issues, metrics = validate_hls_comment_policy(root, hls_files, top_function=top)
+    for missing in policy_issues:
+        issues.append(
+            ValidationIssue(
+                "error",
+                f"{missing.message} ({missing.path}:{missing.line}: {missing.detail})",
+                missing.path,
+                stage="static",
+                source="comment_policy",
+                detail=missing.detail,
+            )
+        )
+    return issues, metrics
+
+
+def _hls_comment_coverage(lines: list[str], rel_path: str) -> dict[str, Any]:
+    checked = 0
+    covered = 0
+    missing: list[dict[str, Any]] = []
+    pending_preceding_comment = False
+    in_block_comment = False
+    for line_number, raw_line in enumerate(lines, start=1):
+        stripped = raw_line.strip()
+        if not stripped:
+            pending_preceding_comment = False
+            continue
+        if in_block_comment:
+            if "*/" not in stripped:
+                continue
+            in_block_comment = False
+            after_block = stripped.split("*/", 1)[1].strip()
+            if not after_block:
+                pending_preceding_comment = True
+                continue
+            stripped = after_block
+        if stripped.startswith("//"):
+            pending_preceding_comment = True
+            continue
+        if stripped.startswith("/*"):
+            if "*/" not in stripped:
+                in_block_comment = True
+                continue
+            after_block = stripped.split("*/", 1)[1].strip()
+            if not after_block:
+                pending_preceding_comment = True
+                continue
+            checked += 1
+            covered += 1
+            pending_preceding_comment = False
+            continue
+        checked += 1
+        if _has_same_line_comment(raw_line) or pending_preceding_comment:
+            covered += 1
+        else:
+            missing.append({"path": rel_path, "line": line_number, "code": stripped})
+        pending_preceding_comment = False
+    return {"file": rel_path, "checked_lines": checked, "covered_lines": covered, "missing_lines": missing}
+
+
+def _has_same_line_comment(line: str) -> bool:
+    return "//" in line or "/*" in line or "*/" in line
 
 
 def _all_comment_texts(lines: list[str]) -> list[str]:

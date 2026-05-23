@@ -1,0 +1,188 @@
+{
+  "name": "host_kernel_split",
+  "target": "hls",
+  "design_requirements": {
+    "target": "hls",
+    "pipeline_required": true,
+    "streamability": "streamable",
+    "interface_family": "axi4",
+    "interface_profile": {
+      "axi4_variant": "axi4_full",
+      "role": "master",
+      "read_write_mode": "read_write",
+      "data_width": 32,
+      "addr_width": 32,
+      "id_width": 1,
+      "burst_support": false,
+      "clock_reset_domain": {
+        "clock": "ap_clk",
+        "reset": "ap_rst_n"
+      }
+    },
+    "confirmed_by_user": true,
+    "confirmation_notes": "Use a split between the main kernel source and helper headers, with pragma-heavy logic concentrated in hotspot files."
+  },
+  "streamability": "streamable",
+  "interface_family": "axi4",
+  "interface_profile": {
+    "axi4_variant": "axi4_full",
+    "role": "master",
+    "read_write_mode": "read_write",
+    "data_width": 32,
+    "addr_width": 32,
+    "id_width": 1,
+    "burst_support": false,
+    "clock_reset_domain": {
+      "clock": "ap_clk",
+      "reset": "ap_rst_n"
+    }
+  },
+  "pipeline_required": true,
+  "codegen_plan_required": true,
+  "description": "Implement a memory-backed kernel with a clear split between the top source and helper-header responsibilities.",
+  "interfaces": {
+    "top_function": "host_kernel_split_kernel",
+    "arguments": [
+      {
+        "name": "input",
+        "type": "const ap_uint<32> *",
+        "direction": "input",
+        "interface": "m_axi",
+        "bundle": "gmem0",
+        "depth": 1024
+      },
+      {
+        "name": "output",
+        "type": "ap_uint<32> *",
+        "direction": "output",
+        "interface": "m_axi",
+        "bundle": "gmem1",
+        "depth": 1024
+      },
+      {
+        "name": "length",
+        "type": "int",
+        "direction": "input",
+        "interface": "s_axilite"
+      }
+    ],
+    "control": "s_axilite"
+  },
+  "behavior": [
+    "For each index below length, output[index] equals input[index] plus one.",
+    "Keep helper headers responsible for reusable stage or type support rather than package or host orchestration.",
+    "Concentrate pragma-heavy hotspot logic in the main kernel source or a small number of dedicated helper files."
+  ],
+  "clock": {
+    "period_ns": 10.0,
+    "uncertainty_ns": 1.0
+  },
+  "reset": {
+    "strategy": "tool_default"
+  },
+  "constraints": [
+    "Use Vitis HLS compatible C++.",
+    "Do not generate host or package files even though the wider project may separate those responsibilities."
+  ],
+  "outputs": [
+    {
+      "path": "src/host_kernel_split_kernel.h",
+      "kind": "header",
+      "language": "cpp"
+    },
+    {
+      "path": "src/host_kernel_split_kernel.cpp",
+      "kind": "source",
+      "language": "cpp"
+    },
+    {
+      "path": "tb/host_kernel_split_kernel_tb.cpp",
+      "kind": "testbench",
+      "language": "cpp"
+    },
+    {
+      "path": "hls_config.cfg",
+      "kind": "config",
+      "language": "ini"
+    }
+  ],
+  "notes": [
+    "The wider project may maintain host or package stages, but this spec keeps the generated artifact boundary HLS-only."
+  ],
+  "subfunctions": [
+    {
+      "name": "compute_stage",
+      "inputs": [
+        "input",
+        "length"
+      ],
+      "outputs": [
+        "output"
+      ],
+      "behavior": [
+        {
+          "id": "compute_stage_behavior",
+          "text": "Apply the hotspot compute logic while preserving explicit HLS interface ownership in the top source.",
+          "evidence": [],
+          "verification_cases": []
+        }
+      ],
+      "constraints": [
+        {
+          "id": "compute_stage_constraint",
+          "text": "Keep helper header roles separate from top-level interface and pragma ownership.",
+          "evidence": [],
+          "verification_cases": []
+        }
+      ],
+      "dependencies": [],
+      "source_references": [],
+      "test_intent": [
+        {
+          "id": "compute_stage_test",
+          "text": "Verify the top source and helper contract stay readable under pragma-heavy logic.",
+          "evidence": [],
+          "verification_cases": []
+        }
+      ]
+    }
+  ],
+  "workflow": {
+    "board_acceptance": {
+      "profile": "u55c_m_axi_host",
+      "host_template": "vector_increment_host"
+    }
+  },
+  "performance": {
+    "target_ii": 1,
+    "max_length": 1024
+  },
+  "hls_profile": {
+    "example_pattern": "host_kernel_split",
+    "allowed_libraries": [
+      "ap_int.h"
+    ],
+    "required_headers": [
+      "ap_int.h"
+    ],
+    "required_pragmas": [
+      "#pragma HLS INTERFACE m_axi port=input bundle=gmem0",
+      "#pragma HLS INTERFACE m_axi port=output bundle=gmem1",
+      "#pragma HLS PIPELINE II=1"
+    ],
+    "required_metadata_fields": [
+      "kernel_source_boundary",
+      "helper_header_role",
+      "hotspot_file_strategy"
+    ],
+    "metadata": {
+      "kernel_source_boundary": "The top kernel source keeps the interface contract and hotspot pragmas visible.",
+      "helper_header_role": "Helper headers carry reusable types and stage support without becoming host or package artifacts.",
+      "hotspot_file_strategy": "Dense pragmas stay concentrated in hotspot files instead of every source file."
+    },
+    "forbidden_combinations": [],
+    "required_cfg_entries": [
+      "clock=10.0"
+    ]
+  }
+}

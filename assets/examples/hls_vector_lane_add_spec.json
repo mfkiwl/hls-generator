@@ -43,10 +43,36 @@
   "interfaces": {
     "top_function": "vector_lane_add_kernel",
     "arguments": [
-      {"name": "input_a", "type": "const ap_uint<32> *", "direction": "input", "interface": "m_axi", "bundle": "gmem_a", "depth": 1024},
-      {"name": "input_b", "type": "const ap_uint<32> *", "direction": "input", "interface": "m_axi", "bundle": "gmem_b", "depth": 1024},
-      {"name": "output", "type": "ap_uint<32> *", "direction": "output", "interface": "m_axi", "bundle": "gmem_out", "depth": 1024},
-      {"name": "length", "type": "int", "direction": "input", "interface": "s_axilite"}
+      {
+        "name": "input_a",
+        "type": "const ap_uint<32> *",
+        "direction": "input",
+        "interface": "m_axi",
+        "bundle": "gmem_a",
+        "depth": 1024
+      },
+      {
+        "name": "input_b",
+        "type": "const ap_uint<32> *",
+        "direction": "input",
+        "interface": "m_axi",
+        "bundle": "gmem_b",
+        "depth": 1024
+      },
+      {
+        "name": "output",
+        "type": "ap_uint<32> *",
+        "direction": "output",
+        "interface": "m_axi",
+        "bundle": "gmem_out",
+        "depth": 1024
+      },
+      {
+        "name": "length",
+        "type": "int",
+        "direction": "input",
+        "interface": "s_axilite"
+      }
     ],
     "control": "s_axilite"
   },
@@ -55,37 +81,75 @@
     "Keep the packed-lane intent explicit with a 4-lane local buffer structure.",
     "Document how scalar remainder handling stays correct."
   ],
-  "clock": {"period_ns": 8.0, "uncertainty_ns": 0.8},
-  "reset": {"strategy": "tool_default"},
+  "clock": {
+    "period_ns": 8.0,
+    "uncertainty_ns": 0.8
+  },
+  "reset": {
+    "strategy": "tool_default"
+  },
   "constraints": [
     "Use Vitis HLS compatible C++.",
     "Avoid dynamic allocation and recursion.",
     "Only use hls_vector.h because the lane mapping is confirmed."
   ],
   "outputs": [
-    {"path": "src/vector_lane_add_kernel.h", "kind": "header", "language": "cpp"},
-    {"path": "src/vector_lane_add_kernel.cpp", "kind": "source", "language": "cpp"},
-    {"path": "tb/vector_lane_add_kernel_tb.cpp", "kind": "testbench", "language": "cpp"},
-    {"path": "hls_config.cfg", "kind": "config", "language": "ini"}
+    {
+      "path": "src/vector_lane_add_kernel.h",
+      "kind": "header",
+      "language": "cpp"
+    },
+    {
+      "path": "src/vector_lane_add_kernel.cpp",
+      "kind": "source",
+      "language": "cpp"
+    },
+    {
+      "path": "tb/vector_lane_add_kernel_tb.cpp",
+      "kind": "testbench",
+      "language": "cpp"
+    },
+    {
+      "path": "hls_config.cfg",
+      "kind": "config",
+      "language": "ini"
+    }
   ],
   "notes": [],
   "subfunctions": [],
-  "workflow": {},
+  "workflow": {
+    "board_acceptance": {
+      "profile": "not_board_runnable",
+      "reason": "Lane-packed vector sample still needs a dedicated packed-lane host harness."
+    }
+  },
   "performance": {
     "target_ii": 1,
     "lane_width": 4
   },
   "hls_profile": {
     "example_pattern": "vector_lane",
-    "allowed_libraries": ["ap_int.h", "hls_vector.h"],
-    "required_headers": ["hls_vector.h"],
-    "required_pragmas": ["#pragma HLS UNROLL factor=4"],
-    "required_metadata_fields": ["lane_width", "pack_intent"],
+    "allowed_libraries": [
+      "ap_int.h",
+      "hls_vector.h"
+    ],
+    "required_headers": [
+      "hls_vector.h"
+    ],
+    "required_pragmas": [
+      "#pragma HLS UNROLL factor=4"
+    ],
+    "required_metadata_fields": [
+      "lane_width",
+      "pack_intent"
+    ],
     "metadata": {
       "lane_width": 4,
       "pack_intent": "pack adjacent samples into fixed 4-lane groups"
     },
     "forbidden_combinations": [],
-    "required_cfg_entries": ["clock=8.0"]
+    "required_cfg_entries": [
+      "clock=8.0"
+    ]
   }
 }

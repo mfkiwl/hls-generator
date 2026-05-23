@@ -7,6 +7,7 @@ import importlib.util
 import io
 import json
 import os
+import re
 import stat
 import shutil
 import subprocess
@@ -60,6 +61,7 @@ def main() -> int:
             set_comment_language("zh")
             artifact_dir = _run_mock_workflow(base)
             _run_prompt_and_static_validation(base, artifact_dir)
+            _run_comment_policy_checks(base, artifact_dir)
             _run_invalid_response(base)
             _run_human_resume(base)
             _run_rejection_checks(base, artifact_dir)
@@ -72,6 +74,7 @@ def main() -> int:
             _run_pattern_negative_checks(base)
             _run_ug_reference_integration_checks(base)
             _run_confidence_loop_checks(base)
+            _run_eval_checks(base)
             _run_release_packaging_checks(base)
             _run_vitis_selection_checks(base, artifact_dir)
             _run_missing_toolchain_workflow(base)
@@ -115,6 +118,7 @@ def _handle_rmtree_error(func, target, exc_info) -> None:
 def _run_skill_metadata_checks() -> None:
     skill_text = (ROOT / "SKILL.md").read_text(encoding="utf-8")
     agent_text = (ROOT / "agents" / "openai.yaml").read_text(encoding="utf-8")
+    project_structure_text = (ROOT / "references" / "hls-project-structure-patterns.md").read_text(encoding="utf-8")
     frontmatter = skill_text.split("---", 2)[1]
     assert "name: erie-hls-generator" in frontmatter, frontmatter
     description_line = next(line for line in frontmatter.splitlines() if line.startswith("description:"))
@@ -143,6 +147,11 @@ def _run_skill_metadata_checks() -> None:
         "vivado-analysis",
     ]:
         assert body_term in skill_text, body_term
+    assert "references/hls-project-structure-patterns.md" in skill_text, skill_text
+    assert "references/hls-demo-imported-patterns.md" not in skill_text, skill_text
+    lowered_project_structure = project_structure_text.lower()
+    for forbidden in ["ref/hls_demo", "imported", "demo set", "u50 demo", "distilled from"]:
+        assert forbidden not in lowered_project_structure, forbidden
     assert 'short_description: "Develop, debug, and validate Vitis HLS kernels and HLS-generated RTL."' in agent_text, agent_text
     assert "allow_implicit_invocation: true" in agent_text, agent_text
 
@@ -235,6 +244,9 @@ def _run_prompt_and_static_validation(base: Path, artifact_dir: Path) -> None:
     assert "QoR portability review" in text
     assert "DSP-oriented transforms and filters" in text
     assert "stable Tcl/.cfg execution flow only" in text
+    assert "typed comment placement" in text
+    assert "Do not force comments onto plain braces" in text
+    assert "generic filler" in text
     assert "vitis-hls-introductory-examples" not in text.lower()
     assert "open_component" not in text
     assert "direct v++" not in text
@@ -243,6 +255,30 @@ def _run_prompt_and_static_validation(base: Path, artifact_dir: Path) -> None:
     assert report["ok"] is True, report
     assert report["errors"] == 0, report
     assert report["warnings"] == 0, report
+
+
+def _run_comment_policy_checks(base: Path, artifact_dir: Path) -> None:
+    good_report = validate_hls_artifacts(_load_spec(), artifact_dir, run_external=False, readiness="static", comment_language="zh")
+    assert good_report["ok"] is True, good_report
+    assert good_report["metrics"]["comment_policy"]["policy"] == "typed_hls_comment_placement", good_report
+
+    bad_dir = base / "comment-policy-bad"
+    shutil.copytree(artifact_dir, bad_dir)
+    for path in sorted(bad_dir.glob("**/*")):
+        if path.suffix.lower() not in {".h", ".hpp", ".cpp", ".cc", ".cxx"}:
+            continue
+        lines = []
+        for line in path.read_text(encoding="utf-8").splitlines():
+            if "//" in line:
+                lines.append(re.sub(r"//.*$", "// generic generated line, not hardware intent", line))
+            else:
+                lines.append(line)
+        path.write_text("\n".join(lines) + "\n", encoding="utf-8")
+    bad_report = validate_hls_artifacts(_load_spec(), bad_dir, run_external=False, readiness="static", comment_language="zh")
+    assert bad_report["ok"] is False, bad_report
+    messages = "\n".join(issue["message"] for issue in bad_report["issues"])
+    assert "comment policy" in messages.lower(), messages
+    assert "generic" in messages.lower(), messages
 
 
 def _run_invalid_response(base: Path) -> None:
@@ -360,6 +396,7 @@ def _run_remote_acceptance_checks(base: Path) -> None:
     _run_remote_package_newline_check(base)
     env = os.environ.copy()
     env["HLS_GENERATOR_RUNTIME_CONFIG"] = str(config_path.relative_to(ROOT))
+    env["HLS_GENERATOR_USER_CONFIG"] = str((base / "fake_user_config.json").resolve())
     env["PYTHONUTF8"] = "1"
     dry = REAL_SUBPROCESS_RUN(
         [sys.executable, "scripts/remote_vitis_acceptance.py", "--mode", "link", "--server", "link-server", "--dry-run", "--json"],
@@ -376,7 +413,7 @@ def _run_remote_acceptance_checks(base: Path) -> None:
     assert dry_payload["uses_erie_remote_ssh"] is True
 
     dry_vitis = REAL_SUBPROCESS_RUN(
-        [sys.executable, "scripts/remote_vitis_acceptance.py", "--mode", "vitis", "--server", "vitis-server", "--profile", "configured_profile", "--readiness", "cosim", "--dry-run", "--json"],
+        [sys.executable, "scripts/remote_vitis_acceptance.py", "--mode", "vitis", "--server", "vitis-server", "--profile", "configured_profile", "--readiness", "cosim", "--comment-language", "zh", "--dry-run", "--json"],
         cwd=ROOT,
         env=env,
         capture_output=True,
@@ -389,8 +426,23 @@ def _run_remote_acceptance_checks(base: Path) -> None:
     assert dry_vitis_payload["status"] == "dry_run", dry_vitis_payload
     assert dry_vitis_payload["remote_artifacts_retained"] is True, dry_vitis_payload
     assert dry_vitis_payload["cleanup_performed"] is False, dry_vitis_payload
-    assert "retain remote validation directory" in dry_vitis_payload["steps"], dry_vitis_payload
+    assert "archive verified remote run into backups/<run-id>" in dry_vitis_payload["steps"], dry_vitis_payload
     assert "erie request delete cleanup" not in dry_vitis_payload["steps"], dry_vitis_payload
+
+    dry_board = REAL_SUBPROCESS_RUN(
+        [sys.executable, "scripts/remote_vitis_acceptance.py", "--mode", "board", "--server", "board-server", "--profile", "configured_profile", "--example-spec", "hls_vector_scale_spec.json", "--dry-run", "--json"],
+        cwd=ROOT,
+        env=env,
+        capture_output=True,
+        text=True,
+        encoding="utf-8",
+        check=False,
+    )
+    assert dry_board.returncode == 0, dry_board
+    dry_board_payload = json.loads(dry_board.stdout)
+    assert dry_board_payload["status"] == "dry_run", dry_board_payload
+    assert "hardware fingerprint probe for 9950X/U55C evidence" in " ".join(dry_board_payload["steps"]), dry_board_payload
+    assert "board compile/link/host-run sequence" in " ".join(dry_board_payload["steps"]), dry_board_payload
 
     no_profile_config = runtime_config()
     no_profile_config["remote_validation"]["erie_skill_dir"] = "${skill_root}/" + (base / "fake_erie").relative_to(ROOT).as_posix()
@@ -401,7 +453,7 @@ def _run_remote_acceptance_checks(base: Path) -> None:
     no_profile_env = env.copy()
     no_profile_env["HLS_GENERATOR_RUNTIME_CONFIG"] = str(no_profile_path.relative_to(ROOT))
     blocked_profile = REAL_SUBPROCESS_RUN(
-        [sys.executable, "scripts/remote_vitis_acceptance.py", "--mode", "vitis", "--server", "vitis-server", "--readiness", "cosim", "--json"],
+        [sys.executable, "scripts/remote_vitis_acceptance.py", "--mode", "vitis", "--server", "vitis-server", "--readiness", "cosim", "--comment-language", "zh", "--json"],
         cwd=ROOT,
         env=no_profile_env,
         capture_output=True,
@@ -409,13 +461,16 @@ def _run_remote_acceptance_checks(base: Path) -> None:
         encoding="utf-8",
         check=False,
     )
-    assert blocked_profile.returncode == 5, blocked_profile
+    assert blocked_profile.returncode in {4, 5}, blocked_profile
     blocked_profile_payload = json.loads(blocked_profile.stdout)
-    assert blocked_profile_payload["status"] == "blocked_remote_profile_config", blocked_profile_payload
-    assert blocked_profile_payload["missing_fields"] == ["settings_script", "expected_tool", "target_part"], blocked_profile_payload
+    assert blocked_profile_payload["status"] in {"blocked_remote_profile_config", "blocked_remote_version_choice"}, blocked_profile_payload
+    if blocked_profile_payload["status"] == "blocked_remote_profile_config":
+        assert blocked_profile_payload["missing_fields"] == ["settings_script", "expected_tool", "target_part"], blocked_profile_payload
+    else:
+        assert len(blocked_profile_payload["candidate_versions"]) == 2, blocked_profile_payload
 
     blocked = REAL_SUBPROCESS_RUN(
-        [sys.executable, "scripts/remote_vitis_acceptance.py", "--mode", "vitis", "--server", "link-server", "--profile", "configured_profile", "--readiness", "cosim", "--json"],
+        [sys.executable, "scripts/remote_vitis_acceptance.py", "--mode", "vitis", "--server", "link-server", "--profile", "configured_profile", "--readiness", "cosim", "--comment-language", "zh", "--json"],
         cwd=ROOT,
         env=env,
         capture_output=True,
@@ -429,7 +484,7 @@ def _run_remote_acceptance_checks(base: Path) -> None:
     assert blocked_payload["uses_erie_remote_ssh"] is True
 
     version_blocked = REAL_SUBPROCESS_RUN(
-        [sys.executable, "scripts/remote_vitis_acceptance.py", "--mode", "vitis", "--server", "vitis-server", "--profile", "configured_profile", "--readiness", "cosim", "--json"],
+        [sys.executable, "scripts/remote_vitis_acceptance.py", "--mode", "vitis", "--server", "vitis-server", "--profile", "configured_profile", "--readiness", "cosim", "--comment-language", "zh", "--json"],
         cwd=ROOT,
         env=env,
         capture_output=True,
@@ -446,7 +501,7 @@ def _run_remote_acceptance_checks(base: Path) -> None:
     assert "2022.2" in version_request.read_text(encoding="utf-8")
 
     retained = REAL_SUBPROCESS_RUN(
-        [sys.executable, "scripts/remote_vitis_acceptance.py", "--mode", "vitis", "--server", "vitis-server", "--profile", "configured_profile", "--vitis-version", "2022.2", "--readiness", "cosim", "--json"],
+        [sys.executable, "scripts/remote_vitis_acceptance.py", "--mode", "vitis", "--server", "vitis-server", "--profile", "configured_profile", "--vitis-version", "2022.2", "--readiness", "cosim", "--comment-language", "zh", "--json"],
         cwd=ROOT,
         env=env,
         capture_output=True,
@@ -458,15 +513,19 @@ def _run_remote_acceptance_checks(base: Path) -> None:
     retained_payload = json.loads(retained.stdout)
     assert retained_payload["status"] == "passed", retained_payload
     assert retained_payload["vitis_version"] == "2022.2", retained_payload
-    assert retained_payload["remote_dir"].startswith(".hls-generator-remote-validation/vitis-"), retained_payload
+    assert retained_payload["remote_project_root"] == "erie-hls-generator", retained_payload
+    assert retained_payload["remote_conda_prefix"] == "erie-hls-generator/.conda/hls-generator", retained_payload
+    assert retained_payload["remote_run_dir"].startswith("erie-hls-generator/runs/"), retained_payload
+    assert retained_payload["remote_backup_dir"].startswith("erie-hls-generator/backups/"), retained_payload
     assert retained_payload["remote_artifacts_retained"] is True, retained_payload
     assert retained_payload["cleanup_performed"] is False, retained_payload
+    assert retained_payload["archived_after_verification"] is True, retained_payload
     assert not any("delete" in request for request in retained_payload["requests"]), retained_payload
-    saved_user_config = json.loads(user_config_path().read_text(encoding="utf-8"))
+    saved_user_config = json.loads(Path(env["HLS_GENERATOR_USER_CONFIG"]).read_text(encoding="utf-8"))
     assert saved_user_config["vitis_version_selection"]["vitis-server"]["version"] == "2022.2", saved_user_config
 
     retained_from_config = REAL_SUBPROCESS_RUN(
-        [sys.executable, "scripts/remote_vitis_acceptance.py", "--mode", "vitis", "--server", "vitis-server", "--profile", "configured_profile", "--readiness", "cosim", "--json"],
+        [sys.executable, "scripts/remote_vitis_acceptance.py", "--mode", "vitis", "--server", "vitis-server", "--profile", "configured_profile", "--readiness", "cosim", "--comment-language", "zh", "--json"],
         cwd=ROOT,
         env=env,
         capture_output=True,
@@ -483,7 +542,7 @@ def _run_remote_acceptance_checks(base: Path) -> None:
     assert retained_report["remote_artifacts_retained"] is True, retained_report
 
     cleaned = REAL_SUBPROCESS_RUN(
-        [sys.executable, "scripts/remote_vitis_acceptance.py", "--mode", "vitis", "--server", "vitis-server", "--profile", "configured_profile", "--readiness", "cosim", "--cleanup-remote", "--json"],
+        [sys.executable, "scripts/remote_vitis_acceptance.py", "--mode", "vitis", "--server", "vitis-server", "--profile", "configured_profile", "--readiness", "cosim", "--comment-language", "zh", "--cleanup-remote", "--json"],
         cwd=ROOT,
         env=env,
         capture_output=True,
@@ -494,9 +553,59 @@ def _run_remote_acceptance_checks(base: Path) -> None:
     assert cleaned.returncode == 0, cleaned
     cleaned_payload = json.loads(cleaned.stdout)
     assert cleaned_payload["status"] == "passed", cleaned_payload
-    assert cleaned_payload["remote_artifacts_retained"] is False, cleaned_payload
-    assert cleaned_payload["cleanup_performed"] is True, cleaned_payload
-    assert any("delete" in request for request in cleaned_payload["requests"]), cleaned_payload
+    assert cleaned_payload["remote_artifacts_retained"] is True, cleaned_payload
+    assert cleaned_payload["cleanup_performed"] is False, cleaned_payload
+    assert cleaned_payload["archived_after_verification"] is True, cleaned_payload
+    assert not any("delete" in request for request in cleaned_payload["requests"]), cleaned_payload
+
+    board = REAL_SUBPROCESS_RUN(
+        [sys.executable, "scripts/remote_vitis_acceptance.py", "--mode", "board", "--server", "board-server", "--profile", "configured_profile", "--example-spec", "hls_vector_scale_spec.json", "--comment-language", "zh", "--json"],
+        cwd=ROOT,
+        env=env,
+        capture_output=True,
+        text=True,
+        encoding="utf-8",
+        check=False,
+    )
+    assert board.returncode == 0, board
+    board_payload = json.loads(board.stdout)
+    assert board_payload["status"] == "passed", board_payload
+    assert board_payload["hardware_probe"]["status"] == "passed", board_payload
+    assert board_payload["toolchain_probe"]["status"] == "passed", board_payload
+    assert board_payload["board_metadata"]["host_template"] == "vector_scale_host", board_payload
+    assert board_payload["remote_backup_dir"].startswith("erie-hls-generator/backups/"), board_payload
+
+    uploaded_board = REAL_SUBPROCESS_RUN(
+        [
+            sys.executable,
+            "scripts/remote_vitis_acceptance.py",
+            "--mode",
+            "board",
+            "--server",
+            "board-server",
+            "--platform-name",
+            "xilinx_u55c_gen3x16_xdma_3_202210_1",
+            "--remote-platform-root",
+            "erie-hls-generator/platforms/alveo/xilinx_u55c_gen3x16_xdma_3_202210_1",
+            "--remote-xpfm",
+            "erie-hls-generator/platforms/alveo/xilinx_u55c_gen3x16_xdma_3_202210_1/xilinx_u55c_gen3x16_xdma_3_202210_1.xpfm",
+            "--example-spec",
+            "hls_vector_scale_spec.json",
+            "--comment-language",
+            "zh",
+            "--json",
+        ],
+        cwd=ROOT,
+        env=env,
+        capture_output=True,
+        text=True,
+        encoding="utf-8",
+        check=False,
+    )
+    assert uploaded_board.returncode == 0, uploaded_board
+    uploaded_board_payload = json.loads(uploaded_board.stdout)
+    assert uploaded_board_payload["status"] == "passed", uploaded_board_payload
+    assert uploaded_board_payload["board_profile"]["remote_xpfm"].endswith("xilinx_u55c_gen3x16_xdma_3_202210_1.xpfm"), uploaded_board_payload
 
 
 def _run_remote_package_newline_check(base: Path) -> None:
@@ -533,6 +642,7 @@ def _write_fake_remote_config(base: Path) -> Path:
                 "servers": [
                     {"id": "link-server", "name": "link-server", "enabled": True},
                     {"id": "vitis-server", "name": "vitis-server", "enabled": True},
+                    {"id": "board-server", "name": "board-server", "enabled": True},
                 ],
             },
             indent=2,
@@ -569,6 +679,20 @@ def _write_fake_remote_config(base: Path) -> Path:
                 "    if 'expected_tool=' in joined:",
                 "        server = server_arg()",
                 "        print('expected_tool=/tools/fake/vitis_hls' if server == 'vitis-server' else 'expected_tool=')",
+                "    elif 'selected_xpfm=' in joined:",
+                "        print('selected_xpfm=/workspace/erie-hls-generator/platforms/alveo/xilinx_u55c_gen3x16_xdma_3_202210_1/xilinx_u55c_gen3x16_xdma_3_202210_1.xpfm')",
+                "    elif \"find /tools/Xilinx/Vitis /opt/xilinx -type f -name '*.xpfm'\" in joined:",
+                "        print('/tools/Xilinx/Vitis/2022.2/base_platforms/xilinx_u55c_gen3x16_xdma_3_202210_1/xilinx_u55c_gen3x16_xdma_3_202210_1.xpfm')",
+                "    elif 'cpu_model=' in joined:",
+                "        print('cpu_model=AMD Ryzen 9 9950X3D 16-Core Processor')",
+                "        print('lspci=02:00.0 Processing accelerators: Xilinx Corporation Device 505c')",
+                "        print('board_scan=Alveo U55C')",
+                "    elif 'vpp=' in joined:",
+                "        print('vpp=/tools/fake/v++')",
+                "        print('gpp=/usr/bin/g++')",
+                "        print('xrt=/usr/bin/xrt-smi')",
+                "    elif 'pwd' in joined:",
+                "        print('/workspace')",
                 "    else:",
                 "        print('HLS_REMOTE_LINK_OK')",
                 "        print('host=fake')",
@@ -586,6 +710,15 @@ def _write_fake_remote_config(base: Path) -> Path:
                 "    print(f'request: fake-{cmd}.json')",
                 "elif cmd == 'run-request':",
                 "    print('request executed')",
+                "elif cmd == 'exec-detached':",
+                "    print('job_id: fake-job-1')",
+                "    print('remote_job_dir: /workspace/fake-job')",
+                "    print('manifest: fake-manifest.json')",
+                "elif cmd == 'status':",
+                "    print('status: succeeded')",
+                "    print('exit_code: 0')",
+                "elif cmd == 'tail-log':",
+                "    print('HLS_BOARD_STATUS passed')",
                 "else:",
                 "    print('unsupported fake command', cmd, file=sys.stderr)",
                 "    raise SystemExit(2)",
@@ -602,6 +735,8 @@ def _write_fake_remote_config(base: Path) -> Path:
             "settings_script": "/user/configured/settings64.sh",
             "expected_tool": "vitis_hls",
             "target_part": "user-configured-part",
+            "platform_name": "xilinx_u55c_gen3x16_xdma_3_202210_1",
+            "xrt_setup_script": "/opt/xilinx/xrt/setup.sh",
         }
     }
     config_path = base / "fake_remote_runtime_config.json"
@@ -675,12 +810,15 @@ def _run_missing_toolchain_workflow(base: Path) -> None:
 
 def _run_example_coverage(base: Path) -> None:
     pattern_expectations = {
+        "hls_minimal_vitis_pipeline_spec.json": ["#pragma HLS PIPELINE", "bundle=gmem0", "bundle=gmem1"],
+        "hls_host_kernel_split_spec.json": ["#pragma HLS PIPELINE", "bundle=gmem0", "bundle=gmem1"],
         "hls_vector_scale_mock_spec.json": ["#pragma HLS PIPELINE", "bundle=gmem0"],
         "hls_axi4_burst_vector_scale_spec.json": ["#pragma HLS PIPELINE", "[interface]", "m_axi_max_read_burst_length=32"],
         "hls_axis_increment_spec.json": ["#pragma HLS INTERFACE axis", "hls::stream"],
         "hls_partition_vector_scale_spec.json": ["#pragma HLS ARRAY_PARTITION", "local_buf"],
         "hls_array_reshape_vector_scale_spec.json": ["#pragma HLS ARRAY_RESHAPE", "wide_buf"],
         "hls_dataflow_axis_spec.json": ["#pragma HLS DATAFLOW", "read_dataflow_axis_increment", "compute_dataflow_axis_increment", "write_dataflow_axis_increment", "#pragma HLS STREAM variable=mid_stream depth=16"],
+        "hls_2d_block_transform_spec.json": ["#pragma HLS DATAFLOW", "read_block", "row_pass", "transpose_or_reorder", "col_pass", "write_block", "rows", "cols"],
         "hls_task_graph_axis_spec.json": ["#include <hls_task.h>", "#pragma HLS DATAFLOW", "task_stream", "task_result_stream", "hls::task compute_stage", "load_task_graph_memory_increment", "store_task_graph_memory_increment", "#pragma HLS PIPELINE II=1 style=flp"],
         "hls_streamofblocks_axis_spec.json": ["#include <hls_streamofblocks.h>", "block_buf", "#pragma HLS DATAFLOW"],
         "hls_directio_freerun_axis_spec.json": ["#pragma HLS INTERFACE ap_ctrl_none port=return", "#pragma HLS INTERFACE axis port=in_stream", "#pragma HLS INTERFACE axis port=out_stream"],
@@ -728,6 +866,31 @@ def _run_pattern_negative_checks(base: Path) -> None:
     vector_spec["hls_profile"]["metadata"].pop("lane_width", None)
     vector_result = run_hls_workflow(vector_spec, out_dir=base / "negative-vector-lane", provider_name="mock", readiness="static", run_external=False)
     assert vector_result["status"] == "blocked_human", vector_result
+
+    partition_spec = _load_spec("hls_partition_vector_scale_spec.json")
+    partition_spec["hls_profile"]["metadata"].pop("partition_factor", None)
+    partition_result = run_hls_workflow(partition_spec, out_dir=base / "negative-partition", provider_name="mock", readiness="static", run_external=False)
+    assert partition_result["status"] == "blocked_human", partition_result
+
+    reshape_spec = _load_spec("hls_array_reshape_vector_scale_spec.json")
+    reshape_spec["hls_profile"]["metadata"].pop("bandwidth_bottleneck", None)
+    reshape_result = run_hls_workflow(reshape_spec, out_dir=base / "negative-reshape", provider_name="mock", readiness="static", run_external=False)
+    assert reshape_result["status"] == "blocked_human", reshape_result
+
+    dataflow_spec = _load_spec("hls_dataflow_axis_spec.json")
+    dataflow_spec["hls_profile"]["metadata"].pop("cosim_required", None)
+    dataflow_result = run_hls_workflow(dataflow_spec, out_dir=base / "negative-dataflow", provider_name="mock", readiness="static", run_external=False)
+    assert dataflow_result["status"] == "blocked_human", dataflow_result
+
+    multi_m_axi_spec = _load_spec("hls_multi_m_axi_add_spec.json")
+    multi_m_axi_spec["hls_profile"]["metadata"].pop("bundle_map", None)
+    multi_m_axi_result = run_hls_workflow(multi_m_axi_spec, out_dir=base / "negative-multi-m-axi", provider_name="mock", readiness="static", run_external=False)
+    assert multi_m_axi_result["status"] == "blocked_human", multi_m_axi_result
+
+    fixed_point_spec = _load_spec("hls_fixed_point_scale_spec.json")
+    fixed_point_spec["hls_profile"]["metadata"].pop("error_budget", None)
+    fixed_point_result = run_hls_workflow(fixed_point_spec, out_dir=base / "negative-fixed-point", provider_name="mock", readiness="static", run_external=False)
+    assert fixed_point_result["status"] == "blocked_human", fixed_point_result
 
     directio_spec = _load_spec("hls_directio_freerun_axis_spec.json")
     directio_spec["hls_profile"]["metadata"].pop("free_running", None)
@@ -967,37 +1130,41 @@ tb=tb/*_tb.cpp
     (ug_artifacts / "src").mkdir(parents=True)
     (ug_artifacts / "tb").mkdir()
     (ug_artifacts / "src" / "vector_scale_kernel.h").write_text(
-        "#pragma once\n#include <ap_int.h>\nvoid vector_scale_kernel(const ap_uint<32> *input, ap_uint<32> *output, ap_uint<16> scale, int length);\n",
+        "// Header file declares the HLS vector_scale top kernel interface.\n#pragma once // Include guard contract keeps this header single-included.\n#include <ap_int.h> // Include dependency provides fixed-width ap_uint port types.\n// Function contract: declares the HLS top kernel boundary shared by simulation and testbench.\nvoid vector_scale_kernel(const ap_uint<32> *input, ap_uint<32> *output, ap_uint<16> scale, int length);\n",
         encoding="utf-8",
     )
     (ug_artifacts / "src" / "vector_scale_kernel.cpp").write_text(
-        """#include "vector_scale_kernel.h"
+        """// Source file implements the HLS vector_scale top kernel datapath.
+#include "vector_scale_kernel.h" // Include dependency reuses the shared HLS kernel declaration.
+// Function contract: top kernel boundary maps memory ports to AXI and scales length elements.
 void vector_scale_kernel(const ap_uint<32> *input, ap_uint<32> *output, ap_uint<16> scale, int length) {
   // 中文注释: 接口协议和流水线约束。
-  #pragma HLS INTERFACE mode=m_axi port=input bundle=gmem0
-  #pragma HLS INTERFACE mode=m_axi port=output bundle=gmem1
-  #pragma HLS INTERFACE mode=s_axilite port=scale
-  #pragma HLS INTERFACE mode=s_axilite port=length
-  #pragma HLS INTERFACE mode=s_axilite port=return
-  #pragma HLS PIPELINE II=1
-  for (int i = 0; i < length; ++i) {
-    output[i] = input[i] * scale;
+  #pragma HLS INTERFACE mode=m_axi port=input bundle=gmem0 // Map input to the first AXI memory bundle.
+  #pragma HLS INTERFACE mode=m_axi port=output bundle=gmem1 // Map output to the second AXI memory bundle.
+  #pragma HLS INTERFACE mode=s_axilite port=scale // Expose scale as a control register.
+  #pragma HLS INTERFACE mode=s_axilite port=length // Expose length as a control register.
+  #pragma HLS INTERFACE mode=s_axilite port=return // Expose the kernel return control interface.
+  #pragma HLS PIPELINE II=1 // Request one vector element per cycle.
+  for (int i = 0; i < length; ++i) { // Loop intent iterates across the requested vector length.
+    output[i] = input[i] * scale; // Datapath assignment writes the scaled value to output memory.
   }
 }
 """,
         encoding="utf-8",
     )
     (ug_artifacts / "tb" / "vector_scale_kernel_tb.cpp").write_text(
-        """#include "../src/vector_scale_kernel.h"
-#include <iostream>
+        """// Testbench file validates vector_scale with deterministic PASS/FAIL behavior.
+#include "../src/vector_scale_kernel.h" // Include dependency imports the HLS top declaration.
+#include <iostream> // Include dependency provides PASS status output.
+// Function contract: testbench entrypoint sets up case data, calls the kernel, and checks expected output.
 int main() {
-  // case_nominal PASS FAIL
-  // case_boundary PASS FAIL
-  ap_uint<32> input[1] = {1};
-  ap_uint<32> output[1] = {0};
-  vector_scale_kernel(input, output, ap_uint<16>(2), 1);
-  std::cout << "PASS\\n";
-  return output[0] == 2 ? 0 : 1;
+  // Testbench case setup covers nominal and boundary PASS/FAIL labels.
+  // Expected output is 2 for input 1 and scale 2.
+  ap_uint<32> input[1] = {1}; // Case setup sample input buffer.
+  ap_uint<32> output[1] = {0}; // Expected output buffer starts cleared for comparison.
+  vector_scale_kernel(input, output, ap_uint<16>(2), 1); // Kernel call checks one memory transaction.
+  std::cout << "PASS\\n"; // PASS behavior emits a visible status marker.
+  return output[0] == 2 ? 0 : 1; // PASS/FAIL check compares observed output with expected value.
 }
 """,
         encoding="utf-8",
@@ -1059,7 +1226,13 @@ int main() {
     tb_vla_artifacts = base / "tb-vla-ok"
     shutil.copytree(ug_artifacts, tb_vla_artifacts)
     tb_path = tb_vla_artifacts / "tb" / "vector_scale_kernel_tb.cpp"
-    tb_path.write_text(tb_path.read_text(encoding="utf-8").replace("int main() {", "int main() {\n  int runtime_len = 1;\n  int tb_only[runtime_len];\n  tb_only[0] = 0;"), encoding="utf-8")
+    tb_path.write_text(
+        tb_path.read_text(encoding="utf-8").replace(
+            "int main() { // Run one deterministic host-side test.",
+            "int main() { // Run one deterministic host-side test.\n  int runtime_len = 1; // Keep the testbench-only VLA length dynamic.\n  int tb_only[runtime_len]; // Exercise VLA tolerance in testbench code only.\n  tb_only[0] = 0; // Touch the VLA so the compiler keeps it live.",
+        ),
+        encoding="utf-8",
+    )
     tb_vla_report = validate_hls_artifacts(_load_spec(), tb_vla_artifacts, run_external=False, readiness="static")
     assert tb_vla_report["ok"] is True, tb_vla_report
 
@@ -1083,7 +1256,10 @@ def _run_confidence_loop_checks(base: Path) -> None:
             "--skip-smoke",
             "--skip-compileall",
             "--skip-quick-validate",
+            "--skip-pytest",
             "--skip-remote",
+            "--gate-timeout-s",
+            "420",
             "--json-out",
             str(output),
         ],
@@ -1091,16 +1267,49 @@ def _run_confidence_loop_checks(base: Path) -> None:
         capture_output=True,
         text=True,
         encoding="utf-8",
+        timeout=600,
         check=False,
     )
     assert result.returncode == 0, result
     payload = json.loads(output.read_text(encoding="utf-8"))
     assert payload["confidence_status"] == "local_high_confidence", payload
     assert payload["confidence_scope"] == "local", payload
+    assert "pytest" not in payload["gates"], payload
+    assert payload["gates"]["verify_agents"]["status"] == "passed", payload
+    assert payload["gates"]["manage_docs_verify"]["status"] == "passed", payload
+    assert payload["gates"]["manage_dirs_verify"]["status"] == "passed", payload
+    assert payload["gates"]["comment_policy"]["status"] == "passed", payload
+    assert payload["gates"]["forward_test"]["status"] == "passed", payload
+    assert payload["gates"]["route_contract"]["status"] == "passed", payload
+    assert payload["gates"]["board_acceptance_declarations"]["status"] == "passed", payload
+    assert payload["gates"]["remote_board_acceptance"]["status"] == "passed", payload
+    assert payload["gates"]["remote_directory_contract"]["status"] == "passed", payload
     assert payload["gates"]["copyright_term_scan"]["status"] == "passed", payload
     assert "remote_vitis_acceptance" not in payload["gates"], payload
     assert "Final confidence requires remote Vitis acceptance." in payload["residual_risks"], payload
     assert "hls_array_reshape_vector_scale_spec.json" in payload["example_specs"], payload
+    assert "hls_2d_block_transform_spec.json" in payload["example_specs"], payload
+
+
+def _run_eval_checks(base: Path) -> None:
+    env = os.environ.copy()
+    env["PYTHONUTF8"] = "1"
+    env["PYTHONIOENCODING"] = "utf-8"
+    result = REAL_SUBPROCESS_RUN(
+        [sys.executable, "scripts/evaluate_skill.py", "--json"],
+        cwd=ROOT,
+        env=env,
+        capture_output=True,
+        text=True,
+        encoding="utf-8",
+        errors="replace",
+        check=False,
+    )
+    assert result.returncode == 0, result
+    payload = json.loads(result.stdout)
+    assert payload["with_skill"]["failed"] == 0, payload
+    assert payload["without_skill"]["passed"] < payload["with_skill"]["passed"], payload
+    assert payload["pass_rate_delta"] > 0, payload
 
 
 def _run_release_packaging_checks(base: Path) -> None:
@@ -1137,7 +1346,7 @@ def _run_release_packaging_checks(base: Path) -> None:
 
     dist_root = base / "release-dist"
     valid = REAL_SUBPROCESS_RUN(
-        [sys.executable, str(script), "--version", "0.1.9", "--dist-root", str(dist_root)],
+        [sys.executable, str(script), "--version", "0.2.0", "--dist-root", str(dist_root)],
         cwd=ROOT.parent,
         capture_output=True,
         text=True,

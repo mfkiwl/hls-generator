@@ -43,10 +43,36 @@
   "interfaces": {
     "top_function": "multi_m_axi_add_kernel",
     "arguments": [
-      {"name": "input_a", "type": "const ap_uint<32> *", "direction": "input", "interface": "m_axi", "bundle": "gmem_a", "depth": 1024},
-      {"name": "input_b", "type": "const ap_uint<32> *", "direction": "input", "interface": "m_axi", "bundle": "gmem_b", "depth": 1024},
-      {"name": "output", "type": "ap_uint<32> *", "direction": "output", "interface": "m_axi", "bundle": "gmem_out", "depth": 1024},
-      {"name": "length", "type": "int", "direction": "input", "interface": "s_axilite"}
+      {
+        "name": "input_a",
+        "type": "const ap_uint<32> *",
+        "direction": "input",
+        "interface": "m_axi",
+        "bundle": "gmem_a",
+        "depth": 1024
+      },
+      {
+        "name": "input_b",
+        "type": "const ap_uint<32> *",
+        "direction": "input",
+        "interface": "m_axi",
+        "bundle": "gmem_b",
+        "depth": 1024
+      },
+      {
+        "name": "output",
+        "type": "ap_uint<32> *",
+        "direction": "output",
+        "interface": "m_axi",
+        "bundle": "gmem_out",
+        "depth": 1024
+      },
+      {
+        "name": "length",
+        "type": "int",
+        "direction": "input",
+        "interface": "s_axilite"
+      }
     ],
     "control": "s_axilite"
   },
@@ -55,26 +81,66 @@
     "Keep input_a, input_b, and output on distinct m_axi bundles to preserve independent memory bandwidth.",
     "Use concrete depth values for every m_axi port."
   ],
-  "clock": {"period_ns": 10.0, "uncertainty_ns": 1.0},
-  "reset": {"strategy": "tool_default"},
+  "clock": {
+    "period_ns": 10.0,
+    "uncertainty_ns": 1.0
+  },
+  "reset": {
+    "strategy": "tool_default"
+  },
   "constraints": [
     "Use Vitis HLS compatible C++.",
     "Avoid dynamic allocation and recursion."
   ],
   "outputs": [
-    {"path": "src/multi_m_axi_add_kernel.h", "kind": "header", "language": "cpp"},
-    {"path": "src/multi_m_axi_add_kernel.cpp", "kind": "source", "language": "cpp"},
-    {"path": "tb/multi_m_axi_add_kernel_tb.cpp", "kind": "testbench", "language": "cpp"},
-    {"path": "hls_config.cfg", "kind": "config", "language": "ini"}
+    {
+      "path": "src/multi_m_axi_add_kernel.h",
+      "kind": "header",
+      "language": "cpp"
+    },
+    {
+      "path": "src/multi_m_axi_add_kernel.cpp",
+      "kind": "source",
+      "language": "cpp"
+    },
+    {
+      "path": "tb/multi_m_axi_add_kernel_tb.cpp",
+      "kind": "testbench",
+      "language": "cpp"
+    },
+    {
+      "path": "hls_config.cfg",
+      "kind": "config",
+      "language": "ini"
+    }
   ],
   "notes": [],
   "subfunctions": [],
-  "workflow": {},
+  "workflow": {
+    "board_acceptance": {
+      "profile": "u55c_m_axi_host",
+      "host_template": "binary_add_host"
+    }
+  },
   "performance": {
     "target_ii": 1,
     "max_length": 1024
   },
   "hls_profile": {
-    "example_pattern": "multi_m_axi"
+    "example_pattern": "multi_m_axi",
+    "required_metadata_fields": [
+      "bundle_map",
+      "traffic_independence",
+      "read_write_concurrency"
+    ],
+    "metadata": {
+      "bundle_map": {
+        "input_a": "gmem_a",
+        "input_b": "gmem_b",
+        "output": "gmem_out"
+      },
+      "traffic_independence": "The two reads and one write should stay on independent channels.",
+      "read_write_concurrency": "Concurrent read/read/write traffic is required to preserve throughput."
+    }
   }
 }

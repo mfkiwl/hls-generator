@@ -461,6 +461,7 @@ class SkillDependencyTests(unittest.TestCase):
                     "--skip-smoke",
                     "--skip-compileall",
                     "--skip-quick-validate",
+                    "--skip-pytest",
                     "--skip-remote",
                     "--json-out",
                     "reports/confidence-loop/missing-deps-test.json",

@@ -43,10 +43,32 @@
   "interfaces": {
     "top_function": "vector_scale_kernel",
     "arguments": [
-      {"name": "input", "type": "const ap_uint<32> *", "direction": "input", "interface": "m_axi", "bundle": "gmem0"},
-      {"name": "output", "type": "ap_uint<32> *", "direction": "output", "interface": "m_axi", "bundle": "gmem1"},
-      {"name": "scale", "type": "ap_uint<16>", "direction": "input", "interface": "s_axilite"},
-      {"name": "length", "type": "int", "direction": "input", "interface": "s_axilite"}
+      {
+        "name": "input",
+        "type": "const ap_uint<32> *",
+        "direction": "input",
+        "interface": "m_axi",
+        "bundle": "gmem0"
+      },
+      {
+        "name": "output",
+        "type": "ap_uint<32> *",
+        "direction": "output",
+        "interface": "m_axi",
+        "bundle": "gmem1"
+      },
+      {
+        "name": "scale",
+        "type": "ap_uint<16>",
+        "direction": "input",
+        "interface": "s_axilite"
+      },
+      {
+        "name": "length",
+        "type": "int",
+        "direction": "input",
+        "interface": "s_axilite"
+      }
     ],
     "control": "s_axilite"
   },
@@ -55,21 +77,47 @@
     "Use a pipelined loop with II=1 if memory bandwidth permits.",
     "Ignore elements at indexes greater than or equal to length."
   ],
-  "clock": {"period_ns": 10.0, "uncertainty_ns": 1.0},
-  "reset": {"strategy": "tool_default"},
+  "clock": {
+    "period_ns": 10.0,
+    "uncertainty_ns": 1.0
+  },
+  "reset": {
+    "strategy": "tool_default"
+  },
   "constraints": [
     "Use Vitis HLS compatible C++.",
     "Avoid dynamic allocation and recursion."
   ],
   "outputs": [
-    {"path": "src/vector_scale_kernel.h", "kind": "header", "language": "cpp"},
-    {"path": "src/vector_scale_kernel.cpp", "kind": "source", "language": "cpp"},
-    {"path": "tb/vector_scale_kernel_tb.cpp", "kind": "testbench", "language": "cpp"},
-    {"path": "hls_config.cfg", "kind": "config", "language": "ini"}
+    {
+      "path": "src/vector_scale_kernel.h",
+      "kind": "header",
+      "language": "cpp"
+    },
+    {
+      "path": "src/vector_scale_kernel.cpp",
+      "kind": "source",
+      "language": "cpp"
+    },
+    {
+      "path": "tb/vector_scale_kernel_tb.cpp",
+      "kind": "testbench",
+      "language": "cpp"
+    },
+    {
+      "path": "hls_config.cfg",
+      "kind": "config",
+      "language": "ini"
+    }
   ],
   "notes": [],
   "subfunctions": [],
-  "workflow": {},
+  "workflow": {
+    "board_acceptance": {
+      "profile": "u55c_m_axi_host",
+      "host_template": "vector_scale_host"
+    }
+  },
   "performance": {
     "target_ii": 1
   },

@@ -35,9 +35,24 @@
   "interfaces": {
     "top_function": "dataflow_axis_increment_kernel",
     "arguments": [
-      {"name": "in_stream", "type": "hls::stream<ap_uint<32> >&", "direction": "input", "interface": "axis"},
-      {"name": "out_stream", "type": "hls::stream<ap_uint<32> >&", "direction": "output", "interface": "axis"},
-      {"name": "length", "type": "int", "direction": "input", "interface": "s_axilite"}
+      {
+        "name": "in_stream",
+        "type": "hls::stream<ap_uint<32> >&",
+        "direction": "input",
+        "interface": "axis"
+      },
+      {
+        "name": "out_stream",
+        "type": "hls::stream<ap_uint<32> >&",
+        "direction": "output",
+        "interface": "axis"
+      },
+      {
+        "name": "length",
+        "type": "int",
+        "direction": "input",
+        "interface": "s_axilite"
+      }
     ],
     "control": "s_axilite"
   },
@@ -46,25 +61,63 @@
     "Use DATAFLOW only when the generated code has clear stream boundaries.",
     "Keep producer and consumer rates balanced or add explicit stream depth."
   ],
-  "clock": {"period_ns": 8.0, "uncertainty_ns": 0.8},
-  "reset": {"strategy": "tool_default"},
+  "clock": {
+    "period_ns": 8.0,
+    "uncertainty_ns": 0.8
+  },
+  "reset": {
+    "strategy": "tool_default"
+  },
   "constraints": [
     "Use hls::stream and ap_uint types.",
     "Avoid global-state coupling inside the dataflow region."
   ],
   "outputs": [
-    {"path": "src/dataflow_axis_increment_kernel.h", "kind": "header", "language": "cpp"},
-    {"path": "src/dataflow_axis_increment_kernel.cpp", "kind": "source", "language": "cpp"},
-    {"path": "tb/dataflow_axis_increment_kernel_tb.cpp", "kind": "testbench", "language": "cpp"},
-    {"path": "hls_config.cfg", "kind": "config", "language": "ini"}
+    {
+      "path": "src/dataflow_axis_increment_kernel.h",
+      "kind": "header",
+      "language": "cpp"
+    },
+    {
+      "path": "src/dataflow_axis_increment_kernel.cpp",
+      "kind": "source",
+      "language": "cpp"
+    },
+    {
+      "path": "tb/dataflow_axis_increment_kernel_tb.cpp",
+      "kind": "testbench",
+      "language": "cpp"
+    },
+    {
+      "path": "hls_config.cfg",
+      "kind": "config",
+      "language": "ini"
+    }
   ],
   "notes": [],
   "subfunctions": [],
-  "workflow": {},
+  "workflow": {
+    "board_acceptance": {
+      "profile": "not_board_runnable",
+      "reason": "AXI-Stream dataflow sample needs a dedicated stream host harness that is outside the validation-only scaffold set."
+    }
+  },
   "performance": {
     "target_ii": 1
   },
   "hls_profile": {
-    "example_pattern": "dataflow"
+    "example_pattern": "dataflow",
+    "required_metadata_fields": [
+      "stage_boundaries",
+      "channel_kind",
+      "channel_depth",
+      "cosim_required"
+    ],
+    "metadata": {
+      "stage_boundaries": "read_dataflow_axis_increment -> compute_dataflow_axis_increment -> write_dataflow_axis_increment",
+      "channel_kind": "fifo",
+      "channel_depth": 16,
+      "cosim_required": true
+    }
   }
 }

@@ -1,5 +1,14 @@
 # Integration Guide
 
+## Contents
+
+- [Local package boundary](#local-package-boundary)
+- [Stable facade](#stable-facade)
+- [Confirmed HLS inputs](#confirmed-hls-inputs)
+- [Provider mapping](#provider-mapping)
+- [HLS-only validation](#hls-only-validation)
+- [Customization boundary](#customization-boundary)
+
 ## Local package boundary
 
 This skill is a local, HLS-only Codex skill. Keep the repository root on
@@ -104,10 +113,11 @@ multiple Vitis versions are detected, hosts must ask the user to choose one and
 rerun with `--vitis-version <version>`. Static validation can still run with
 `run_external=False` and `readiness="static"`.
 
-Remote Vitis acceptance keeps the remote project directory by default for
-inspection. The JSON result includes `remote_dir`, a path relative to the
-selected erie server workdir. Only pass `--cleanup-remote` when the user asks
-to remove the remote validation artifacts after a successful run.
+Remote Vitis acceptance keeps results under a governed remote project root. The
+JSON result includes `remote_project_root`, `remote_conda_prefix`,
+`remote_run_dir`, `remote_backup_dir`, and `remote_dir`, all relative to the
+selected erie server workdir. Verified runs are archived into `backups/` by
+default instead of being left in the active `runs/` area.
 
 Comment language defaults to `auto`: resolve it from
 `~/.hls-generator/config.json`, or ask the user to choose `en` or `zh` before

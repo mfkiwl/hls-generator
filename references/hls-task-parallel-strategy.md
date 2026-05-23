@@ -1,6 +1,6 @@
 # HLS Task Parallel Strategy Notes
 
-Source note: distilled from imported task-level and interface example material. This file records reusable rules, not example-directory names or one-off scripts.
+Source note: this file records reusable task-level and interface rules, not example-directory names or one-off scripts.
 
 ## Control-Driven Versus Data-Driven Parallelism
 

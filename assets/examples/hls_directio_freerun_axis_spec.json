@@ -35,8 +35,18 @@
   "interfaces": {
     "top_function": "directio_freerun_axis_increment_kernel",
     "arguments": [
-      {"name": "in_stream", "type": "hls::stream<ap_uint<32> >&", "direction": "input", "interface": "axis"},
-      {"name": "out_stream", "type": "hls::stream<ap_uint<32> >&", "direction": "output", "interface": "axis"}
+      {
+        "name": "in_stream",
+        "type": "hls::stream<ap_uint<32> >&",
+        "direction": "input",
+        "interface": "axis"
+      },
+      {
+        "name": "out_stream",
+        "type": "hls::stream<ap_uint<32> >&",
+        "direction": "output",
+        "interface": "axis"
+      }
     ],
     "control": "ap_ctrl_none"
   },
@@ -45,35 +55,73 @@
     "Keep the free-running control semantics explicit in comments and pragmas.",
     "Preserve the ap_ctrl_none contract."
   ],
-  "clock": {"period_ns": 8.0, "uncertainty_ns": 0.8},
-  "reset": {"strategy": "tool_default"},
+  "clock": {
+    "period_ns": 8.0,
+    "uncertainty_ns": 0.8
+  },
+  "reset": {
+    "strategy": "tool_default"
+  },
   "constraints": [
     "Use free-running control only because the control protocol was confirmed.",
     "Avoid hidden global state."
   ],
   "outputs": [
-    {"path": "src/directio_freerun_axis_increment_kernel.h", "kind": "header", "language": "cpp"},
-    {"path": "src/directio_freerun_axis_increment_kernel.cpp", "kind": "source", "language": "cpp"},
-    {"path": "tb/directio_freerun_axis_increment_kernel_tb.cpp", "kind": "testbench", "language": "cpp"},
-    {"path": "hls_config.cfg", "kind": "config", "language": "ini"}
+    {
+      "path": "src/directio_freerun_axis_increment_kernel.h",
+      "kind": "header",
+      "language": "cpp"
+    },
+    {
+      "path": "src/directio_freerun_axis_increment_kernel.cpp",
+      "kind": "source",
+      "language": "cpp"
+    },
+    {
+      "path": "tb/directio_freerun_axis_increment_kernel_tb.cpp",
+      "kind": "testbench",
+      "language": "cpp"
+    },
+    {
+      "path": "hls_config.cfg",
+      "kind": "config",
+      "language": "ini"
+    }
   ],
   "notes": [],
   "subfunctions": [],
-  "workflow": {},
+  "workflow": {
+    "board_acceptance": {
+      "profile": "not_board_runnable",
+      "reason": "Free-running direct I/O kernels require a persistent stream harness beyond the generic board scaffold."
+    }
+  },
   "performance": {
     "target_ii": 1
   },
   "hls_profile": {
     "example_pattern": "directio_freerun",
-    "allowed_libraries": ["ap_int.h", "hls_stream.h"],
+    "allowed_libraries": [
+      "ap_int.h",
+      "hls_stream.h"
+    ],
     "required_headers": [],
-    "required_pragmas": ["#pragma HLS INTERFACE ap_ctrl_none port=return", "#pragma HLS INTERFACE axis port=in_stream", "#pragma HLS INTERFACE axis port=out_stream"],
-    "required_metadata_fields": ["free_running", "control_protocol"],
+    "required_pragmas": [
+      "#pragma HLS INTERFACE ap_ctrl_none port=return",
+      "#pragma HLS INTERFACE axis port=in_stream",
+      "#pragma HLS INTERFACE axis port=out_stream"
+    ],
+    "required_metadata_fields": [
+      "free_running",
+      "control_protocol"
+    ],
     "metadata": {
       "free_running": true,
       "control_protocol": "ap_ctrl_none"
     },
     "forbidden_combinations": [],
-    "required_cfg_entries": ["clock=8.0"]
+    "required_cfg_entries": [
+      "clock=8.0"
+    ]
   }
 }

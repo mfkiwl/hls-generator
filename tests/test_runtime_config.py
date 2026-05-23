@@ -38,6 +38,17 @@ class RuntimeConfigTests(unittest.TestCase):
 
         self.assertEqual(remote_config["vitis_profiles"], {})
 
+    def test_remote_validation_config_exposes_directory_contract(self) -> None:
+        from runtime.hls_generator import config as config_module
+
+        remote_config = config_module.remote_validation_config()
+
+        self.assertEqual(remote_config["directory_contract"]["project_root_dirname"], "erie-hls-generator")
+        self.assertEqual(remote_config["directory_contract"]["conda_prefix_path"], ".conda/hls-generator")
+        self.assertEqual(remote_config["directory_contract"]["active_run_path_template"], "runs/<run-id>")
+        self.assertEqual(remote_config["directory_contract"]["backup_run_path_template"], "backups/<run-id>")
+        self.assertTrue(remote_config["directory_contract"]["archive_after_verification"])
+
 
 if __name__ == "__main__":
     unittest.main()

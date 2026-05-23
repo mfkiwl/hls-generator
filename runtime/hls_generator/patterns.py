@@ -6,6 +6,62 @@ from typing import Any
 
 
 PATTERN_RULES: dict[str, dict[str, Any]] = {
+    "minimal_vitis_pipeline": {
+        "label": "minimal Vitis kernel compile/link structure",
+        "metadata_fields": {
+            "compile_link_boundary": "Confirm the compile/link boundary that the minimal Vitis kernel flow must preserve.",
+            "top_kernel_role": "Confirm the role of the top kernel source in the minimal Vitis project layout.",
+            "bundle_naming_rule": "Confirm the stable bundle naming rule that downstream Vitis integration should preserve.",
+        },
+        "prompt_rules": [
+            "For minimal Vitis kernel patterns, keep the compile/link split clear: do not mix package or host orchestration into the generated HLS source.",
+            "Use stable bundle names and explicit depth values so downstream Vitis compile/link flows can plan around the generated HLS interface cleanly.",
+            "Treat the top kernel source as the primary home of the interface contract and compute logic, while keeping wider project orchestration out of scope.",
+        ],
+    },
+    "host_kernel_split": {
+        "label": "kernel source and helper-header structure",
+        "metadata_fields": {
+            "kernel_source_boundary": "Confirm the boundary between the main kernel source and the supporting helper headers.",
+            "helper_header_role": "Confirm what responsibilities belong in helper headers instead of the top kernel source.",
+            "hotspot_file_strategy": "Confirm how pragma-dense hotspot logic should stay concentrated instead of spreading across every file.",
+        },
+        "prompt_rules": [
+            "For host-kernel split patterns, keep helper header responsibilities distinct from the main kernel source so the top HLS file still owns the visible interface contract.",
+            "Concentrate dense pragma usage in a small number of hotspot helper/source files rather than scattering complex directives uniformly across all files.",
+            "Do not mix package or host orchestration into the generated HLS source even when the wider project uses separate host or package stages.",
+        ],
+    },
+    "array_partition": {
+        "label": "local-buffer array partition",
+        "metadata_fields": {
+            "target_buffer": "Confirm the target buffer that needs ARRAY_PARTITION before generation.",
+            "partition_dim": "Confirm the partition dim that matches the contended access dimension.",
+            "partition_type": "Confirm the partition type (complete, cyclic, or block) before generation.",
+            "partition_factor": "Confirm the partition factor required to relieve the parallel access bottleneck.",
+            "contention_reason": "Confirm the memory contention reason that justifies ARRAY_PARTITION.",
+        },
+        "prompt_rules": [
+            "For ARRAY_PARTITION patterns, treat the directive as a response to a specific parallel access bottleneck, not as a generic speed hint.",
+            "When an outer loop is pipelined, account for the implied inner-loop concurrency and bind the partition dimension, type, and factor to the accessed dimension identified by schedule-viewer or equivalent report evidence.",
+            "Explain why ARRAY_PARTITION is better than ARRAY_RESHAPE for the confirmed target buffer and do not combine them on the same variable.",
+        ],
+    },
+    "array_reshape": {
+        "label": "local-buffer array reshape",
+        "metadata_fields": {
+            "target_buffer": "Confirm the target buffer that needs ARRAY_RESHAPE before generation.",
+            "reshape_dim": "Confirm the reshape dim that matches the adjacent access dimension.",
+            "reshape_type": "Confirm the reshape type used for the widened local view.",
+            "adjacent_access_reason": "Confirm why adjacent elements are consumed together on the reshaped buffer.",
+            "bandwidth_bottleneck": "Confirm the bandwidth bottleneck, preferably from schedule-viewer or equivalent report evidence.",
+        },
+        "prompt_rules": [
+            "For ARRAY_RESHAPE patterns, widen the storage or local word only when adjacent elements are consumed together and the access pattern justifies it.",
+            "When an outer loop is pipelined, account for the implied inner-loop concurrency and use schedule-viewer or equivalent report evidence to tie ARRAY_RESHAPE to the real load/store bottleneck.",
+            "Explain why ARRAY_RESHAPE is preferred over ARRAY_PARTITION for the confirmed target buffer and keep the reshape dimension aligned with the adjacent-access story.",
+        ],
+    },
     "axi4_burst": {
         "label": "AXI4 burst/coalesced memory",
         "metadata_fields": {
@@ -15,6 +71,35 @@ PATTERN_RULES: dict[str, dict[str, Any]] = {
         "prompt_rules": [
             "When the pattern is AXI4 burst/coalescing, keep memory access contiguous, preserve an explicit burst length, and explain why the chosen loop order enables burst transfers.",
             "Do not claim burst throughput unless the access pattern is sequential enough for the configured max burst length and the cfg/interface settings match it.",
+        ],
+    },
+    "dataflow": {
+        "label": "read-compute-write dataflow",
+        "metadata_fields": {
+            "stage_boundaries": "Confirm the explicit read/compute/write stage boundaries before generating a DATAFLOW design.",
+            "channel_kind": "Confirm the channel kind inferred or required between DATAFLOW stages.",
+            "channel_depth": "Confirm the FIFO or channel depth needed between DATAFLOW stages.",
+            "cosim_required": "Confirm that co-simulation or dataflow viewer validation is required for this DATAFLOW design.",
+        },
+        "prompt_rules": [
+            "For DATAFLOW patterns, default to an explicit read/compute/write stage split with named helper regions or functions and clear channel ownership.",
+            "Treat DATAFLOW as a task-architecture decision that must preserve stage boundaries, FIFO depth assumptions, and backpressure behavior.",
+            "Do not claim the DATAFLOW design is complete from syntax alone; require co-simulation/dataflow-viewer style evidence for FIFO sizing, stalls, and throughput confirmation.",
+        ],
+    },
+    "fixed_point": {
+        "label": "fixed-point numeric strategy",
+        "metadata_fields": {
+            "numeric_range": "Confirm the fixed-point numeric range that the kernel must preserve.",
+            "integer_bits": "Confirm the number of integer bits required by the fixed-point design.",
+            "quantization_mode": "Confirm the fixed-point quantization mode before generation.",
+            "overflow_mode": "Confirm the fixed-point overflow mode before generation.",
+            "error_budget": "Confirm the acceptable fixed-point error budget or tolerance.",
+        },
+        "prompt_rules": [
+            "For fixed-point patterns, make numeric range, integer bits, quantization mode, overflow mode, and error budget explicit in the generated comments and helper choices.",
+            "Do not silently translate a floating-point tutorial idea into fixed-point code without preserving the confirmed numeric contract and oracle expectations.",
+            "Use fixed-point widths as a hardware decision that remains reviewable across device migration, report review, and regression vectors.",
         ],
     },
     "line_buffer_stencil": {
@@ -27,6 +112,19 @@ PATTERN_RULES: dict[str, dict[str, Any]] = {
         "prompt_rules": [
             "For line-buffer/stencil patterns, make the window shape, border policy, and local line-buffer ownership explicit before optimization.",
             "Use local buffer comments and pragmas to explain how the stencil reuses neighboring samples without mixing ARRAY_PARTITION and ARRAY_RESHAPE on the same buffer.",
+        ],
+    },
+    "multi_m_axi": {
+        "label": "multi-m_axi bandwidth split",
+        "metadata_fields": {
+            "bundle_map": "Confirm the bundle map for each independent m_axi argument before generation.",
+            "traffic_independence": "Confirm which traffic groups must stay on independent memory channels.",
+            "read_write_concurrency": "Confirm the intended read/write concurrency that justifies multiple m_axi bundles.",
+        },
+        "prompt_rules": [
+            "For multi-m_axi patterns, make the bundle map explicit and keep each independent traffic group aligned with its own memory channel.",
+            "Do not stop at bundle names alone; explain how the chosen bundle split preserves the confirmed read/read/write concurrency and arbitration intent.",
+            "When multiple masters share no data dependence, preserve distinct bundles and concrete depths for each channel so co-simulation matches the intended bandwidth split.",
         ],
     },
     "reduction_tree": {
@@ -155,6 +253,13 @@ def pattern_open_questions(spec: dict[str, Any]) -> list[str]:
     for key, question in metadata_fields.items():
         if metadata.get(key) in (None, "", [], {}):
             questions.append(str(question))
+    for key in profile.get("required_metadata_fields", []) or []:
+        field = str(key)
+        if metadata.get(field) in (None, "", [], {}):
+            human = field.replace("_", " ")
+            question = f"Confirm the {human} metadata before generation."
+            if question not in questions:
+                questions.append(question)
     return questions
 
 

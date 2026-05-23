@@ -1,0 +1,160 @@
+{
+  "name": "template_multi_m_axi_kernel",
+  "target": "hls",
+  "design_requirements": {
+    "target": "hls",
+    "pipeline_required": true,
+    "streamability": "streamable",
+    "interface_family": "axi4",
+    "interface_profile": {
+      "axi4_variant": "axi4_full",
+      "role": "master",
+      "read_write_mode": "read_write",
+      "data_width": 32,
+      "addr_width": 32,
+      "id_width": 1,
+      "burst_support": false,
+      "clock_reset_domain": {
+        "clock": "i_axi_aclk",
+        "reset": "i_axi_arstn"
+      }
+    },
+    "confirmed_by_user": true,
+    "confirmation_notes": "Use distinct m_axi bundles only when traffic groups and concurrency needs are explicit."
+  },
+  "streamability": "streamable",
+  "interface_family": "axi4",
+  "interface_profile": {
+    "axi4_variant": "axi4_full",
+    "role": "master",
+    "read_write_mode": "read_write",
+    "data_width": 32,
+    "addr_width": 32,
+    "id_width": 1,
+    "burst_support": false,
+    "clock_reset_domain": {
+      "clock": "i_axi_aclk",
+      "reset": "i_axi_arstn"
+    }
+  },
+  "pipeline_required": true,
+  "codegen_plan_required": true,
+  "description": "Template for a kernel that splits independent read/write traffic across multiple m_axi bundles.",
+  "interfaces": {
+    "top_function": "template_multi_m_axi_kernel",
+    "arguments": [
+      {
+        "name": "input_a",
+        "type": "const ap_uint<32> *",
+        "direction": "input",
+        "interface": "m_axi",
+        "bundle": "gmem_a",
+        "depth": 1024
+      },
+      {
+        "name": "input_b",
+        "type": "const ap_uint<32> *",
+        "direction": "input",
+        "interface": "m_axi",
+        "bundle": "gmem_b",
+        "depth": 1024
+      },
+      {
+        "name": "output",
+        "type": "ap_uint<32> *",
+        "direction": "output",
+        "interface": "m_axi",
+        "bundle": "gmem_out",
+        "depth": 1024
+      },
+      {
+        "name": "length",
+        "type": "int",
+        "direction": "input",
+        "interface": "s_axilite"
+      }
+    ],
+    "control": "s_axilite"
+  },
+  "behavior": [
+    "Replace these sample semantics with the confirmed independent-channel behavior.",
+    "Preserve the bundle split that matches the intended read/read/write overlap."
+  ],
+  "clock": {
+    "period_ns": 10.0,
+    "uncertainty_ns": 1.0
+  },
+  "reset": {
+    "strategy": "tool_default"
+  },
+  "constraints": [
+    "Keep concrete depth values for every m_axi port.",
+    "Do not collapse independent traffic groups onto one bundle without explicit confirmation."
+  ],
+  "outputs": [
+    {
+      "path": "src/template_multi_m_axi_kernel.h",
+      "kind": "header",
+      "language": "cpp"
+    },
+    {
+      "path": "src/template_multi_m_axi_kernel.cpp",
+      "kind": "source",
+      "language": "cpp"
+    },
+    {
+      "path": "tb/template_multi_m_axi_kernel_tb.cpp",
+      "kind": "testbench",
+      "language": "cpp"
+    },
+    {
+      "path": "hls_config.cfg",
+      "kind": "config",
+      "language": "ini"
+    }
+  ],
+  "notes": [],
+  "subfunctions": [],
+  "workflow": {
+    "board_acceptance": {
+      "profile": "u55c_m_axi_host",
+      "host_template": "binary_add_host"
+    }
+  },
+  "performance": {
+    "target_ii": 1,
+    "max_length": 1024
+  },
+  "hls_profile": {
+    "example_pattern": "multi_m_axi",
+    "allowed_libraries": [
+      "ap_int.h"
+    ],
+    "required_headers": [
+      "ap_int.h"
+    ],
+    "required_pragmas": [
+      "#pragma HLS INTERFACE m_axi port=input_a bundle=gmem_a",
+      "#pragma HLS INTERFACE m_axi port=input_b bundle=gmem_b",
+      "#pragma HLS INTERFACE m_axi port=output bundle=gmem_out"
+    ],
+    "required_metadata_fields": [
+      "bundle_map",
+      "traffic_independence",
+      "read_write_concurrency"
+    ],
+    "metadata": {
+      "bundle_map": {
+        "input_a": "gmem_a",
+        "input_b": "gmem_b",
+        "output": "gmem_out"
+      },
+      "traffic_independence": "Each traffic group owns an independent memory channel.",
+      "read_write_concurrency": "Concurrent read/read/write overlap is required to preserve throughput."
+    },
+    "forbidden_combinations": [],
+    "required_cfg_entries": [
+      "clock=10.0"
+    ]
+  }
+}

@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import json
 import os
+import re
 import shlex
 import subprocess
 from dataclasses import dataclass
@@ -237,11 +238,11 @@ def _mock_file_contents(context: GenerationContext, files: list[dict[str, Any]])
             rel_path = str(file_entry["path"])
             suffix = Path(rel_path).suffix.lower()
             if suffix in {".h", ".hpp"}:
-                contents[rel_path] = _mock_hls_header_text(spec, context.comment_language)
+                contents[rel_path] = _ensure_hls_line_comment_coverage(_mock_hls_header_text(spec, context.comment_language), context.comment_language)
             elif suffix in {".cpp", ".cc", ".cxx"} and "_tb" not in Path(rel_path).stem:
-                contents[rel_path] = _mock_hls_source_text(spec, header_name, context.comment_language)
+                contents[rel_path] = _ensure_hls_line_comment_coverage(_mock_hls_source_text(spec, header_name, context.comment_language), context.comment_language)
             elif suffix in {".cpp", ".cc", ".cxx"}:
-                contents[rel_path] = _mock_hls_testbench_text(spec, vectors, vector_hash, context.comment_language)
+                contents[rel_path] = _ensure_hls_line_comment_coverage(_mock_hls_testbench_text(spec, vectors, vector_hash, context.comment_language), context.comment_language)
             elif suffix == ".cfg":
                 contents[rel_path] = _mock_hls_cfg_text(spec, files)
             else:
@@ -318,6 +319,21 @@ def _mock_vectors(spec: dict[str, Any]) -> list[dict[str, Any]]:
                 "checkpoints": {"length": 2, "first_output": 1},
             },
         ]
+    if pattern == "dataflow" and {"input", "output", "rows", "cols"}.issubset(arguments):
+        return [
+            {
+                "id": "case_nominal",
+                "inputs": {"input": [1, 2, 3, 4], "rows": 2, "cols": 2},
+                "expected_outputs": {"output": [2, 3, 4, 5]},
+                "checkpoints": {"rows": 2, "cols": 2, "first_output": 2},
+            },
+            {
+                "id": "case_boundary",
+                "inputs": {"input": [5, 7, 9], "rows": 1, "cols": 3},
+                "expected_outputs": {"output": [6, 8, 10]},
+                "checkpoints": {"rows": 1, "cols": 3, "first_output": 6},
+            },
+        ]
     if pattern == "directio_freerun" and {"in_stream", "out_stream"}.issubset(arguments):
         return [
             {
@@ -361,6 +377,21 @@ def _mock_vectors(spec: dict[str, Any]) -> list[dict[str, Any]]:
                 "inputs": {"input_a": [9, 0], "input_b": [1, 7], "length": 2},
                 "expected_outputs": {"output": [10, 7]},
                 "checkpoints": {"length": 2, "first_output": 10},
+            },
+        ]
+    if pattern == "host_kernel_split" and {"input", "output", "length"}.issubset(arguments):
+        return [
+            {
+                "id": "case_nominal",
+                "inputs": {"input": [1, 2, 3], "length": 3},
+                "expected_outputs": {"output": [2, 3, 4]},
+                "checkpoints": {"length": 3, "first_output": 2},
+            },
+            {
+                "id": "case_boundary",
+                "inputs": {"input": [0, 15], "length": 2},
+                "expected_outputs": {"output": [1, 16]},
+                "checkpoints": {"length": 2, "first_output": 1},
             },
         ]
     if {"in_stream", "out_stream", "length"}.issubset(arguments):
@@ -472,6 +503,52 @@ def _mock_hls_helpers_text(spec: dict[str, Any], comment_language: str) -> str:
     }
     stream_name = "task_stream" if pattern == "task_graph" else "mid_stream"
     result_name = "task_result_stream" if pattern == "task_graph" else "result_stream"
+    if pattern == "dataflow" and {"input", "output", "rows", "cols"}.issubset(arg_names):
+        return f'''static void read_block(const ap_uint<32>* input, hls::stream<ap_uint<32> >& read_stream, int rows, int cols) {{
+  // {_comment(comment_language, 'Read block isolates the flat memory walk before the row transform stage.', 'read_block 在行变换前先隔离扁平存储读取。')}
+  int total = rows * cols;
+  for (int i = 0; i < total; ++i) {{
+    #pragma HLS PIPELINE II=1
+    read_stream.write(input[i]);
+  }}
+}}
+
+static void row_pass(hls::stream<ap_uint<32> >& read_stream, hls::stream<ap_uint<32> >& row_stream, int rows, int cols) {{
+  // {_comment(comment_language, 'Row pass models the first block-local transform stage under DATAFLOW.', 'row_pass 模拟 DATAFLOW 下的第一段块内行变换。')}
+  int total = rows * cols;
+  for (int i = 0; i < total; ++i) {{
+    #pragma HLS PIPELINE II=1
+    row_stream.write(read_stream.read());
+  }}
+}}
+
+static void transpose_or_reorder(hls::stream<ap_uint<32> >& row_stream, hls::stream<ap_uint<32> >& reorder_stream, int rows, int cols) {{
+  // {_comment(comment_language, 'Transpose or reorder keeps the 2D block skeleton explicit even in the mock implementation.', 'transpose_or_reorder 让二维块重排骨架在 mock 中仍保持显式。')}
+  int total = rows * cols;
+  for (int i = 0; i < total; ++i) {{
+    #pragma HLS PIPELINE II=1
+    reorder_stream.write(row_stream.read());
+  }}
+}}
+
+static void col_pass(hls::stream<ap_uint<32> >& reorder_stream, hls::stream<ap_uint<32> >& col_stream, int rows, int cols) {{
+  // {_comment(comment_language, 'Column pass models the second transform stage after the reorder boundary.', 'col_pass 模拟重排边界后的第二段列变换。')}
+  int total = rows * cols;
+  for (int i = 0; i < total; ++i) {{
+    #pragma HLS PIPELINE II=1
+    ap_uint<32> value = reorder_stream.read();
+    col_stream.write(value + 1);
+  }}
+}}
+
+static void write_block(hls::stream<ap_uint<32> >& col_stream, ap_uint<32>* output, int rows, int cols) {{
+  // {_comment(comment_language, 'Write block drains the transformed block back to flat memory.', 'write_block 将变换后的块结果回写到扁平存储。')}
+  int total = rows * cols;
+  for (int i = 0; i < total; ++i) {{
+    #pragma HLS PIPELINE II=1
+    output[i] = col_stream.read();
+  }}
+}}'''
     if pattern == "task_graph":
         if {"input", "output", "length"}.issubset(arg_names):
             return f'''static void load_{name}(const ap_uint<32>* input, hls::stream<ap_uint<32> >& {stream_name}, hls::stream<int>& count_stream, int length) {{
@@ -569,6 +646,8 @@ def _mock_hls_testbench_text(spec: dict[str, Any], vectors: list[dict[str, Any]]
         body = _mock_multi_m_axi_cases(spec, top, vectors, comment_language)
     elif {"input", "output", "scale", "length"}.issubset(arg_names):
         body = _mock_vector_scale_cases(spec, top, vectors, comment_language)
+    elif {"input", "output", "rows", "cols"}.issubset(arg_names):
+        body = _mock_block_transform_cases(spec, top, vectors, comment_language)
     elif {"input", "output", "length"}.issubset(arg_names):
         body = _mock_input_output_cases(spec, top, vectors, comment_language)
     elif {"in_stream", "out_stream", "length"}.issubset(arg_names):
@@ -790,7 +869,23 @@ def _mock_hls_body(spec: dict[str, Any]) -> str:
     tree_accum += (partial0 + partial1) + (partial2 + partial3);
   }
   output[0] = tree_accum;"""
+        if pattern == "host_kernel_split":
+            return "  for (int i = 0; i < length; ++i) {\n    output[i] = input[i] + 1;\n  }"
         return "  for (int i = 0; i < length; ++i) {\n    output[i] = input[i];\n  }"
+    if pattern == "dataflow" and {"input", "output", "rows", "cols"}.issubset(arg_names):
+        return """  hls::stream<ap_uint<32> > read_stream;
+  hls::stream<ap_uint<32> > row_stream;
+  hls::stream<ap_uint<32> > reorder_stream;
+  hls::stream<ap_uint<32> > col_stream;
+  #pragma HLS STREAM variable=read_stream depth=16
+  #pragma HLS STREAM variable=row_stream depth=16
+  #pragma HLS STREAM variable=reorder_stream depth=16
+  #pragma HLS STREAM variable=col_stream depth=16
+  read_block(input, read_stream, rows, cols);
+  row_pass(read_stream, row_stream, rows, cols);
+  transpose_or_reorder(row_stream, reorder_stream, rows, cols);
+  col_pass(reorder_stream, col_stream, rows, cols);
+  write_block(col_stream, output, rows, cols);"""
     if {"in_stream", "out_stream"}.issubset(arg_names):
         if pattern in {"dataflow", "task_graph"} and "length" in arg_names:
             name = str(spec.get("name") or "kernel")
@@ -931,6 +1026,50 @@ def _mock_input_output_cases(spec: dict[str, Any], top: str, vectors: list[dict[
       std::cout << (double)output[i];
     }}
     std::cout << "]}},\\"checkpoints\\":{{\\"length\\":{length},\\"first_output\\":" << (double)output[0] << "}}}}\\n";
+    if (!pass) failures++;
+  }}''')
+    return "\n".join(blocks)
+
+
+def _mock_block_transform_cases(spec: dict[str, Any], top: str, vectors: list[dict[str, Any]], comment_language: str) -> str:
+    arguments = {
+        str(item.get("name")): item
+        for item in spec.get("interfaces", {}).get("arguments", [])
+        if isinstance(item, dict) and item.get("name")
+    }
+    interface_depth = max(_m_axi_depth(spec, arguments.get("input", {})), _m_axi_depth(spec, arguments.get("output", {})))
+    input_type = _argument_storage_type(arguments.get("input", {}))
+    output_type = _argument_storage_type(arguments.get("output", {}))
+    blocks: list[str] = []
+    for case in vectors:
+        inputs = case.get("inputs", {})
+        values = [float(item) for item in inputs.get("input", [])]
+        expected = [float(item) for item in case.get("expected_outputs", {}).get("output", [])]
+        rows = int(inputs.get("rows", 1))
+        cols = int(inputs.get("cols", len(values)))
+        total = max(1, rows * cols, len(values), len(expected))
+        values_text = ", ".join(_literal_number(item) for item in values) or "0"
+        expected_text = ", ".join(_literal_number(item) for item in expected) or "0"
+        array_depth = max(1, interface_depth, total)
+        observed_bound = max(1, len(expected))
+        blocks.append(f'''  {{
+    // {_comment(comment_language, f'Run block-transform case {case["id"]} and compare the staged DATAFLOW output.', f'执行二维块变换用例 {case["id"]} 并比较分段 DATAFLOW 输出。')}
+    {input_type} input[{array_depth}] = {{{values_text}}};
+    {output_type} output[{array_depth}] = {{}};
+    const double expected[{observed_bound}] = {{{expected_text}}};
+    {top}(input, output, {rows}, {cols});
+    bool pass = true;
+    for (int i = 0; i < {observed_bound}; ++i) {{
+      if ((double)output[i] != expected[i]) {{
+        pass = false;
+      }}
+    }}
+    std::cout << "{REFERENCE_RESULT_TAG} {{\\"case_id\\":\\"{case["id"]}\\",\\"status\\":\\"" << (pass ? "PASS" : "FAIL") << "\\",\\"outputs\\":{{\\"output\\":[";
+    for (int i = 0; i < {observed_bound}; ++i) {{
+      if (i != 0) std::cout << ",";
+      std::cout << (double)output[i];
+    }}
+    std::cout << "]}},\\"checkpoints\\":{{\\"rows\\":{rows},\\"cols\\":{cols},\\"first_output\\":" << (double)output[0] << "}}}}\\n";
     if (!pass) failures++;
   }}''')
     return "\n".join(blocks)
@@ -1146,3 +1285,118 @@ def _mock_directio_unit_cases(top: str, vectors: list[dict[str, Any]], comment_l
 
 def _comment(comment_language: str, english: str, chinese: str) -> str:
     return chinese if comment_language == "zh" else english
+
+
+def _ensure_hls_line_comment_coverage(text: str, comment_language: str) -> str:
+    lines: list[str] = []
+    raw_lines = text.splitlines()
+    if raw_lines and not _is_comment_only_line(raw_lines[0].strip()):
+        lines.append(f"// {_file_header_comment_for(text, comment_language)}")
+    for raw_line in raw_lines:
+        stripped = raw_line.strip()
+        if not stripped or _is_comment_only_line(stripped):
+            lines.append(raw_line)
+            continue
+        code = _code_without_comment(raw_line).rstrip()
+        code_stripped = code.strip()
+        if _is_trivial_hls_line(code_stripped):
+            lines.append(code)
+            continue
+        if _is_function_signature_line(code_stripped):
+            if not lines or not _is_comment_only_line(lines[-1].strip()):
+                lines.append(f"{_indent_for(raw_line)}// {_function_comment_for(code_stripped, comment_language)}")
+            lines.append(code)
+            continue
+        if _line_has_comment(stripped) and not _has_generic_generated_comment(stripped):
+            lines.append(raw_line)
+            continue
+        lines.append(f"{code} // {_line_comment_for(code_stripped, comment_language)}")
+    return "\n".join(lines) + "\n"
+
+
+def _line_has_comment(stripped: str) -> bool:
+    return "//" in stripped or "/*" in stripped or "*/" in stripped
+
+
+def _is_comment_only_line(stripped: str) -> bool:
+    return stripped.startswith(("//", "/*", "*"))
+
+
+def _code_without_comment(line: str) -> str:
+    if "//" in line:
+        return line.split("//", 1)[0]
+    if "/*" in line:
+        return line.split("/*", 1)[0]
+    return line
+
+
+def _indent_for(line: str) -> str:
+    return line[: len(line) - len(line.lstrip())]
+
+
+def _has_generic_generated_comment(stripped: str) -> bool:
+    lowered = stripped.lower()
+    return any(
+        text in lowered
+        for text in (
+            "keep the generated hls artifact line reviewable",
+            "preserve the generated data movement or computation step",
+            "open or close the generated hardware scope",
+        )
+    )
+
+
+def _is_function_signature_line(stripped: str) -> bool:
+    if not ("(" in stripped and ")" in stripped and (stripped.endswith(";") or stripped.endswith("{"))):
+        return False
+    if stripped.startswith(("hls::stream", "hls::task")):
+        return False
+    if stripped.split("(", 1)[0].strip().split(" ")[0] in {"if", "for", "while", "switch", "return"}:
+        return False
+    return bool(re.match(r"^(?:[\w:<>~,\*&\[\]\s]+)\s+[A-Za-z_]\w*(?:::[A-Za-z_]\w*)?\s*\([^;{}]*\)\s*(?:const\s*)?(?:;|\{)$", stripped))
+
+
+def _is_trivial_hls_line(stripped: str) -> bool:
+    return stripped in {"{", "}", "};", "};"} or stripped.startswith("return ")
+
+
+def _file_header_comment_for(text: str, comment_language: str) -> str:
+    if "int main()" in text:
+        return _comment(comment_language, "Testbench file validates generated HLS cases and PASS/FAIL reporting.", "测试文件验证生成的 HLS 用例和 PASS/FAIL 上报。")
+    if "#pragma once" in text:
+        return _comment(comment_language, "Header file declares the generated Vitis HLS kernel interface.", "头文件声明生成的 Vitis HLS 内核接口。")
+    return _comment(comment_language, "Source file implements the generated Vitis HLS kernel datapath.", "源码文件实现生成的 Vitis HLS 内核数据通路。")
+
+
+def _function_comment_for(stripped: str, comment_language: str) -> str:
+    if stripped.startswith("int main"):
+        return _comment(comment_language, "Testbench entrypoint prepares cases, calls the kernel, and reports PASS or FAIL.", "测试入口准备用例、调用内核并报告 PASS 或 FAIL。")
+    if stripped.endswith(";"):
+        return _comment(comment_language, "Top function declaration contract records the generated hardware boundary.", "顶层函数声明契约记录生成的硬件边界。")
+    return _comment(comment_language, "Top function contract defines the generated hardware boundary and interface behavior.", "顶层函数契约定义生成的硬件边界和接口行为。")
+
+
+def _line_comment_for(stripped: str, comment_language: str) -> str:
+    if stripped.startswith("#include"):
+        return _comment(comment_language, "Include the dependency required by this HLS artifact.", "引入该 HLS 工件需要的依赖。")
+    if stripped.startswith("#pragma once"):
+        return _comment(comment_language, "Keep this generated declaration header single-included.", "确保生成的声明头文件只被包含一次。")
+    if stripped.startswith("#pragma HLS"):
+        return _comment(comment_language, "Constrain the generated hardware structure according to the confirmed spec.", "按已确认 spec 约束生成的硬件结构。")
+    if stripped.startswith("for "):
+        return _comment(comment_language, "Iterate across the bounded transaction range.", "遍历有界事务范围。")
+    if stripped.startswith("return "):
+        return _comment(comment_language, "Return the deterministic testbench status.", "返回确定性的 testbench 状态。")
+    if "std::cout" in stripped:
+        return _comment(comment_language, "Emit the testbench status marker.", "输出 testbench 状态标记。")
+    if stripped.startswith("hls::stream"):
+        return _comment(comment_language, "Set up the stream buffer for this dataflow transaction.", "为本次 dataflow 事务设置 stream buffer。")
+    if stripped.startswith("hls::task"):
+        return _comment(comment_language, "Set up the task actor for this dataflow transaction.", "为本次 dataflow 事务设置 task actor。")
+    if re.match(r"^(?:const\s+)?(?:ap_u?int<[^>]+>|ap_fixed<[^>]+>|bool|int|unsigned|float|double|size_t)\s+[\w\[\]]+", stripped):
+        return _comment(comment_language, "Set up the local datapath value or buffer for this transaction.", "为本次事务设置局部数据通路值或 buffer。")
+    if "=" in stripped:
+        return _comment(comment_language, "Set up or write the generated datapath value for this transaction.", "为本次事务设置或写入生成的数据通路值。")
+    if "(" in stripped and stripped.endswith(";"):
+        return _comment(comment_language, "Call the generated kernel or helper for this transaction.", "调用本次事务所需的生成内核或辅助函数。")
+    return _comment(comment_language, "Keep this generated HLS step tied to the hardware intent.", "让该生成 HLS 步骤保持与硬件意图一致。")

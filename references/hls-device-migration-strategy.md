@@ -1,6 +1,6 @@
 # HLS Device Migration Strategy Notes
 
-Source note: distilled from imported HLS design examples that compare the same kernel across target devices. This file records portability and QoR review rules.
+Source note: this file records portability and QoR review rules across target devices.
 
 ## Migration Discipline
 

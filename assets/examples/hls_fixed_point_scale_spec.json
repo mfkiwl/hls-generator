@@ -43,10 +43,34 @@
   "interfaces": {
     "top_function": "fixed_point_scale_kernel",
     "arguments": [
-      {"name": "input", "type": "const ap_fixed<16,8, AP_RND, AP_SAT> *", "direction": "input", "interface": "m_axi", "bundle": "gmem0", "depth": 1024},
-      {"name": "output", "type": "ap_fixed<16,8, AP_RND, AP_SAT> *", "direction": "output", "interface": "m_axi", "bundle": "gmem1", "depth": 1024},
-      {"name": "scale", "type": "ap_fixed<16,4, AP_RND, AP_SAT>", "direction": "input", "interface": "s_axilite"},
-      {"name": "length", "type": "int", "direction": "input", "interface": "s_axilite"}
+      {
+        "name": "input",
+        "type": "const ap_fixed<16,8, AP_RND, AP_SAT> *",
+        "direction": "input",
+        "interface": "m_axi",
+        "bundle": "gmem0",
+        "depth": 1024
+      },
+      {
+        "name": "output",
+        "type": "ap_fixed<16,8, AP_RND, AP_SAT> *",
+        "direction": "output",
+        "interface": "m_axi",
+        "bundle": "gmem1",
+        "depth": 1024
+      },
+      {
+        "name": "scale",
+        "type": "ap_fixed<16,4, AP_RND, AP_SAT>",
+        "direction": "input",
+        "interface": "s_axilite"
+      },
+      {
+        "name": "length",
+        "type": "int",
+        "direction": "input",
+        "interface": "s_axilite"
+      }
     ],
     "control": "s_axilite"
   },
@@ -55,27 +79,67 @@
     "Use ap_fixed widths intentionally and keep range assumptions visible in comments.",
     "Do not enable unsafe math unless the user explicitly allows the approximation."
   ],
-  "clock": {"period_ns": 10.0, "uncertainty_ns": 1.0},
-  "reset": {"strategy": "tool_default"},
+  "clock": {
+    "period_ns": 10.0,
+    "uncertainty_ns": 1.0
+  },
+  "reset": {
+    "strategy": "tool_default"
+  },
   "constraints": [
     "Use Vitis HLS compatible C++.",
     "Avoid dynamic allocation and recursion.",
     "Document fixed-point range and precision intent."
   ],
   "outputs": [
-    {"path": "src/fixed_point_scale_kernel.h", "kind": "header", "language": "cpp"},
-    {"path": "src/fixed_point_scale_kernel.cpp", "kind": "source", "language": "cpp"},
-    {"path": "tb/fixed_point_scale_kernel_tb.cpp", "kind": "testbench", "language": "cpp"},
-    {"path": "hls_config.cfg", "kind": "config", "language": "ini"}
+    {
+      "path": "src/fixed_point_scale_kernel.h",
+      "kind": "header",
+      "language": "cpp"
+    },
+    {
+      "path": "src/fixed_point_scale_kernel.cpp",
+      "kind": "source",
+      "language": "cpp"
+    },
+    {
+      "path": "tb/fixed_point_scale_kernel_tb.cpp",
+      "kind": "testbench",
+      "language": "cpp"
+    },
+    {
+      "path": "hls_config.cfg",
+      "kind": "config",
+      "language": "ini"
+    }
   ],
   "notes": [],
   "subfunctions": [],
-  "workflow": {},
+  "workflow": {
+    "board_acceptance": {
+      "profile": "u55c_m_axi_host",
+      "host_template": "vector_scale_host"
+    }
+  },
   "performance": {
     "target_ii": 1,
     "max_length": 1024
   },
   "hls_profile": {
-    "example_pattern": "fixed_point"
+    "example_pattern": "fixed_point",
+    "required_metadata_fields": [
+      "numeric_range",
+      "integer_bits",
+      "quantization_mode",
+      "overflow_mode",
+      "error_budget"
+    ],
+    "metadata": {
+      "numeric_range": "Input and output values stay within the normalized range [-128, 128).",
+      "integer_bits": 8,
+      "quantization_mode": "AP_RND",
+      "overflow_mode": "AP_SAT",
+      "error_budget": "Maximum absolute error must stay within 1 LSB of the chosen ap_fixed format."
+    }
   }
 }

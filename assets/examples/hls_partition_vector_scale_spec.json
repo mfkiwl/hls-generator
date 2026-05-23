@@ -43,10 +43,34 @@
   "interfaces": {
     "top_function": "partition_vector_scale_kernel",
     "arguments": [
-      {"name": "input", "type": "const ap_uint<32> *", "direction": "input", "interface": "m_axi", "bundle": "gmem0", "depth": 1024},
-      {"name": "output", "type": "ap_uint<32> *", "direction": "output", "interface": "m_axi", "bundle": "gmem1", "depth": 1024},
-      {"name": "scale", "type": "ap_uint<16>", "direction": "input", "interface": "s_axilite"},
-      {"name": "length", "type": "int", "direction": "input", "interface": "s_axilite"}
+      {
+        "name": "input",
+        "type": "const ap_uint<32> *",
+        "direction": "input",
+        "interface": "m_axi",
+        "bundle": "gmem0",
+        "depth": 1024
+      },
+      {
+        "name": "output",
+        "type": "ap_uint<32> *",
+        "direction": "output",
+        "interface": "m_axi",
+        "bundle": "gmem1",
+        "depth": 1024
+      },
+      {
+        "name": "scale",
+        "type": "ap_uint<16>",
+        "direction": "input",
+        "interface": "s_axilite"
+      },
+      {
+        "name": "length",
+        "type": "int",
+        "direction": "input",
+        "interface": "s_axilite"
+      }
     ],
     "control": "s_axilite"
   },
@@ -55,26 +79,66 @@
     "Use a partitioned local tile buffer only for the repeated parallel access region.",
     "Do not combine ARRAY_PARTITION and ARRAY_RESHAPE on the same buffer."
   ],
-  "clock": {"period_ns": 10.0, "uncertainty_ns": 1.0},
-  "reset": {"strategy": "tool_default"},
+  "clock": {
+    "period_ns": 10.0,
+    "uncertainty_ns": 1.0
+  },
+  "reset": {
+    "strategy": "tool_default"
+  },
   "constraints": [
     "Use Vitis HLS compatible C++.",
     "Avoid dynamic allocation and recursion."
   ],
   "outputs": [
-    {"path": "src/partition_vector_scale_kernel.h", "kind": "header", "language": "cpp"},
-    {"path": "src/partition_vector_scale_kernel.cpp", "kind": "source", "language": "cpp"},
-    {"path": "tb/partition_vector_scale_kernel_tb.cpp", "kind": "testbench", "language": "cpp"},
-    {"path": "hls_config.cfg", "kind": "config", "language": "ini"}
+    {
+      "path": "src/partition_vector_scale_kernel.h",
+      "kind": "header",
+      "language": "cpp"
+    },
+    {
+      "path": "src/partition_vector_scale_kernel.cpp",
+      "kind": "source",
+      "language": "cpp"
+    },
+    {
+      "path": "tb/partition_vector_scale_kernel_tb.cpp",
+      "kind": "testbench",
+      "language": "cpp"
+    },
+    {
+      "path": "hls_config.cfg",
+      "kind": "config",
+      "language": "ini"
+    }
   ],
   "notes": [],
   "subfunctions": [],
-  "workflow": {},
+  "workflow": {
+    "board_acceptance": {
+      "profile": "u55c_m_axi_host",
+      "host_template": "vector_scale_host"
+    }
+  },
   "performance": {
     "target_ii": 1,
     "max_length": 1024
   },
   "hls_profile": {
-    "example_pattern": "array_partition"
+    "example_pattern": "array_partition",
+    "required_metadata_fields": [
+      "target_buffer",
+      "partition_dim",
+      "partition_type",
+      "partition_factor",
+      "contention_reason"
+    ],
+    "metadata": {
+      "target_buffer": "local_buf",
+      "partition_dim": 1,
+      "partition_type": "complete",
+      "partition_factor": 16,
+      "contention_reason": "The pipelined outer loop needs parallel element access inside each tile."
+    }
   }
 }

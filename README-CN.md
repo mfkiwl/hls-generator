@@ -11,7 +11,7 @@
 <p align="center">
   <a href="LICENSE"><img alt="License" src="https://img.shields.io/badge/license-Apache--2.0-1f6feb"></a>
   <a href="pyproject.toml"><img alt="Python" src="https://img.shields.io/badge/python-3.10%2B-2f81f7"></a>
-  <img alt="Version" src="https://img.shields.io/badge/version-v0.1.9-7c3aed">
+  <img alt="Version" src="https://img.shields.io/badge/version-v0.2.0-7c3aed">
   <a href="SKILL.md"><img alt="Agent Skill" src="https://img.shields.io/badge/agent-skill-16a34a"></a>
   <a href="references/vitis-hls-2024-2-script-guide.md"><img alt="Target" src="https://img.shields.io/badge/target-Vitis%20HLS-f59e0b"></a>
 </p>
@@ -50,6 +50,12 @@ HLS Generator 用来把 AI 编程代理变成更可靠的 HLS 工程助手。它
   <img src="docs/assets/workflow-cn.svg" alt="HLS Generator 工作流" width="100%">
 </p>
 
+## v0.2.0 重点更新
+
+- 新增 board acceptance、验证板 host 模板以及远程板卡/平台上传指南，补强端到端验证链路。
+- 扩展示例与模板覆盖，加入 2D block transform、host-kernel split、minimal Vitis pipeline、array partition/reshape、fixed-point 和 multi-`m_axi` 场景。
+- 引入 comment policy、route contract、remote directory 等辅助模块，以及仓库级验证脚本，收紧运行时与发布治理。
+
 ## 仓库结构
 
 | 路径 | 作用 |
@@ -59,7 +65,22 @@ HLS Generator 用来把 AI 编程代理变成更可靠的 HLS 工程助手。它
 | `runtime/hls_generator/` | scaffold、prompt 渲染、抽取、验证、报告和 workflow 状态。 |
 | `integration/hls_adapter.py` | 面向宿主应用的稳定接口。 |
 | `assets/examples/` | stream、memory、dataflow、partition、reshape、fixed-point、multi-`m_axi` 等 HLS spec 示例。 |
+| `assets/validation-board/` | 远程验证所需的板端 host 模板与辅助载荷。 |
 | `references/` | Vitis HLS 策略、配置规则、工作流契约、集成说明和注释风格指南。 |
+
+## 安装
+
+直接告诉你的AI让他安装 https://github.com/Eriemon/hls-generator
+
+手动安装方式：
+
+```powershell
+git clone https://github.com/Eriemon/hls-generator.git
+cd .\hls-generator
+python -m pip install -e .
+```
+
+如果要作为 Codex skill 使用，把仓库放进宿主的 skill 搜索路径后重启宿主。
 
 ## 快速开始
 
@@ -124,8 +145,8 @@ Jiyuan Liu 和 He Li 隶属于东南大学电子科学与工程学院。
   author       = {Jiyuan Liu and He Li},
   title        = {{HLS Generator}: An Agent Skill for Vitis HLS Workflows},
   year         = {2026},
-  version      = {0.1.9},
-  date         = {2026-05-09},
+  version      = {0.2.0},
+  date         = {2026-05-22},
   url          = {https://github.com/Eriemon/hls-generator},
   license      = {Apache-2.0},
   note         = {Agent skill package for structured AMD/Xilinx Vitis HLS workflows}

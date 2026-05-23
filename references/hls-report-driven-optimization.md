@@ -1,6 +1,6 @@
 # HLS Report-Driven Optimization Notes
 
-Source note: distilled from imported HLS optimization examples and analysis walkthroughs. This file records stable optimization workflow rules.
+Source note: this file records stable optimization workflow rules.
 
 ## Baseline First
 

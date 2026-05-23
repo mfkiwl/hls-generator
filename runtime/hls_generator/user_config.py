@@ -111,11 +111,50 @@ def set_vitis_selection(server: str, selection: dict[str, Any]) -> Path:
         "settings_script": str(selection.get("settings_script") or ""),
         "expected_tool": str(selection.get("expected_tool") or ""),
         "target_part": str(selection.get("target_part") or ""),
+        "expected_tool_path": str(selection.get("expected_tool_path") or ""),
+        "env_setup_script": str(selection.get("env_setup_script") or ""),
+        "tool_path": str(selection.get("tool_path") or ""),
+        "vpp_path": str(selection.get("vpp_path") or ""),
+        "xrt_tool_path": str(selection.get("xrt_tool_path") or ""),
+        "xrt_setup_script": str(selection.get("xrt_setup_script") or ""),
+        "xbmgmt_tool_path": str(selection.get("xbmgmt_tool_path") or ""),
         "selected_at": _utc_now(),
     }
     if not sanitized["version"] or not sanitized["settings_script"] or not sanitized["expected_tool"]:
         raise ValueError("Vitis selection requires version, settings_script, and expected_tool.")
     selections[server] = sanitized
+    return save_user_config(config)
+
+
+def get_board_platform_selection(server: str, config: dict[str, Any] | None = None) -> dict[str, Any] | None:
+    selections = (config or load_user_config()).get("board_platform_selection", {})
+    if not isinstance(selections, dict):
+        return None
+    selected = selections.get(server)
+    return selected if isinstance(selected, dict) else None
+
+
+def set_board_platform_selection(server: str, selection: dict[str, Any]) -> Path:
+    if not server:
+        raise ValueError("Board platform selection requires a server id or name.")
+    platform_name = str(selection.get("platform_name") or "").strip()
+    remote_platform_root = str(selection.get("remote_platform_root") or "").strip()
+    remote_xpfm = str(selection.get("remote_xpfm") or "").strip()
+    source = str(selection.get("source") or "").strip()
+    if not platform_name:
+        raise ValueError("Board platform selection requires platform_name.")
+    config = load_user_config()
+    selections = config.setdefault("board_platform_selection", {})
+    if not isinstance(selections, dict):
+        selections = {}
+        config["board_platform_selection"] = selections
+    selections[server] = {
+        "platform_name": platform_name,
+        "remote_platform_root": remote_platform_root,
+        "remote_xpfm": remote_xpfm,
+        "source": source,
+        "selected_at": _utc_now(),
+    }
     return save_user_config(config)
 
 

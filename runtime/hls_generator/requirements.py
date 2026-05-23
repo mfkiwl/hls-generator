@@ -5,7 +5,7 @@ from __future__ import annotations
 import copy
 from typing import Any
 
-from .patterns import pattern_definition, pattern_open_questions
+from .patterns import canonical_pattern_name, pattern_definition, pattern_open_questions
 
 STREAMABILITY_VALUES = ("streamable", "non_streamable", "unknown")
 INTERFACE_FAMILIES = ("native", "axi_stream", "axi4", "custom")
@@ -336,4 +336,17 @@ def _syntax_risk_checks(spec: dict[str, Any]) -> list[str]:
     definition = pattern_definition(spec)
     if definition.get("label"):
         checks.append(f"Preserve the confirmed {definition['label']} pattern metadata and keep comments aligned with it.")
+    pattern = canonical_pattern_name(spec)
+    if pattern in {"array_partition", "array_reshape"}:
+        checks.append("Tie partition/reshape choices to the confirmed memory bottleneck dimension and do not combine ARRAY_PARTITION with ARRAY_RESHAPE on the same variable.")
+    if pattern == "dataflow":
+        checks.append("Preserve explicit read/compute/write stage boundaries, channel depths, and the requirement for DATAFLOW co-simulation review.")
+    if pattern == "multi_m_axi":
+        checks.append("Keep the confirmed bundle map and independent traffic groups aligned with the intended read/write concurrency.")
+    if pattern == "fixed_point":
+        checks.append("Preserve fixed-point numeric range, integer bits, quantization mode, overflow mode, and error budget in code comments and test vectors.")
+    if pattern == "minimal_vitis_pipeline":
+        checks.append("Keep the compile/link boundary clear and avoid mixing package or host orchestration into the generated HLS source.")
+    if pattern == "host_kernel_split":
+        checks.append("Keep the main kernel source, helper headers, testbench, and cfg roles distinct, and concentrate dense pragmas in hotspot files instead of every file.")
     return checks

@@ -1,5 +1,14 @@
 # Workflow Contracts
 
+## Contents
+
+- [Run directory](#run-directory)
+- [Fixed stages](#fixed-stages)
+- [Stable statuses](#stable-statuses)
+- [Validation levels](#validation-levels)
+- [Resume behavior](#resume-behavior)
+- [Trace semantics](#trace-semantics)
+
 ## Run directory
 
 Every `run_hls_workflow(...)` execution writes a self-contained run directory
@@ -75,10 +84,10 @@ When `blocked_human` is caused by an unconfigured comment language,
 only `en` and `zh`; the selected value should be saved in
 `~/.hls-generator/config.json` before rerunning generation.
 
-Remote Vitis acceptance retains its remote validation directory by default.
-The helper records `remote_dir` relative to the selected erie server workdir in
-its local `result.json`; use `--cleanup-remote` only when the user explicitly
-wants the remote project deleted after success.
+Remote Vitis acceptance stages work under the governed project root relative to
+the selected erie server workdir. After required verification passes, the
+helper archives the run into `backups/<run-id>` and records `remote_dir`,
+`remote_run_dir`, and `remote_backup_dir` in its local `result.json`.
 
 ## Validation levels
 

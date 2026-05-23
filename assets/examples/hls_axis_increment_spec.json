@@ -96,7 +96,12 @@
   ],
   "notes": [],
   "subfunctions": [],
-  "workflow": {},
+  "workflow": {
+    "board_acceptance": {
+      "profile": "not_board_runnable",
+      "reason": "AXI-Stream memoryless demo is covered by HLS-level validation only."
+    }
+  },
   "performance": {
     "target_ii": 1
   },

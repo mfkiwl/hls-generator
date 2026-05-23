@@ -112,7 +112,12 @@
   ],
   "notes": [],
   "subfunctions": [],
-  "workflow": {},
+  "workflow": {
+    "board_acceptance": {
+      "profile": "not_board_runnable",
+      "reason": "Mock-only smoke spec is intentionally excluded from board-level acceptance."
+    }
+  },
   "performance": {
     "target_ii": 1
   },

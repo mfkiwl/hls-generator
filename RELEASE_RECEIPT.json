@@ -1,0 +1,3451 @@
+{
+  "skill_name": "erie-hls-generator",
+  "version": "v0.2.0",
+  "source_path": "skills/erie-hls-generator",
+  "generated_at": "2026-05-22T13:53:54",
+  "current_branch": "master",
+  "local_branches": [
+    "master",
+    "release"
+  ],
+  "worktree_clean": true,
+  "phase_results": {
+    "pre": true,
+    "post": true
+  },
+  "packaging_mode": "repository-dist",
+  "validation_level": "strong",
+  "provenance_mode": "repository-dist",
+  "sanitization": {
+    "enabled": true,
+    "scope": "broad",
+    "mode": "auto-redact-dist-copy",
+    "files": [
+      {
+        "path": "references/remote-board-platform-upload.md",
+        "rules": [
+          "local_path"
+        ],
+        "placeholders": [
+          "<REDACTED_LOCAL_PATH>"
+        ],
+        "sha256": "156918e80c0a58b83ca33697defd57bc716da495ab8091094566dbf314bc4621"
+      },
+      {
+        "path": "scripts/remote_vitis_acceptance.py",
+        "rules": [
+          "local_path"
+        ],
+        "placeholders": [
+          "<REDACTED_LOCAL_PATH>"
+        ],
+        "sha256": "cf97ba409997b083293ec4f9be65e27ad309d2eb998dbe2ebf46905f47c86e5a"
+      },
+      {
+        "path": "tests/test_remote_vitis_acceptance.py",
+        "rules": [
+          "local_path"
+        ],
+        "placeholders": [
+          "<REDACTED_LOCAL_PATH>"
+        ],
+        "sha256": "6519790a3d15c616d91942505b8e1a2ec7a70ca6bd11654feaaa0f209babfe72"
+      },
+      {
+        "path": "tests/test_user_config.py",
+        "rules": [
+          "local_path"
+        ],
+        "placeholders": [
+          "<REDACTED_LOCAL_PATH>"
+        ],
+        "sha256": "9aebc6db90df763281e02d4ccebbd87663f13c56cb82fa10fda3cff605586fc2"
+      }
+    ],
+    "receipt_required": true
+  },
+  "files": [
+    {
+      "path": ".gitignore",
+      "sha256": "9c99732a61888573a3daf62d096168e061feacfa1ad0aaa93d79b712b8a7b590"
+    },
+    {
+      "path": "agents/openai.yaml",
+      "sha256": "57ae4f6215d94a450e47d4f4fbef1eb671cf2d9d9c4a5c45d0c8dd319cd1cbd5"
+    },
+    {
+      "path": "assets/examples/hls_2d_block_transform_spec.json",
+      "sha256": "01cb9158bbabb777790e008a7f13f24033f36d35c32b91361cf8d5be8f4f908d"
+    },
+    {
+      "path": "assets/examples/hls_array_reshape_vector_scale_spec.json",
+      "sha256": "3da9bef69acd039800ac2265a855a262c46b7368398cedc8dda27d6d5f90a8cd"
+    },
+    {
+      "path": "assets/examples/hls_axi4_burst_vector_scale_spec.json",
+      "sha256": "a4b9c0f01dfd79923321d48e77c5feeb77d862c9089ac445e382c7bf17cbdcec"
+    },
+    {
+      "path": "assets/examples/hls_axis_increment_spec.json",
+      "sha256": "6e11fc2766c5f2b704224b12267074fadbc74787d01542cbafb3af14e5c7da1c"
+    },
+    {
+      "path": "assets/examples/hls_dataflow_axis_spec.json",
+      "sha256": "98aa91cd1b007cfe094d3a0b9648ae1437cec7a43f5b980a8e0db4ad949e654e"
+    },
+    {
+      "path": "assets/examples/hls_directio_freerun_axis_spec.json",
+      "sha256": "d613cb7c8778b50fa4390a65d52c0a731ae830761ec7b90f6ae53caa0f2ea0e8"
+    },
+    {
+      "path": "assets/examples/hls_fence_ordering_spec.json",
+      "sha256": "e214a42ed0201ddc73d76e61ecd844d2668e48cbca535f8ed3ee2d7db424b96a"
+    },
+    {
+      "path": "assets/examples/hls_fixed_point_scale_spec.json",
+      "sha256": "bcccd8d4198f8106c7a214c1c4b62ce89822fa187f59dc580af0c30a949792c3"
+    },
+    {
+      "path": "assets/examples/hls_host_kernel_split_spec.json",
+      "sha256": "60389795875cd5b2c6c02d7fa90be3f33db6dba6897d72e70c11ca5b83f5db6e"
+    },
+    {
+      "path": "assets/examples/hls_line_buffer_stencil_spec.json",
+      "sha256": "09bc57f465ae1d5e4c13fcdba6d0183cedb595689f5351e8b4c0dbf68da6c99e"
+    },
+    {
+      "path": "assets/examples/hls_minimal_vitis_pipeline_spec.json",
+      "sha256": "3b844bb1fb6beda5148efc094b7616f5b16d13f5da0724c95acbb0fdb6a5785b"
+    },
+    {
+      "path": "assets/examples/hls_multi_m_axi_add_spec.json",
+      "sha256": "fb191cdcbb291d40dd891b6bff2f19952fabeb460480953ac30ccf8e6cca914f"
+    },
+    {
+      "path": "assets/examples/hls_partition_vector_scale_spec.json",
+      "sha256": "74d2f8d90644fd4917501b371bcd36ce69667fbf5c50e81ed6f3cbc667f3ed71"
+    },
+    {
+      "path": "assets/examples/hls_reduction_tree_sum_spec.json",
+      "sha256": "a0f362cbd81e284c270515b0629faccdc63467928fbf0798e75caee50a3e1adf"
+    },
+    {
+      "path": "assets/examples/hls_streamofblocks_axis_spec.json",
+      "sha256": "ebd3a7c8811c82976a44d2d228f91477a78864e43c7119a87d5978c5f0edd93b"
+    },
+    {
+      "path": "assets/examples/hls_task_graph_axis_spec.json",
+      "sha256": "b3a61d9abcba187340372cc2c03325c0b79ccf153e064b952eeca6dc9caf1e3d"
+    },
+    {
+      "path": "assets/examples/hls_tiled_gemm_spec.json",
+      "sha256": "aff857e665541dd6ceb68d83b006dc1b78106e72ef1c49744f47b7a4a35c6b99"
+    },
+    {
+      "path": "assets/examples/hls_vector_lane_add_spec.json",
+      "sha256": "2bab4b7a4d2e79176b0bf8009a50a94432c06e39dbcc2f8ad5a331e1b814e9d2"
+    },
+    {
+      "path": "assets/examples/hls_vector_scale_mock_spec.json",
+      "sha256": "01387e9b68dfd9476920bd1887325afcf44a91e163a128e2abe5410db9d5826c"
+    },
+    {
+      "path": "assets/examples/hls_vector_scale_spec.json",
+      "sha256": "9cb3b558ddd841182dbddfdf69e3ec2424d2f350eb910983fd0b26b4c1552f2a"
+    },
+    {
+      "path": "assets/templates/hls_array_partition_template.json",
+      "sha256": "41eeb6dee595fe64e096126ba15a75ec1d2d135c6be1b978cc2a574507f4a5b1"
+    },
+    {
+      "path": "assets/templates/hls_array_reshape_template.json",
+      "sha256": "6d6780231b21dd00d353b576cfd51b0a9c51e4bbf62bb428113089463e9584f8"
+    },
+    {
+      "path": "assets/templates/hls_axi4_burst_template.json",
+      "sha256": "7f5ccc16de60a3c100b16e5d8456ed5190fb72da54a726269f902b789e840f5e"
+    },
+    {
+      "path": "assets/templates/hls_dataflow_template.json",
+      "sha256": "1a9aca2608da45fc3bf5a04b48ec0c17e00fdc089ec76f8a78ce60e1a08ba176"
+    },
+    {
+      "path": "assets/templates/hls_directio_freerun_template.json",
+      "sha256": "34e9204f4682ecdaa989561a166c6437b27de3a898f23d2b321eb234f6b3db8c"
+    },
+    {
+      "path": "assets/templates/hls_fence_ordering_template.json",
+      "sha256": "72ae664bba117482211c0bf35867e8b4a25ffaed07272aa6a323273ffd9d84c2"
+    },
+    {
+      "path": "assets/templates/hls_fixed_point_template.json",
+      "sha256": "f7a785050e5d72df8fa119e24b2f2382748dfa7fac49ec630373d8e1ee7244fc"
+    },
+    {
+      "path": "assets/templates/hls_host_kernel_split_template.json",
+      "sha256": "31bf1c1556baa36e97f75401ca8c1a0ef92e732221a2199479dfbdd7f6153068"
+    },
+    {
+      "path": "assets/templates/hls_line_buffer_stencil_template.json",
+      "sha256": "baff5617cf1874a56245e8b5162a58b64c62230643be75702a128cd0f94a1898"
+    },
+    {
+      "path": "assets/templates/hls_minimal_vitis_pipeline_template.json",
+      "sha256": "882cc3a5b51c60a541427ad4db88111cb71e597644050c061c5a6eb503df561c"
+    },
+    {
+      "path": "assets/templates/hls_multi_m_axi_template.json",
+      "sha256": "abe7722cca62b2327ac1298bbe118f947197a739bd0aa765ece9cddc8a26c895"
+    },
+    {
+      "path": "assets/templates/hls_reduction_tree_template.json",
+      "sha256": "ed67f0af1bc07fa7ec816a10bc497e9ca30e7607cf8cfd5f0f19ad6def910752"
+    },
+    {
+      "path": "assets/templates/hls_streamofblocks_template.json",
+      "sha256": "784619e3ab0ce3e64222ed7228fb0b0a3c0164d6bc3ca2437d837b80142addae"
+    },
+    {
+      "path": "assets/templates/hls_task_graph_template.json",
+      "sha256": "802dbb82bd9a7ce0e3e8a58eb307f9572bac5a6adf39e9e4ec41d4afc8d710dc"
+    },
+    {
+      "path": "assets/templates/hls_tiled_gemm_template.json",
+      "sha256": "24d616749bc6e5315e65879298cd990b6eef9c4db6d4d823cb52e4d4606f897d"
+    },
+    {
+      "path": "assets/templates/hls_vector_lane_template.json",
+      "sha256": "d9267c251e532aad79a7a2fdbe24e18018577bda99adc1aa538eff661da46414"
+    },
+    {
+      "path": "assets/validation-board/hosts/binary_add_host.cpp.tpl",
+      "sha256": "a67c0fd82ed5c7c4a6d81e28652088f0752e69641a8da7103b742e9081394eb3"
+    },
+    {
+      "path": "assets/validation-board/hosts/matrix_unary_host.cpp.tpl",
+      "sha256": "96e576b58a3765cc451091e9592aade2394a409857339357c1e226dbd3b6c3ea"
+    },
+    {
+      "path": "assets/validation-board/hosts/vector_increment_host.cpp.tpl",
+      "sha256": "fa865f8a2fbd824943675567bd8c261d493ec458cf2ac8cdfddd7d4d96f56ff4"
+    },
+    {
+      "path": "assets/validation-board/hosts/vector_scale_host.cpp.tpl",
+      "sha256": "584a403d2d6f5572ea9a98202156ca863ba58e160b0b8999c3ad8abb01f12d4c"
+    },
+    {
+      "path": "assets/validation-board/README.md",
+      "sha256": "2f1c24205e24fb9070478a837cd66d1f5bda3b6d22b14cce5b974328ba724980"
+    },
+    {
+      "path": "DESIGN_GOALS.md",
+      "sha256": "cdf34df374356c8c0a7eb5fa37ea7af4e67c36110722790418d7cafa3e337659"
+    },
+    {
+      "path": "evals/evals.json",
+      "sha256": "c54afc6514bbdd4996266976424ba58e98a1eccb45f762ec5500f70d3e5f0b94"
+    },
+    {
+      "path": "integration/__init__.py",
+      "sha256": "bc2f88fc551d438ee45a529941c3d7ee8b7218fa86d4dfeef103168a5509d6ef"
+    },
+    {
+      "path": "integration/default_workflow_config.json",
+      "sha256": "50de84c5ba0232a84622667d661272e3544a8fcc1d23e00619afa2c3b32e5690"
+    },
+    {
+      "path": "integration/hls_adapter.py",
+      "sha256": "77fc3eb1d5fad297719ca538fc580b3d41d8aca5b695274ee4a508b269b2a9bc"
+    },
+    {
+      "path": "references/configuration.md",
+      "sha256": "3beb538c8becbf58fe06f6dfeca53605b77a3966cac0028b27a285b7011a31f8"
+    },
+    {
+      "path": "references/hls-advanced-library-patterns.md",
+      "sha256": "f325b992589d8eee501d6eb7ad6c187515912236ac6349a454c1281f20a060ab"
+    },
+    {
+      "path": "references/hls-comment-style.md",
+      "sha256": "bde763e34f2c62edc6ba37011b8e7d14eeb93b79ca6e0807f925105defd90bda"
+    },
+    {
+      "path": "references/hls-device-migration-strategy.md",
+      "sha256": "51f06b10157ac64702d9f72defd5dd2b0009bc41e0d00808a8a36762c60625d4"
+    },
+    {
+      "path": "references/hls-library-policy.md",
+      "sha256": "af1fb53a8647f6ab08c46694c1871ef017d25775773e24099c572136b346415e"
+    },
+    {
+      "path": "references/hls-memory-burst-and-layout.md",
+      "sha256": "5014566a5ebb2ab6214b079ada464fb666553ad488d5adda3c7cf0e0af6d2f24"
+    },
+    {
+      "path": "references/hls-modeling-strategy.md",
+      "sha256": "5ee3552faddf0f80e251c5f868f8cee68d3046d5049beb9e4498d1d3c4d6e4cc"
+    },
+    {
+      "path": "references/hls-optimization-patterns.md",
+      "sha256": "ccf3123b228ce9c1600ecd58626b5bdf3e182bc621df9abafc7eb006cb42c309"
+    },
+    {
+      "path": "references/hls-project-structure-patterns.md",
+      "sha256": "363ee4301ff2e46a9f9ed3436c540108af147e2681c40c130ace60aab5f739f1"
+    },
+    {
+      "path": "references/hls-report-driven-optimization.md",
+      "sha256": "9b19c9c3790d40632b57e21868ac53bea9f35a35de827ca31c057456ed82f39d"
+    },
+    {
+      "path": "references/hls-stencil-reduction-gemm-patterns.md",
+      "sha256": "245bf89e6a347aa87cec6b194e3b9133e1f2d82ded186f1847ac8314a8c72a66"
+    },
+    {
+      "path": "references/hls-task-parallel-strategy.md",
+      "sha256": "bc3ca8d11f86aba2885666dde25aaff7a0fb3919edf53329198663f4cebaeeda"
+    },
+    {
+      "path": "references/hls-tutorial-derived-templates.md",
+      "sha256": "d6fcb883d4c02c687cf242e360971d733899d9086611a116a506b7afa42e39a9"
+    },
+    {
+      "path": "references/integration.md",
+      "sha256": "9048e4581b44066c3dd157650ef15ba6b007944ec4210e5465faf725ece83fbb"
+    },
+    {
+      "path": "references/remote-board-platform-upload.md",
+      "sha256": "156918e80c0a58b83ca33697defd57bc716da495ab8091094566dbf314bc4621"
+    },
+    {
+      "path": "references/vitis-hls-2024-2-script-guide.md",
+      "sha256": "e0e398dcc259b6912db81f46eeb99329bf7cccd85139cd042e1b121a97c2b835"
+    },
+    {
+      "path": "references/workflow-contracts.md",
+      "sha256": "3e0586a261ac8a0cebe61a1e0824512372205cf0da5cbc44c0962d8a91f501a8"
+    },
+    {
+      "path": "runtime/__init__.py",
+      "sha256": "bbac4643de7d4e94a78094973d78482bf0bbf3694d18ab704b4dcfd265b129e7"
+    },
+    {
+      "path": "runtime/hls_generator/__init__.py",
+      "sha256": "d5c892bc0209e53f7c193eab98ce5cb270400813bc4ebd99e3ddf71aa4a6da00"
+    },
+    {
+      "path": "runtime/hls_generator/__main__.py",
+      "sha256": "9dbb2b94e18a1b4c981e4277684bc93089b7a2e0a127118d273fc9a7723ed601"
+    },
+    {
+      "path": "runtime/hls_generator/board_acceptance.py",
+      "sha256": "d69130a8076c61bae3741114f55fa9b36d13f163ba041b732ea97fefc3eeb5f0"
+    },
+    {
+      "path": "runtime/hls_generator/board_platform_payload.py",
+      "sha256": "c65ef5c76e535520ff01ae36a04df9969d0c4c1044da09c36f44aa428d8883cc"
+    },
+    {
+      "path": "runtime/hls_generator/cli.py",
+      "sha256": "e6d358456b342985c66a315a6d82fd75347ecc648662cf334fb201f20f44e734"
+    },
+    {
+      "path": "runtime/hls_generator/comment_policy.py",
+      "sha256": "81fbad9eb62b30d2ad58232dd47ebff27c02eec8f64104e10aed6fbc72b31cbf"
+    },
+    {
+      "path": "runtime/hls_generator/config.py",
+      "sha256": "762d46059b54a212f5a7ea8ea6c00939252b61571db1af56635b23901a4bd1bd"
+    },
+    {
+      "path": "runtime/hls_generator/extractor.py",
+      "sha256": "2e7df8bef1c23719f7e7c4c86116802020d78bfff4cf64870948514c2684e036"
+    },
+    {
+      "path": "runtime/hls_generator/hls_cfg.py",
+      "sha256": "20db67ccae54028ebae18dd580d869ef62e9afd13b10a4bec18a2134f5784b68"
+    },
+    {
+      "path": "runtime/hls_generator/hls_profile.py",
+      "sha256": "37da5b123215e628af134cbfb6034eff0ee06d4806085c276fe3c39e17a5f355"
+    },
+    {
+      "path": "runtime/hls_generator/hls_reports.py",
+      "sha256": "7002f128e57c4bf462e0bc6c1b343d6ab5135eeefeed47fd84e488204ba016bc"
+    },
+    {
+      "path": "runtime/hls_generator/hls_tcl.py",
+      "sha256": "e9910f44657464346790e9f4ae8dbc098ac1b8cf4dfececb336f2bfbc230f441"
+    },
+    {
+      "path": "runtime/hls_generator/interface_contract.py",
+      "sha256": "c3bbade98d6f7a9e91bd0962385554136bdfac7617491f18cc79b6d83bb9bdf5"
+    },
+    {
+      "path": "runtime/hls_generator/intervention.py",
+      "sha256": "4ee84988b2f19bf5e7456fea185eca9ab5a7862e3db81f024d61eda9537a897c"
+    },
+    {
+      "path": "runtime/hls_generator/model_provider.py",
+      "sha256": "d9d0ca617d063e3a877ef5535d33c91fe01ed7772835df594094bb8d73cfe62b"
+    },
+    {
+      "path": "runtime/hls_generator/patterns.py",
+      "sha256": "43357c290c637deea32a42096a5ec760a434dc40d88bad8a3302ae5261f0a638"
+    },
+    {
+      "path": "runtime/hls_generator/planning.py",
+      "sha256": "c1f2abc2fdff7ae03b6825bb5e9bb06d128fd0a7bb30bf5dd2873fe633dd5261"
+    },
+    {
+      "path": "runtime/hls_generator/prompt.py",
+      "sha256": "bf35fa8207b52e28233f01ff8d23ff0613c10fef60062054758d1be60b0f8f8c"
+    },
+    {
+      "path": "runtime/hls_generator/reference_contract.py",
+      "sha256": "0311756342233183accc806e683f388e7cdb1fd7e407e776379986f041fcd94f"
+    },
+    {
+      "path": "runtime/hls_generator/remote_directory_contract.py",
+      "sha256": "2d160d173d8a7848e6312e6f943708ddda46d390c9be97c2672ae299434f53e8"
+    },
+    {
+      "path": "runtime/hls_generator/requirements.py",
+      "sha256": "385fda389f4e9c7a18066aec9982ea3ac13f69e436a59bca235652879c149620"
+    },
+    {
+      "path": "runtime/hls_generator/route_contract.py",
+      "sha256": "6eecbc44e5f8d0b79be084f7b595c78a3976ffad71a58d4808b92ed3820217a8"
+    },
+    {
+      "path": "runtime/hls_generator/runtime_config.json",
+      "sha256": "285afb9d2740cded943412164c5bdeda6f6792ab2c221dbc0fba96c2c577e247"
+    },
+    {
+      "path": "runtime/hls_generator/skill_dependencies.py",
+      "sha256": "da979525443d2071e3ce6c4c3952e1118c770144a5f0e4d9ba96137b122c542c"
+    },
+    {
+      "path": "runtime/hls_generator/spec.py",
+      "sha256": "fb5c212d8df454f5a167f6447986a623e6edc05a7f1ce137695f3435c6659a05"
+    },
+    {
+      "path": "runtime/hls_generator/trace.py",
+      "sha256": "cc773b2a3813f02a9591b3917e77f953d652b24219b03ea92577cea3142de088"
+    },
+    {
+      "path": "runtime/hls_generator/user_config.py",
+      "sha256": "fb1ed8f5dbe1e61ea66eaff725d04d120fa7e91793f19568c6a3c98f4dff3fc6"
+    },
+    {
+      "path": "runtime/hls_generator/validation.py",
+      "sha256": "e04679c94fb21071244ebfa89868f22e0873048ab9d08b879fef53c8d8bbe6af"
+    },
+    {
+      "path": "runtime/hls_generator/vectors.py",
+      "sha256": "a455e5c842d9cbbd6f4cb381cbc900a051b814b6ddc2c9cac23f42dc32d63b1e"
+    },
+    {
+      "path": "runtime/hls_generator/verifier.py",
+      "sha256": "cd81295ddaebb783ea27022fc03d922e890dbaeb45b9c2442955e130086f1d21"
+    },
+    {
+      "path": "runtime/hls_generator/vitis_rules.py",
+      "sha256": "7ef5a9490f0dc359515d4da5ffaaab51ac147ca3548db1dda76dc190e52abbf6"
+    },
+    {
+      "path": "runtime/hls_generator/workflow.py",
+      "sha256": "61e4e1fab1e0fb9b745ebdeda11ab838c46eac80a5b9613806d871667d1e8cf6"
+    },
+    {
+      "path": "runtime/hls_generator/workspace.py",
+      "sha256": "9a1c5596f94ad01e2c5257f0850d235a1821df0ddcd8330bb3ad3477d7e3cae1"
+    },
+    {
+      "path": "scripts/_skill_tool_delegate.py",
+      "sha256": "d65506ae17945c91459b2102be84042e7f12c01a2760aebd27c2956e28ac0300"
+    },
+    {
+      "path": "scripts/audit_skill.py",
+      "sha256": "b3a97fcc4f50dc39e10cd39ed42f39fdf97ffabd7702591286d5cda67ee63b6a"
+    },
+    {
+      "path": "scripts/confidence_loop.py",
+      "sha256": "e35f063bc9ced5969248e68b0b431006d354503b4286e0af724424a97d6b478f"
+    },
+    {
+      "path": "scripts/evaluate_skill.py",
+      "sha256": "7a75a86e833322816b95695ba501946eff2bd86f823c86836d3cad77cdf27e43"
+    },
+    {
+      "path": "scripts/inspect_project.py",
+      "sha256": "c0831453c6b2b9dec4e8e3df1e7f213f2d8764843182e78b19602bfad6ce34a3"
+    },
+    {
+      "path": "scripts/manage_dirs.py",
+      "sha256": "3016313a7a88b4b0bea33bcc2beceb7d1e552cff3875b2d3e2d23ab358232643"
+    },
+    {
+      "path": "scripts/manage_docs.py",
+      "sha256": "af0beba82aa0f70ae9ffe06333bf32f1fcdb8d1e8fe33a10507b290c6f39d6f2"
+    },
+    {
+      "path": "scripts/prepare_release.py",
+      "sha256": "b67bcbd892153e9b74231c10f1d5f13e0065e559ebcbddfee2cbd896b96ff547"
+    },
+    {
+      "path": "scripts/quick_validate.py",
+      "sha256": "f16139008c712a710144c8f01b9163aaa322b1998b310ffe10c13d842a05f6b1"
+    },
+    {
+      "path": "scripts/remote_vitis_acceptance.py",
+      "sha256": "cf97ba409997b083293ec4f9be65e27ad309d2eb998dbe2ebf46905f47c86e5a"
+    },
+    {
+      "path": "scripts/render_agents.py",
+      "sha256": "dca4daf202b36bd8e1de30f7b947689267b45c9febb99165cc9da34bdf7102f8"
+    },
+    {
+      "path": "scripts/verify_agents.py",
+      "sha256": "653e2003b8fd56d1eb746d25f59338fe9a7c926c160624d0e92db6f92392ff79"
+    },
+    {
+      "path": "SKILL.md",
+      "sha256": "aa0487c8e2b7681d96aa50e6237d3681ab4004d1c8a15181bddcd36ced72a2fe"
+    },
+    {
+      "path": "smoke/run_smoke.py",
+      "sha256": "e7522f0931613c57bb8808f83580af4c6b2568e0d4d8bc2d659d7ea6b7592f28"
+    },
+    {
+      "path": "tests/test_board_platform_payload.py",
+      "sha256": "f45185b49f9d17966d9d134f9656e0f49b500e4b2ca1aa107966f9af093507e4"
+    },
+    {
+      "path": "tests/test_comment_coverage.py",
+      "sha256": "ac7dfafe47928e312079febe1b89228144d1e0a04fd43b290ff1a584718ce67a"
+    },
+    {
+      "path": "tests/test_comment_policy.py",
+      "sha256": "d0c92a2aa2cf2fb99dddeb55bbb782c65014e5fba0d5c5a1af8d77b2135cb21b"
+    },
+    {
+      "path": "tests/test_confidence_loop.py",
+      "sha256": "e1b172a3f14ff6eb2728d39fff09e3af3f9c3494f732533b4b371be57e6e9156"
+    },
+    {
+      "path": "tests/test_evaluate_skill.py",
+      "sha256": "63f0bdf11e9650443bba3b52fd68b1aa57cc07a7a56f205038050cc53b56b90d"
+    },
+    {
+      "path": "tests/test_hls_pattern_contracts.py",
+      "sha256": "2dfe67a4755bfdcc4911cdc55aa0fbe5f02b7ad090e1a7c7b7a505dd33930ea8"
+    },
+    {
+      "path": "tests/test_prepare_release.py",
+      "sha256": "36f27f512a56b77c8f3361b215ac8e4fb62e0f88a543be282cec84bc45f5d4f3"
+    },
+    {
+      "path": "tests/test_remote_vitis_acceptance.py",
+      "sha256": "6519790a3d15c616d91942505b8e1a2ec7a70ca6bd11654feaaa0f209babfe72"
+    },
+    {
+      "path": "tests/test_runtime_config.py",
+      "sha256": "30aed5cc18104c3756cc6ef1f87ae5783818f82fb23dd13d4c347af7b61f90f9"
+    },
+    {
+      "path": "tests/test_skill_dependencies.py",
+      "sha256": "1a03d57a3107f23d00bafc05339f4833e881d3d450319802e3e3588bad33c5e4"
+    },
+    {
+      "path": "tests/test_user_config.py",
+      "sha256": "9aebc6db90df763281e02d4ccebbd87663f13c56cb82fa10fda3cff605586fc2"
+    }
+  ],
+  "other_version_artifacts": [
+    {
+      "path": "dist/erie-hls-generator-v0.1.1/checksums.sha256",
+      "sha256": "8573a1e04fe9a035f62479710b42f64b246c5af84c5cbb8c10427fffe9dcd2ac"
+    },
+    {
+      "path": "dist/erie-hls-generator-v0.1.1/erie-hls-generator/.gitignore",
+      "sha256": "9c99732a61888573a3daf62d096168e061feacfa1ad0aaa93d79b712b8a7b590"
+    },
+    {
+      "path": "dist/erie-hls-generator-v0.1.1/erie-hls-generator/agents/openai.yaml",
+      "sha256": "57ae4f6215d94a450e47d4f4fbef1eb671cf2d9d9c4a5c45d0c8dd319cd1cbd5"
+    },
+    {
+      "path": "dist/erie-hls-generator-v0.1.1/erie-hls-generator/assets/examples/hls_array_reshape_vector_scale_spec.json",
+      "sha256": "ffc92b412ca7e645ed27f8be1a95e4bb3104c0806017e23b0dbf90a514c6e8c1"
+    },
+    {
+      "path": "dist/erie-hls-generator-v0.1.1/erie-hls-generator/assets/examples/hls_axis_increment_spec.json",
+      "sha256": "541457801560d17309beb213a422579d9123c3f7e03c169063bf531b857e296d"
+    },
+    {
+      "path": "dist/erie-hls-generator-v0.1.1/erie-hls-generator/assets/examples/hls_dataflow_axis_spec.json",
+      "sha256": "393e9ceca421d21d95fabe1a605853e6d872f145e33daec51a75851882736de9"
+    },
+    {
+      "path": "dist/erie-hls-generator-v0.1.1/erie-hls-generator/assets/examples/hls_fixed_point_scale_spec.json",
+      "sha256": "2f15306a422ca2737beb3e43c0febc034a912d6002d47c2d6d08582aa1076783"
+    },
+    {
+      "path": "dist/erie-hls-generator-v0.1.1/erie-hls-generator/assets/examples/hls_multi_m_axi_add_spec.json",
+      "sha256": "fe9a6a6f53d4b32a1e753cfb0be42aef9aa1e2652e61dfa041bd6830c3391686"
+    },
+    {
+      "path": "dist/erie-hls-generator-v0.1.1/erie-hls-generator/assets/examples/hls_partition_vector_scale_spec.json",
+      "sha256": "a8d00b6b28747b11bf927cfea4a65f701ede2c87d9f3e1441033ea718d8bdf48"
+    },
+    {
+      "path": "dist/erie-hls-generator-v0.1.1/erie-hls-generator/assets/examples/hls_vector_scale_mock_spec.json",
+      "sha256": "3355aa978961f634d668db5bad133dfe3835051be1d8e5818710d1f7c02e56ef"
+    },
+    {
+      "path": "dist/erie-hls-generator-v0.1.1/erie-hls-generator/assets/examples/hls_vector_scale_spec.json",
+      "sha256": "ccc74d7cd0e1f7c9b52d01dcd7269041a06caecc7f109aecf563644be4f0b986"
+    },
+    {
+      "path": "dist/erie-hls-generator-v0.1.1/erie-hls-generator/DESIGN_GOALS.md",
+      "sha256": "275eb544eedbc3fa496b002edecf9f2f480f091f0b0e7532d5cb9e15b397d827"
+    },
+    {
+      "path": "dist/erie-hls-generator-v0.1.1/erie-hls-generator/integration/__init__.py",
+      "sha256": "bc2f88fc551d438ee45a529941c3d7ee8b7218fa86d4dfeef103168a5509d6ef"
+    },
+    {
+      "path": "dist/erie-hls-generator-v0.1.1/erie-hls-generator/integration/default_workflow_config.json",
+      "sha256": "50de84c5ba0232a84622667d661272e3544a8fcc1d23e00619afa2c3b32e5690"
+    },
+    {
+      "path": "dist/erie-hls-generator-v0.1.1/erie-hls-generator/integration/hls_adapter.py",
+      "sha256": "dc080e30295c6eb78bd81b73190afe61560a30b201e6258c2ef57f1f4ba7f378"
+    },
+    {
+      "path": "dist/erie-hls-generator-v0.1.1/erie-hls-generator/references/configuration.md",
+      "sha256": "93891f51d2761ba45fd943fbe9edff168363d08d012c6c52d161302da25001ca"
+    },
+    {
+      "path": "dist/erie-hls-generator-v0.1.1/erie-hls-generator/references/hls-comment-style.md",
+      "sha256": "4d4861fc836ff30790871e9ab681f5b519a22077c8e9c32c3c3abf1e3d7fd759"
+    },
+    {
+      "path": "dist/erie-hls-generator-v0.1.1/erie-hls-generator/references/hls-library-policy.md",
+      "sha256": "af1fb53a8647f6ab08c46694c1871ef017d25775773e24099c572136b346415e"
+    },
+    {
+      "path": "dist/erie-hls-generator-v0.1.1/erie-hls-generator/references/integration.md",
+      "sha256": "46d09547acd4053545ce81cb1f44e978666a41969665d9348051bcaeb6b19c7f"
+    },
+    {
+      "path": "dist/erie-hls-generator-v0.1.1/erie-hls-generator/references/vitis-hls-2024-2-script-guide.md",
+      "sha256": "15a45348fdd243e46b5ced0cdab699f129b0059e396082e3244ad660cc4e602e"
+    },
+    {
+      "path": "dist/erie-hls-generator-v0.1.1/erie-hls-generator/references/vitis-hls-official-patterns.md",
+      "sha256": "973fdf5bc7b5cf3aa8264e61f9ae9959f8f6c78d229c5845e1419c941bb79f27"
+    },
+    {
+      "path": "dist/erie-hls-generator-v0.1.1/erie-hls-generator/references/workflow-contracts.md",
+      "sha256": "f0607ba8c22193274ca3e087fe5d863e999f82195304833a8f999f36ef8777da"
+    },
+    {
+      "path": "dist/erie-hls-generator-v0.1.1/erie-hls-generator/runtime/__init__.py",
+      "sha256": "bbac4643de7d4e94a78094973d78482bf0bbf3694d18ab704b4dcfd265b129e7"
+    },
+    {
+      "path": "dist/erie-hls-generator-v0.1.1/erie-hls-generator/runtime/hls_generator/__init__.py",
+      "sha256": "f975197bcb19997a1ac5f61ae68d8a2e28aa709d5239403743cb9818651d6960"
+    },
+    {
+      "path": "dist/erie-hls-generator-v0.1.1/erie-hls-generator/runtime/hls_generator/__main__.py",
+      "sha256": "9dbb2b94e18a1b4c981e4277684bc93089b7a2e0a127118d273fc9a7723ed601"
+    },
+    {
+      "path": "dist/erie-hls-generator-v0.1.1/erie-hls-generator/runtime/hls_generator/cli.py",
+      "sha256": "bcff0ee0cad06faee871d54047cc60e2770a4bf92260dcbdac5ed86060881aa2"
+    },
+    {
+      "path": "dist/erie-hls-generator-v0.1.1/erie-hls-generator/runtime/hls_generator/config.py",
+      "sha256": "4b71eca3cafae4d24ae9a9af9cd92d807661ffce91d57d6aa20638bffec8a56b"
+    },
+    {
+      "path": "dist/erie-hls-generator-v0.1.1/erie-hls-generator/runtime/hls_generator/extractor.py",
+      "sha256": "2e7df8bef1c23719f7e7c4c86116802020d78bfff4cf64870948514c2684e036"
+    },
+    {
+      "path": "dist/erie-hls-generator-v0.1.1/erie-hls-generator/runtime/hls_generator/hls_cfg.py",
+      "sha256": "20db67ccae54028ebae18dd580d869ef62e9afd13b10a4bec18a2134f5784b68"
+    },
+    {
+      "path": "dist/erie-hls-generator-v0.1.1/erie-hls-generator/runtime/hls_generator/hls_profile.py",
+      "sha256": "d28dc56212edf3e5ef03173e2d91e5d075ad625ad7a77f4da25f045ef49efd1f"
+    },
+    {
+      "path": "dist/erie-hls-generator-v0.1.1/erie-hls-generator/runtime/hls_generator/hls_reports.py",
+      "sha256": "7002f128e57c4bf462e0bc6c1b343d6ab5135eeefeed47fd84e488204ba016bc"
+    },
+    {
+      "path": "dist/erie-hls-generator-v0.1.1/erie-hls-generator/runtime/hls_generator/hls_tcl.py",
+      "sha256": "e9910f44657464346790e9f4ae8dbc098ac1b8cf4dfececb336f2bfbc230f441"
+    },
+    {
+      "path": "dist/erie-hls-generator-v0.1.1/erie-hls-generator/runtime/hls_generator/interface_contract.py",
+      "sha256": "c3bbade98d6f7a9e91bd0962385554136bdfac7617491f18cc79b6d83bb9bdf5"
+    },
+    {
+      "path": "dist/erie-hls-generator-v0.1.1/erie-hls-generator/runtime/hls_generator/intervention.py",
+      "sha256": "4ee84988b2f19bf5e7456fea185eca9ab5a7862e3db81f024d61eda9537a897c"
+    },
+    {
+      "path": "dist/erie-hls-generator-v0.1.1/erie-hls-generator/runtime/hls_generator/model_provider.py",
+      "sha256": "f2a994df373b729fa2962861126efc6bb4db967f0b2529e16d3405310f64efd6"
+    },
+    {
+      "path": "dist/erie-hls-generator-v0.1.1/erie-hls-generator/runtime/hls_generator/planning.py",
+      "sha256": "c1f2abc2fdff7ae03b6825bb5e9bb06d128fd0a7bb30bf5dd2873fe633dd5261"
+    },
+    {
+      "path": "dist/erie-hls-generator-v0.1.1/erie-hls-generator/runtime/hls_generator/prompt.py",
+      "sha256": "1d3ebb852d9f1965ae92814137d17b01aeeeb5d307ec074d593b6ab4cab9ac12"
+    },
+    {
+      "path": "dist/erie-hls-generator-v0.1.1/erie-hls-generator/runtime/hls_generator/reference_contract.py",
+      "sha256": "0311756342233183accc806e683f388e7cdb1fd7e407e776379986f041fcd94f"
+    },
+    {
+      "path": "dist/erie-hls-generator-v0.1.1/erie-hls-generator/runtime/hls_generator/requirements.py",
+      "sha256": "45821b59a8a74576dd5e008289111d0855604914d1941156e5a6bd3b53a9fbeb"
+    },
+    {
+      "path": "dist/erie-hls-generator-v0.1.1/erie-hls-generator/runtime/hls_generator/runtime_config.json",
+      "sha256": "ffdf3957964de1af7a37b0c5aafcdfe1e9404cebcb7d36330525222ca2543735"
+    },
+    {
+      "path": "dist/erie-hls-generator-v0.1.1/erie-hls-generator/runtime/hls_generator/skill_dependencies.py",
+      "sha256": "3003e6c38fb1a3f9e0a60946a45e183d7f0ea9a8004a21a269a1362f5dcfbc1e"
+    },
+    {
+      "path": "dist/erie-hls-generator-v0.1.1/erie-hls-generator/runtime/hls_generator/spec.py",
+      "sha256": "fb5c212d8df454f5a167f6447986a623e6edc05a7f1ce137695f3435c6659a05"
+    },
+    {
+      "path": "dist/erie-hls-generator-v0.1.1/erie-hls-generator/runtime/hls_generator/trace.py",
+      "sha256": "cc773b2a3813f02a9591b3917e77f953d652b24219b03ea92577cea3142de088"
+    },
+    {
+      "path": "dist/erie-hls-generator-v0.1.1/erie-hls-generator/runtime/hls_generator/user_config.py",
+      "sha256": "dbd992e3f2b10ce3814d6d6bf5f71bde25959b5c2398ac9e08c740c2de105b19"
+    },
+    {
+      "path": "dist/erie-hls-generator-v0.1.1/erie-hls-generator/runtime/hls_generator/validation.py",
+      "sha256": "389eae43936e479a30aff7a9edc464b4768e5ca9d612bf3be172b44f3112c77e"
+    },
+    {
+      "path": "dist/erie-hls-generator-v0.1.1/erie-hls-generator/runtime/hls_generator/vectors.py",
+      "sha256": "a455e5c842d9cbbd6f4cb381cbc900a051b814b6ddc2c9cac23f42dc32d63b1e"
+    },
+    {
+      "path": "dist/erie-hls-generator-v0.1.1/erie-hls-generator/runtime/hls_generator/verifier.py",
+      "sha256": "cd81295ddaebb783ea27022fc03d922e890dbaeb45b9c2442955e130086f1d21"
+    },
+    {
+      "path": "dist/erie-hls-generator-v0.1.1/erie-hls-generator/runtime/hls_generator/vitis_rules.py",
+      "sha256": "e2feae9da12b8b73a83bd2db54e93131c88d82b4db7620b7406f440b1fc0ab75"
+    },
+    {
+      "path": "dist/erie-hls-generator-v0.1.1/erie-hls-generator/runtime/hls_generator/workflow.py",
+      "sha256": "eb9b8b5b5246086151b76d4ced95fa86d0b3b904373392f673a8a1797a2a378c"
+    },
+    {
+      "path": "dist/erie-hls-generator-v0.1.1/erie-hls-generator/runtime/hls_generator/workspace.py",
+      "sha256": "9a1c5596f94ad01e2c5257f0850d235a1821df0ddcd8330bb3ad3477d7e3cae1"
+    },
+    {
+      "path": "dist/erie-hls-generator-v0.1.1/erie-hls-generator/scripts/confidence_loop.py",
+      "sha256": "1fa5a9abe59216939ced05b34e2a9eb1b89da0df4842c4b1e0b6a8877f99f6d2"
+    },
+    {
+      "path": "dist/erie-hls-generator-v0.1.1/erie-hls-generator/scripts/prepare_release.py",
+      "sha256": "bf963176c55654abe63152b340e682956b091ee96410ef8b1f174207f4836ebe"
+    },
+    {
+      "path": "dist/erie-hls-generator-v0.1.1/erie-hls-generator/scripts/remote_vitis_acceptance.py",
+      "sha256": "1e267cedb3114d84a27d5418bff2f526de99dafae178235b412ec84da4aaf06e"
+    },
+    {
+      "path": "dist/erie-hls-generator-v0.1.1/erie-hls-generator/SKILL.md",
+      "sha256": "5db1efa4cdfc355014dcc6d674033d97d61fadff90e38e0484bd48304538f52a"
+    },
+    {
+      "path": "dist/erie-hls-generator-v0.1.1/erie-hls-generator/smoke/run_smoke.py",
+      "sha256": "4596eb6434d7978c8bd6a7c7bf66e458c3682553f9e0af881d0020ae42913c69"
+    },
+    {
+      "path": "dist/erie-hls-generator-v0.1.1/erie-hls-generator/tests/test_skill_dependencies.py",
+      "sha256": "c1aab59d1e35deb016d23feb8e6fdb2b44210f3cd7a3be4f55afe47818761b2f"
+    },
+    {
+      "path": "dist/erie-hls-generator-v0.1.1/RELEASE_MANIFEST.json",
+      "sha256": "4e20ee655dcee7cf2723dd4438995b37669221251cce87bdab101465559b2c2b"
+    },
+    {
+      "path": "dist/erie-hls-generator-v0.1.1.zip",
+      "sha256": "6c3fc5a46bfb3995d7e29fd9938f57560408d3bbe5deb425cf8d0acae8477a92"
+    },
+    {
+      "path": "dist/erie-hls-generator-v0.1.10/.gitignore",
+      "sha256": "9c99732a61888573a3daf62d096168e061feacfa1ad0aaa93d79b712b8a7b590"
+    },
+    {
+      "path": "dist/erie-hls-generator-v0.1.10/agents/openai.yaml",
+      "sha256": "57ae4f6215d94a450e47d4f4fbef1eb671cf2d9d9c4a5c45d0c8dd319cd1cbd5"
+    },
+    {
+      "path": "dist/erie-hls-generator-v0.1.10/assets/examples/hls_2d_block_transform_spec.json",
+      "sha256": "01cb9158bbabb777790e008a7f13f24033f36d35c32b91361cf8d5be8f4f908d"
+    },
+    {
+      "path": "dist/erie-hls-generator-v0.1.10/assets/examples/hls_array_reshape_vector_scale_spec.json",
+      "sha256": "3da9bef69acd039800ac2265a855a262c46b7368398cedc8dda27d6d5f90a8cd"
+    },
+    {
+      "path": "dist/erie-hls-generator-v0.1.10/assets/examples/hls_axi4_burst_vector_scale_spec.json",
+      "sha256": "a4b9c0f01dfd79923321d48e77c5feeb77d862c9089ac445e382c7bf17cbdcec"
+    },
+    {
+      "path": "dist/erie-hls-generator-v0.1.10/assets/examples/hls_axis_increment_spec.json",
+      "sha256": "6e11fc2766c5f2b704224b12267074fadbc74787d01542cbafb3af14e5c7da1c"
+    },
+    {
+      "path": "dist/erie-hls-generator-v0.1.10/assets/examples/hls_dataflow_axis_spec.json",
+      "sha256": "98aa91cd1b007cfe094d3a0b9648ae1437cec7a43f5b980a8e0db4ad949e654e"
+    },
+    {
+      "path": "dist/erie-hls-generator-v0.1.10/assets/examples/hls_directio_freerun_axis_spec.json",
+      "sha256": "d613cb7c8778b50fa4390a65d52c0a731ae830761ec7b90f6ae53caa0f2ea0e8"
+    },
+    {
+      "path": "dist/erie-hls-generator-v0.1.10/assets/examples/hls_fence_ordering_spec.json",
+      "sha256": "e214a42ed0201ddc73d76e61ecd844d2668e48cbca535f8ed3ee2d7db424b96a"
+    },
+    {
+      "path": "dist/erie-hls-generator-v0.1.10/assets/examples/hls_fixed_point_scale_spec.json",
+      "sha256": "bcccd8d4198f8106c7a214c1c4b62ce89822fa187f59dc580af0c30a949792c3"
+    },
+    {
+      "path": "dist/erie-hls-generator-v0.1.10/assets/examples/hls_host_kernel_split_spec.json",
+      "sha256": "60389795875cd5b2c6c02d7fa90be3f33db6dba6897d72e70c11ca5b83f5db6e"
+    },
+    {
+      "path": "dist/erie-hls-generator-v0.1.10/assets/examples/hls_line_buffer_stencil_spec.json",
+      "sha256": "09bc57f465ae1d5e4c13fcdba6d0183cedb595689f5351e8b4c0dbf68da6c99e"
+    },
+    {
+      "path": "dist/erie-hls-generator-v0.1.10/assets/examples/hls_minimal_vitis_pipeline_spec.json",
+      "sha256": "3b844bb1fb6beda5148efc094b7616f5b16d13f5da0724c95acbb0fdb6a5785b"
+    },
+    {
+      "path": "dist/erie-hls-generator-v0.1.10/assets/examples/hls_multi_m_axi_add_spec.json",
+      "sha256": "fb191cdcbb291d40dd891b6bff2f19952fabeb460480953ac30ccf8e6cca914f"
+    },
+    {
+      "path": "dist/erie-hls-generator-v0.1.10/assets/examples/hls_partition_vector_scale_spec.json",
+      "sha256": "74d2f8d90644fd4917501b371bcd36ce69667fbf5c50e81ed6f3cbc667f3ed71"
+    },
+    {
+      "path": "dist/erie-hls-generator-v0.1.10/assets/examples/hls_reduction_tree_sum_spec.json",
+      "sha256": "a0f362cbd81e284c270515b0629faccdc63467928fbf0798e75caee50a3e1adf"
+    },
+    {
+      "path": "dist/erie-hls-generator-v0.1.10/assets/examples/hls_streamofblocks_axis_spec.json",
+      "sha256": "ebd3a7c8811c82976a44d2d228f91477a78864e43c7119a87d5978c5f0edd93b"
+    },
+    {
+      "path": "dist/erie-hls-generator-v0.1.10/assets/examples/hls_task_graph_axis_spec.json",
+      "sha256": "b3a61d9abcba187340372cc2c03325c0b79ccf153e064b952eeca6dc9caf1e3d"
+    },
+    {
+      "path": "dist/erie-hls-generator-v0.1.10/assets/examples/hls_tiled_gemm_spec.json",
+      "sha256": "aff857e665541dd6ceb68d83b006dc1b78106e72ef1c49744f47b7a4a35c6b99"
+    },
+    {
+      "path": "dist/erie-hls-generator-v0.1.10/assets/examples/hls_vector_lane_add_spec.json",
+      "sha256": "2bab4b7a4d2e79176b0bf8009a50a94432c06e39dbcc2f8ad5a331e1b814e9d2"
+    },
+    {
+      "path": "dist/erie-hls-generator-v0.1.10/assets/examples/hls_vector_scale_mock_spec.json",
+      "sha256": "01387e9b68dfd9476920bd1887325afcf44a91e163a128e2abe5410db9d5826c"
+    },
+    {
+      "path": "dist/erie-hls-generator-v0.1.10/assets/examples/hls_vector_scale_spec.json",
+      "sha256": "9cb3b558ddd841182dbddfdf69e3ec2424d2f350eb910983fd0b26b4c1552f2a"
+    },
+    {
+      "path": "dist/erie-hls-generator-v0.1.10/assets/templates/hls_array_partition_template.json",
+      "sha256": "41eeb6dee595fe64e096126ba15a75ec1d2d135c6be1b978cc2a574507f4a5b1"
+    },
+    {
+      "path": "dist/erie-hls-generator-v0.1.10/assets/templates/hls_array_reshape_template.json",
+      "sha256": "6d6780231b21dd00d353b576cfd51b0a9c51e4bbf62bb428113089463e9584f8"
+    },
+    {
+      "path": "dist/erie-hls-generator-v0.1.10/assets/templates/hls_axi4_burst_template.json",
+      "sha256": "7f5ccc16de60a3c100b16e5d8456ed5190fb72da54a726269f902b789e840f5e"
+    },
+    {
+      "path": "dist/erie-hls-generator-v0.1.10/assets/templates/hls_dataflow_template.json",
+      "sha256": "1a9aca2608da45fc3bf5a04b48ec0c17e00fdc089ec76f8a78ce60e1a08ba176"
+    },
+    {
+      "path": "dist/erie-hls-generator-v0.1.10/assets/templates/hls_directio_freerun_template.json",
+      "sha256": "34e9204f4682ecdaa989561a166c6437b27de3a898f23d2b321eb234f6b3db8c"
+    },
+    {
+      "path": "dist/erie-hls-generator-v0.1.10/assets/templates/hls_fence_ordering_template.json",
+      "sha256": "72ae664bba117482211c0bf35867e8b4a25ffaed07272aa6a323273ffd9d84c2"
+    },
+    {
+      "path": "dist/erie-hls-generator-v0.1.10/assets/templates/hls_fixed_point_template.json",
+      "sha256": "f7a785050e5d72df8fa119e24b2f2382748dfa7fac49ec630373d8e1ee7244fc"
+    },
+    {
+      "path": "dist/erie-hls-generator-v0.1.10/assets/templates/hls_host_kernel_split_template.json",
+      "sha256": "31bf1c1556baa36e97f75401ca8c1a0ef92e732221a2199479dfbdd7f6153068"
+    },
+    {
+      "path": "dist/erie-hls-generator-v0.1.10/assets/templates/hls_line_buffer_stencil_template.json",
+      "sha256": "baff5617cf1874a56245e8b5162a58b64c62230643be75702a128cd0f94a1898"
+    },
+    {
+      "path": "dist/erie-hls-generator-v0.1.10/assets/templates/hls_minimal_vitis_pipeline_template.json",
+      "sha256": "882cc3a5b51c60a541427ad4db88111cb71e597644050c061c5a6eb503df561c"
+    },
+    {
+      "path": "dist/erie-hls-generator-v0.1.10/assets/templates/hls_multi_m_axi_template.json",
+      "sha256": "abe7722cca62b2327ac1298bbe118f947197a739bd0aa765ece9cddc8a26c895"
+    },
+    {
+      "path": "dist/erie-hls-generator-v0.1.10/assets/templates/hls_reduction_tree_template.json",
+      "sha256": "ed67f0af1bc07fa7ec816a10bc497e9ca30e7607cf8cfd5f0f19ad6def910752"
+    },
+    {
+      "path": "dist/erie-hls-generator-v0.1.10/assets/templates/hls_streamofblocks_template.json",
+      "sha256": "784619e3ab0ce3e64222ed7228fb0b0a3c0164d6bc3ca2437d837b80142addae"
+    },
+    {
+      "path": "dist/erie-hls-generator-v0.1.10/assets/templates/hls_task_graph_template.json",
+      "sha256": "802dbb82bd9a7ce0e3e8a58eb307f9572bac5a6adf39e9e4ec41d4afc8d710dc"
+    },
+    {
+      "path": "dist/erie-hls-generator-v0.1.10/assets/templates/hls_tiled_gemm_template.json",
+      "sha256": "24d616749bc6e5315e65879298cd990b6eef9c4db6d4d823cb52e4d4606f897d"
+    },
+    {
+      "path": "dist/erie-hls-generator-v0.1.10/assets/templates/hls_vector_lane_template.json",
+      "sha256": "d9267c251e532aad79a7a2fdbe24e18018577bda99adc1aa538eff661da46414"
+    },
+    {
+      "path": "dist/erie-hls-generator-v0.1.10/assets/validation-board/hosts/binary_add_host.cpp.tpl",
+      "sha256": "a67c0fd82ed5c7c4a6d81e28652088f0752e69641a8da7103b742e9081394eb3"
+    },
+    {
+      "path": "dist/erie-hls-generator-v0.1.10/assets/validation-board/hosts/matrix_unary_host.cpp.tpl",
+      "sha256": "96e576b58a3765cc451091e9592aade2394a409857339357c1e226dbd3b6c3ea"
+    },
+    {
+      "path": "dist/erie-hls-generator-v0.1.10/assets/validation-board/hosts/vector_increment_host.cpp.tpl",
+      "sha256": "fa865f8a2fbd824943675567bd8c261d493ec458cf2ac8cdfddd7d4d96f56ff4"
+    },
+    {
+      "path": "dist/erie-hls-generator-v0.1.10/assets/validation-board/hosts/vector_scale_host.cpp.tpl",
+      "sha256": "584a403d2d6f5572ea9a98202156ca863ba58e160b0b8999c3ad8abb01f12d4c"
+    },
+    {
+      "path": "dist/erie-hls-generator-v0.1.10/assets/validation-board/README.md",
+      "sha256": "2f1c24205e24fb9070478a837cd66d1f5bda3b6d22b14cce5b974328ba724980"
+    },
+    {
+      "path": "dist/erie-hls-generator-v0.1.10/DESIGN_GOALS.md",
+      "sha256": "cdf34df374356c8c0a7eb5fa37ea7af4e67c36110722790418d7cafa3e337659"
+    },
+    {
+      "path": "dist/erie-hls-generator-v0.1.10/evals/evals.json",
+      "sha256": "0a51a89ff9cc164378e0bb61e2e1977f123fc660b785bfa6732c85b9010d5c6e"
+    },
+    {
+      "path": "dist/erie-hls-generator-v0.1.10/integration/__init__.py",
+      "sha256": "bc2f88fc551d438ee45a529941c3d7ee8b7218fa86d4dfeef103168a5509d6ef"
+    },
+    {
+      "path": "dist/erie-hls-generator-v0.1.10/integration/default_workflow_config.json",
+      "sha256": "50de84c5ba0232a84622667d661272e3544a8fcc1d23e00619afa2c3b32e5690"
+    },
+    {
+      "path": "dist/erie-hls-generator-v0.1.10/integration/hls_adapter.py",
+      "sha256": "77fc3eb1d5fad297719ca538fc580b3d41d8aca5b695274ee4a508b269b2a9bc"
+    },
+    {
+      "path": "dist/erie-hls-generator-v0.1.10/references/configuration.md",
+      "sha256": "3beb538c8becbf58fe06f6dfeca53605b77a3966cac0028b27a285b7011a31f8"
+    },
+    {
+      "path": "dist/erie-hls-generator-v0.1.10/references/hls-advanced-library-patterns.md",
+      "sha256": "f325b992589d8eee501d6eb7ad6c187515912236ac6349a454c1281f20a060ab"
+    },
+    {
+      "path": "dist/erie-hls-generator-v0.1.10/references/hls-comment-style.md",
+      "sha256": "6227367390225a6076e7a261a4e10b51265f24d77a0863f83d5f90c537a7d14a"
+    },
+    {
+      "path": "dist/erie-hls-generator-v0.1.10/references/hls-device-migration-strategy.md",
+      "sha256": "51f06b10157ac64702d9f72defd5dd2b0009bc41e0d00808a8a36762c60625d4"
+    },
+    {
+      "path": "dist/erie-hls-generator-v0.1.10/references/hls-library-policy.md",
+      "sha256": "af1fb53a8647f6ab08c46694c1871ef017d25775773e24099c572136b346415e"
+    },
+    {
+      "path": "dist/erie-hls-generator-v0.1.10/references/hls-memory-burst-and-layout.md",
+      "sha256": "5014566a5ebb2ab6214b079ada464fb666553ad488d5adda3c7cf0e0af6d2f24"
+    },
+    {
+      "path": "dist/erie-hls-generator-v0.1.10/references/hls-modeling-strategy.md",
+      "sha256": "5ee3552faddf0f80e251c5f868f8cee68d3046d5049beb9e4498d1d3c4d6e4cc"
+    },
+    {
+      "path": "dist/erie-hls-generator-v0.1.10/references/hls-optimization-patterns.md",
+      "sha256": "ccf3123b228ce9c1600ecd58626b5bdf3e182bc621df9abafc7eb006cb42c309"
+    },
+    {
+      "path": "dist/erie-hls-generator-v0.1.10/references/hls-project-structure-patterns.md",
+      "sha256": "363ee4301ff2e46a9f9ed3436c540108af147e2681c40c130ace60aab5f739f1"
+    },
+    {
+      "path": "dist/erie-hls-generator-v0.1.10/references/hls-report-driven-optimization.md",
+      "sha256": "9b19c9c3790d40632b57e21868ac53bea9f35a35de827ca31c057456ed82f39d"
+    },
+    {
+      "path": "dist/erie-hls-generator-v0.1.10/references/hls-stencil-reduction-gemm-patterns.md",
+      "sha256": "245bf89e6a347aa87cec6b194e3b9133e1f2d82ded186f1847ac8314a8c72a66"
+    },
+    {
+      "path": "dist/erie-hls-generator-v0.1.10/references/hls-task-parallel-strategy.md",
+      "sha256": "bc3ca8d11f86aba2885666dde25aaff7a0fb3919edf53329198663f4cebaeeda"
+    },
+    {
+      "path": "dist/erie-hls-generator-v0.1.10/references/hls-tutorial-derived-templates.md",
+      "sha256": "d6fcb883d4c02c687cf242e360971d733899d9086611a116a506b7afa42e39a9"
+    },
+    {
+      "path": "dist/erie-hls-generator-v0.1.10/references/integration.md",
+      "sha256": "9048e4581b44066c3dd157650ef15ba6b007944ec4210e5465faf725ece83fbb"
+    },
+    {
+      "path": "dist/erie-hls-generator-v0.1.10/references/remote-board-platform-upload.md",
+      "sha256": "156918e80c0a58b83ca33697defd57bc716da495ab8091094566dbf314bc4621"
+    },
+    {
+      "path": "dist/erie-hls-generator-v0.1.10/references/vitis-hls-2024-2-script-guide.md",
+      "sha256": "e0e398dcc259b6912db81f46eeb99329bf7cccd85139cd042e1b121a97c2b835"
+    },
+    {
+      "path": "dist/erie-hls-generator-v0.1.10/references/workflow-contracts.md",
+      "sha256": "3e0586a261ac8a0cebe61a1e0824512372205cf0da5cbc44c0962d8a91f501a8"
+    },
+    {
+      "path": "dist/erie-hls-generator-v0.1.10/RELEASE_RECEIPT.json",
+      "sha256": "b5e48ceda6ad0532d85c9869faf964330df70042cfb40e68ca4ddd67ed2d2462"
+    },
+    {
+      "path": "dist/erie-hls-generator-v0.1.10/runtime/__init__.py",
+      "sha256": "bbac4643de7d4e94a78094973d78482bf0bbf3694d18ab704b4dcfd265b129e7"
+    },
+    {
+      "path": "dist/erie-hls-generator-v0.1.10/runtime/hls_generator/__init__.py",
+      "sha256": "818e20229845e236d1e449b3b75749de3f6c680527e1cb4cae8076d43dd6f79b"
+    },
+    {
+      "path": "dist/erie-hls-generator-v0.1.10/runtime/hls_generator/__main__.py",
+      "sha256": "9dbb2b94e18a1b4c981e4277684bc93089b7a2e0a127118d273fc9a7723ed601"
+    },
+    {
+      "path": "dist/erie-hls-generator-v0.1.10/runtime/hls_generator/board_acceptance.py",
+      "sha256": "d69130a8076c61bae3741114f55fa9b36d13f163ba041b732ea97fefc3eeb5f0"
+    },
+    {
+      "path": "dist/erie-hls-generator-v0.1.10/runtime/hls_generator/board_platform_payload.py",
+      "sha256": "c65ef5c76e535520ff01ae36a04df9969d0c4c1044da09c36f44aa428d8883cc"
+    },
+    {
+      "path": "dist/erie-hls-generator-v0.1.10/runtime/hls_generator/cli.py",
+      "sha256": "433679609533c01219b176bd3dcdbaa44dcc0310f1d0de9ae02c2141b0118b80"
+    },
+    {
+      "path": "dist/erie-hls-generator-v0.1.10/runtime/hls_generator/config.py",
+      "sha256": "762d46059b54a212f5a7ea8ea6c00939252b61571db1af56635b23901a4bd1bd"
+    },
+    {
+      "path": "dist/erie-hls-generator-v0.1.10/runtime/hls_generator/extractor.py",
+      "sha256": "2e7df8bef1c23719f7e7c4c86116802020d78bfff4cf64870948514c2684e036"
+    },
+    {
+      "path": "dist/erie-hls-generator-v0.1.10/runtime/hls_generator/hls_cfg.py",
+      "sha256": "20db67ccae54028ebae18dd580d869ef62e9afd13b10a4bec18a2134f5784b68"
+    },
+    {
+      "path": "dist/erie-hls-generator-v0.1.10/runtime/hls_generator/hls_profile.py",
+      "sha256": "37da5b123215e628af134cbfb6034eff0ee06d4806085c276fe3c39e17a5f355"
+    },
+    {
+      "path": "dist/erie-hls-generator-v0.1.10/runtime/hls_generator/hls_reports.py",
+      "sha256": "7002f128e57c4bf462e0bc6c1b343d6ab5135eeefeed47fd84e488204ba016bc"
+    },
+    {
+      "path": "dist/erie-hls-generator-v0.1.10/runtime/hls_generator/hls_tcl.py",
+      "sha256": "e9910f44657464346790e9f4ae8dbc098ac1b8cf4dfececb336f2bfbc230f441"
+    },
+    {
+      "path": "dist/erie-hls-generator-v0.1.10/runtime/hls_generator/interface_contract.py",
+      "sha256": "c3bbade98d6f7a9e91bd0962385554136bdfac7617491f18cc79b6d83bb9bdf5"
+    },
+    {
+      "path": "dist/erie-hls-generator-v0.1.10/runtime/hls_generator/intervention.py",
+      "sha256": "4ee84988b2f19bf5e7456fea185eca9ab5a7862e3db81f024d61eda9537a897c"
+    },
+    {
+      "path": "dist/erie-hls-generator-v0.1.10/runtime/hls_generator/model_provider.py",
+      "sha256": "70eea69b6a3b50ed4b94849d1f0f6aeb0d6b31986f5d5ccd6a58732ea24ef686"
+    },
+    {
+      "path": "dist/erie-hls-generator-v0.1.10/runtime/hls_generator/patterns.py",
+      "sha256": "43357c290c637deea32a42096a5ec760a434dc40d88bad8a3302ae5261f0a638"
+    },
+    {
+      "path": "dist/erie-hls-generator-v0.1.10/runtime/hls_generator/planning.py",
+      "sha256": "c1f2abc2fdff7ae03b6825bb5e9bb06d128fd0a7bb30bf5dd2873fe633dd5261"
+    },
+    {
+      "path": "dist/erie-hls-generator-v0.1.10/runtime/hls_generator/prompt.py",
+      "sha256": "59ce2c172cb03ceeecdd4d47c7e11abd239a020e3e4c14f08a3a6be01cd1875e"
+    },
+    {
+      "path": "dist/erie-hls-generator-v0.1.10/runtime/hls_generator/reference_contract.py",
+      "sha256": "0311756342233183accc806e683f388e7cdb1fd7e407e776379986f041fcd94f"
+    },
+    {
+      "path": "dist/erie-hls-generator-v0.1.10/runtime/hls_generator/remote_directory_contract.py",
+      "sha256": "2d160d173d8a7848e6312e6f943708ddda46d390c9be97c2672ae299434f53e8"
+    },
+    {
+      "path": "dist/erie-hls-generator-v0.1.10/runtime/hls_generator/requirements.py",
+      "sha256": "385fda389f4e9c7a18066aec9982ea3ac13f69e436a59bca235652879c149620"
+    },
+    {
+      "path": "dist/erie-hls-generator-v0.1.10/runtime/hls_generator/route_contract.py",
+      "sha256": "6eecbc44e5f8d0b79be084f7b595c78a3976ffad71a58d4808b92ed3820217a8"
+    },
+    {
+      "path": "dist/erie-hls-generator-v0.1.10/runtime/hls_generator/runtime_config.json",
+      "sha256": "285afb9d2740cded943412164c5bdeda6f6792ab2c221dbc0fba96c2c577e247"
+    },
+    {
+      "path": "dist/erie-hls-generator-v0.1.10/runtime/hls_generator/skill_dependencies.py",
+      "sha256": "da979525443d2071e3ce6c4c3952e1118c770144a5f0e4d9ba96137b122c542c"
+    },
+    {
+      "path": "dist/erie-hls-generator-v0.1.10/runtime/hls_generator/spec.py",
+      "sha256": "fb5c212d8df454f5a167f6447986a623e6edc05a7f1ce137695f3435c6659a05"
+    },
+    {
+      "path": "dist/erie-hls-generator-v0.1.10/runtime/hls_generator/trace.py",
+      "sha256": "cc773b2a3813f02a9591b3917e77f953d652b24219b03ea92577cea3142de088"
+    },
+    {
+      "path": "dist/erie-hls-generator-v0.1.10/runtime/hls_generator/user_config.py",
+      "sha256": "fb1ed8f5dbe1e61ea66eaff725d04d120fa7e91793f19568c6a3c98f4dff3fc6"
+    },
+    {
+      "path": "dist/erie-hls-generator-v0.1.10/runtime/hls_generator/validation.py",
+      "sha256": "af400b311cddc6ead8ed52d3046770a9111cfb19579d38789ea980b55f2bb805"
+    },
+    {
+      "path": "dist/erie-hls-generator-v0.1.10/runtime/hls_generator/vectors.py",
+      "sha256": "a455e5c842d9cbbd6f4cb381cbc900a051b814b6ddc2c9cac23f42dc32d63b1e"
+    },
+    {
+      "path": "dist/erie-hls-generator-v0.1.10/runtime/hls_generator/verifier.py",
+      "sha256": "cd81295ddaebb783ea27022fc03d922e890dbaeb45b9c2442955e130086f1d21"
+    },
+    {
+      "path": "dist/erie-hls-generator-v0.1.10/runtime/hls_generator/vitis_rules.py",
+      "sha256": "7ef5a9490f0dc359515d4da5ffaaab51ac147ca3548db1dda76dc190e52abbf6"
+    },
+    {
+      "path": "dist/erie-hls-generator-v0.1.10/runtime/hls_generator/workflow.py",
+      "sha256": "61e4e1fab1e0fb9b745ebdeda11ab838c46eac80a5b9613806d871667d1e8cf6"
+    },
+    {
+      "path": "dist/erie-hls-generator-v0.1.10/runtime/hls_generator/workspace.py",
+      "sha256": "9a1c5596f94ad01e2c5257f0850d235a1821df0ddcd8330bb3ad3477d7e3cae1"
+    },
+    {
+      "path": "dist/erie-hls-generator-v0.1.10/scripts/_skill_tool_delegate.py",
+      "sha256": "d65506ae17945c91459b2102be84042e7f12c01a2760aebd27c2956e28ac0300"
+    },
+    {
+      "path": "dist/erie-hls-generator-v0.1.10/scripts/audit_skill.py",
+      "sha256": "b3a97fcc4f50dc39e10cd39ed42f39fdf97ffabd7702591286d5cda67ee63b6a"
+    },
+    {
+      "path": "dist/erie-hls-generator-v0.1.10/scripts/confidence_loop.py",
+      "sha256": "077c8264965b14d6ae43488fcaf627cb5cc17c415dd4b0c5320e81a758af458d"
+    },
+    {
+      "path": "dist/erie-hls-generator-v0.1.10/scripts/evaluate_skill.py",
+      "sha256": "7a75a86e833322816b95695ba501946eff2bd86f823c86836d3cad77cdf27e43"
+    },
+    {
+      "path": "dist/erie-hls-generator-v0.1.10/scripts/inspect_project.py",
+      "sha256": "c0831453c6b2b9dec4e8e3df1e7f213f2d8764843182e78b19602bfad6ce34a3"
+    },
+    {
+      "path": "dist/erie-hls-generator-v0.1.10/scripts/manage_dirs.py",
+      "sha256": "3016313a7a88b4b0bea33bcc2beceb7d1e552cff3875b2d3e2d23ab358232643"
+    },
+    {
+      "path": "dist/erie-hls-generator-v0.1.10/scripts/manage_docs.py",
+      "sha256": "af0beba82aa0f70ae9ffe06333bf32f1fcdb8d1e8fe33a10507b290c6f39d6f2"
+    },
+    {
+      "path": "dist/erie-hls-generator-v0.1.10/scripts/prepare_release.py",
+      "sha256": "b67bcbd892153e9b74231c10f1d5f13e0065e559ebcbddfee2cbd896b96ff547"
+    },
+    {
+      "path": "dist/erie-hls-generator-v0.1.10/scripts/quick_validate.py",
+      "sha256": "f16139008c712a710144c8f01b9163aaa322b1998b310ffe10c13d842a05f6b1"
+    },
+    {
+      "path": "dist/erie-hls-generator-v0.1.10/scripts/remote_vitis_acceptance.py",
+      "sha256": "69c947411c30e668f10c7fab5338e3938122e61cfdd8842645e515b1c3102524"
+    },
+    {
+      "path": "dist/erie-hls-generator-v0.1.10/scripts/render_agents.py",
+      "sha256": "dca4daf202b36bd8e1de30f7b947689267b45c9febb99165cc9da34bdf7102f8"
+    },
+    {
+      "path": "dist/erie-hls-generator-v0.1.10/scripts/verify_agents.py",
+      "sha256": "653e2003b8fd56d1eb746d25f59338fe9a7c926c160624d0e92db6f92392ff79"
+    },
+    {
+      "path": "dist/erie-hls-generator-v0.1.10/SKILL.md",
+      "sha256": "a64bc228ca1aa02c704e929f098c0a9e9707123a5483ee88672708e0fd87c611"
+    },
+    {
+      "path": "dist/erie-hls-generator-v0.1.10/smoke/run_smoke.py",
+      "sha256": "469d966110ec2e4ff90a710ddfafb2e4e414bd574aa01db98e09576355a29d68"
+    },
+    {
+      "path": "dist/erie-hls-generator-v0.1.10/tests/test_board_platform_payload.py",
+      "sha256": "f45185b49f9d17966d9d134f9656e0f49b500e4b2ca1aa107966f9af093507e4"
+    },
+    {
+      "path": "dist/erie-hls-generator-v0.1.10/tests/test_comment_coverage.py",
+      "sha256": "9906dd9b3f446f67891bb2e92bffaf23c8002cc3f86c7a423ac38a4216389466"
+    },
+    {
+      "path": "dist/erie-hls-generator-v0.1.10/tests/test_confidence_loop.py",
+      "sha256": "3205988d4c9bf3740acbf36cf98fe10f74fdab0e70835089cdf6aa32dc755392"
+    },
+    {
+      "path": "dist/erie-hls-generator-v0.1.10/tests/test_evaluate_skill.py",
+      "sha256": "63f0bdf11e9650443bba3b52fd68b1aa57cc07a7a56f205038050cc53b56b90d"
+    },
+    {
+      "path": "dist/erie-hls-generator-v0.1.10/tests/test_hls_pattern_contracts.py",
+      "sha256": "2dfe67a4755bfdcc4911cdc55aa0fbe5f02b7ad090e1a7c7b7a505dd33930ea8"
+    },
+    {
+      "path": "dist/erie-hls-generator-v0.1.10/tests/test_prepare_release.py",
+      "sha256": "48c439cbd54e868f14864de4af87c0b5e0530642e7db7fed502b84e0205cef31"
+    },
+    {
+      "path": "dist/erie-hls-generator-v0.1.10/tests/test_remote_vitis_acceptance.py",
+      "sha256": "95d238d2615f2c6a5fb8a6f064570c1dfeddbbaa15cac0640ba69f43887cd6f1"
+    },
+    {
+      "path": "dist/erie-hls-generator-v0.1.10/tests/test_runtime_config.py",
+      "sha256": "30aed5cc18104c3756cc6ef1f87ae5783818f82fb23dd13d4c347af7b61f90f9"
+    },
+    {
+      "path": "dist/erie-hls-generator-v0.1.10/tests/test_skill_dependencies.py",
+      "sha256": "1a03d57a3107f23d00bafc05339f4833e881d3d450319802e3e3588bad33c5e4"
+    },
+    {
+      "path": "dist/erie-hls-generator-v0.1.10/tests/test_user_config.py",
+      "sha256": "9aebc6db90df763281e02d4ccebbd87663f13c56cb82fa10fda3cff605586fc2"
+    },
+    {
+      "path": "dist/erie-hls-generator-v0.1.10.zip",
+      "sha256": "10151cad07a85a82848edb4b40e9726b4a84ae81d30e56cb30828f82a09faa5a"
+    },
+    {
+      "path": "dist/erie-hls-generator-v0.1.2/checksums.sha256",
+      "sha256": "fbbab624a85d7b7f87aef97295608f92f2f5d3d9c9fd8c770e237d4dff9a4b81"
+    },
+    {
+      "path": "dist/erie-hls-generator-v0.1.2/erie-hls-generator/.gitignore",
+      "sha256": "9c99732a61888573a3daf62d096168e061feacfa1ad0aaa93d79b712b8a7b590"
+    },
+    {
+      "path": "dist/erie-hls-generator-v0.1.2/erie-hls-generator/agents/openai.yaml",
+      "sha256": "57ae4f6215d94a450e47d4f4fbef1eb671cf2d9d9c4a5c45d0c8dd319cd1cbd5"
+    },
+    {
+      "path": "dist/erie-hls-generator-v0.1.2/erie-hls-generator/assets/examples/hls_array_reshape_vector_scale_spec.json",
+      "sha256": "ffc92b412ca7e645ed27f8be1a95e4bb3104c0806017e23b0dbf90a514c6e8c1"
+    },
+    {
+      "path": "dist/erie-hls-generator-v0.1.2/erie-hls-generator/assets/examples/hls_axis_increment_spec.json",
+      "sha256": "541457801560d17309beb213a422579d9123c3f7e03c169063bf531b857e296d"
+    },
+    {
+      "path": "dist/erie-hls-generator-v0.1.2/erie-hls-generator/assets/examples/hls_dataflow_axis_spec.json",
+      "sha256": "393e9ceca421d21d95fabe1a605853e6d872f145e33daec51a75851882736de9"
+    },
+    {
+      "path": "dist/erie-hls-generator-v0.1.2/erie-hls-generator/assets/examples/hls_fixed_point_scale_spec.json",
+      "sha256": "2f15306a422ca2737beb3e43c0febc034a912d6002d47c2d6d08582aa1076783"
+    },
+    {
+      "path": "dist/erie-hls-generator-v0.1.2/erie-hls-generator/assets/examples/hls_multi_m_axi_add_spec.json",
+      "sha256": "fe9a6a6f53d4b32a1e753cfb0be42aef9aa1e2652e61dfa041bd6830c3391686"
+    },
+    {
+      "path": "dist/erie-hls-generator-v0.1.2/erie-hls-generator/assets/examples/hls_partition_vector_scale_spec.json",
+      "sha256": "a8d00b6b28747b11bf927cfea4a65f701ede2c87d9f3e1441033ea718d8bdf48"
+    },
+    {
+      "path": "dist/erie-hls-generator-v0.1.2/erie-hls-generator/assets/examples/hls_vector_scale_mock_spec.json",
+      "sha256": "3355aa978961f634d668db5bad133dfe3835051be1d8e5818710d1f7c02e56ef"
+    },
+    {
+      "path": "dist/erie-hls-generator-v0.1.2/erie-hls-generator/assets/examples/hls_vector_scale_spec.json",
+      "sha256": "ccc74d7cd0e1f7c9b52d01dcd7269041a06caecc7f109aecf563644be4f0b986"
+    },
+    {
+      "path": "dist/erie-hls-generator-v0.1.2/erie-hls-generator/DESIGN_GOALS.md",
+      "sha256": "275eb544eedbc3fa496b002edecf9f2f480f091f0b0e7532d5cb9e15b397d827"
+    },
+    {
+      "path": "dist/erie-hls-generator-v0.1.2/erie-hls-generator/integration/__init__.py",
+      "sha256": "bc2f88fc551d438ee45a529941c3d7ee8b7218fa86d4dfeef103168a5509d6ef"
+    },
+    {
+      "path": "dist/erie-hls-generator-v0.1.2/erie-hls-generator/integration/default_workflow_config.json",
+      "sha256": "50de84c5ba0232a84622667d661272e3544a8fcc1d23e00619afa2c3b32e5690"
+    },
+    {
+      "path": "dist/erie-hls-generator-v0.1.2/erie-hls-generator/integration/hls_adapter.py",
+      "sha256": "dc080e30295c6eb78bd81b73190afe61560a30b201e6258c2ef57f1f4ba7f378"
+    },
+    {
+      "path": "dist/erie-hls-generator-v0.1.2/erie-hls-generator/references/configuration.md",
+      "sha256": "93891f51d2761ba45fd943fbe9edff168363d08d012c6c52d161302da25001ca"
+    },
+    {
+      "path": "dist/erie-hls-generator-v0.1.2/erie-hls-generator/references/hls-comment-style.md",
+      "sha256": "4d4861fc836ff30790871e9ab681f5b519a22077c8e9c32c3c3abf1e3d7fd759"
+    },
+    {
+      "path": "dist/erie-hls-generator-v0.1.2/erie-hls-generator/references/hls-library-policy.md",
+      "sha256": "af1fb53a8647f6ab08c46694c1871ef017d25775773e24099c572136b346415e"
+    },
+    {
+      "path": "dist/erie-hls-generator-v0.1.2/erie-hls-generator/references/integration.md",
+      "sha256": "46d09547acd4053545ce81cb1f44e978666a41969665d9348051bcaeb6b19c7f"
+    },
+    {
+      "path": "dist/erie-hls-generator-v0.1.2/erie-hls-generator/references/vitis-hls-2024-2-script-guide.md",
+      "sha256": "15a45348fdd243e46b5ced0cdab699f129b0059e396082e3244ad660cc4e602e"
+    },
+    {
+      "path": "dist/erie-hls-generator-v0.1.2/erie-hls-generator/references/vitis-hls-official-patterns.md",
+      "sha256": "973fdf5bc7b5cf3aa8264e61f9ae9959f8f6c78d229c5845e1419c941bb79f27"
+    },
+    {
+      "path": "dist/erie-hls-generator-v0.1.2/erie-hls-generator/references/workflow-contracts.md",
+      "sha256": "f0607ba8c22193274ca3e087fe5d863e999f82195304833a8f999f36ef8777da"
+    },
+    {
+      "path": "dist/erie-hls-generator-v0.1.2/erie-hls-generator/runtime/__init__.py",
+      "sha256": "bbac4643de7d4e94a78094973d78482bf0bbf3694d18ab704b4dcfd265b129e7"
+    },
+    {
+      "path": "dist/erie-hls-generator-v0.1.2/erie-hls-generator/runtime/hls_generator/__init__.py",
+      "sha256": "5f152cc6bce6d1973ae7f092969b890be6494ee5cce93bcb3d69d189142a7cbf"
+    },
+    {
+      "path": "dist/erie-hls-generator-v0.1.2/erie-hls-generator/runtime/hls_generator/__main__.py",
+      "sha256": "9dbb2b94e18a1b4c981e4277684bc93089b7a2e0a127118d273fc9a7723ed601"
+    },
+    {
+      "path": "dist/erie-hls-generator-v0.1.2/erie-hls-generator/runtime/hls_generator/cli.py",
+      "sha256": "8dfb5b9eedc918f871f8f88e467c4424fb4ec573bf236df0ffac77bf2dcad769"
+    },
+    {
+      "path": "dist/erie-hls-generator-v0.1.2/erie-hls-generator/runtime/hls_generator/config.py",
+      "sha256": "4b71eca3cafae4d24ae9a9af9cd92d807661ffce91d57d6aa20638bffec8a56b"
+    },
+    {
+      "path": "dist/erie-hls-generator-v0.1.2/erie-hls-generator/runtime/hls_generator/extractor.py",
+      "sha256": "2e7df8bef1c23719f7e7c4c86116802020d78bfff4cf64870948514c2684e036"
+    },
+    {
+      "path": "dist/erie-hls-generator-v0.1.2/erie-hls-generator/runtime/hls_generator/hls_cfg.py",
+      "sha256": "20db67ccae54028ebae18dd580d869ef62e9afd13b10a4bec18a2134f5784b68"
+    },
+    {
+      "path": "dist/erie-hls-generator-v0.1.2/erie-hls-generator/runtime/hls_generator/hls_profile.py",
+      "sha256": "d28dc56212edf3e5ef03173e2d91e5d075ad625ad7a77f4da25f045ef49efd1f"
+    },
+    {
+      "path": "dist/erie-hls-generator-v0.1.2/erie-hls-generator/runtime/hls_generator/hls_reports.py",
+      "sha256": "7002f128e57c4bf462e0bc6c1b343d6ab5135eeefeed47fd84e488204ba016bc"
+    },
+    {
+      "path": "dist/erie-hls-generator-v0.1.2/erie-hls-generator/runtime/hls_generator/hls_tcl.py",
+      "sha256": "e9910f44657464346790e9f4ae8dbc098ac1b8cf4dfececb336f2bfbc230f441"
+    },
+    {
+      "path": "dist/erie-hls-generator-v0.1.2/erie-hls-generator/runtime/hls_generator/interface_contract.py",
+      "sha256": "c3bbade98d6f7a9e91bd0962385554136bdfac7617491f18cc79b6d83bb9bdf5"
+    },
+    {
+      "path": "dist/erie-hls-generator-v0.1.2/erie-hls-generator/runtime/hls_generator/intervention.py",
+      "sha256": "4ee84988b2f19bf5e7456fea185eca9ab5a7862e3db81f024d61eda9537a897c"
+    },
+    {
+      "path": "dist/erie-hls-generator-v0.1.2/erie-hls-generator/runtime/hls_generator/model_provider.py",
+      "sha256": "f2a994df373b729fa2962861126efc6bb4db967f0b2529e16d3405310f64efd6"
+    },
+    {
+      "path": "dist/erie-hls-generator-v0.1.2/erie-hls-generator/runtime/hls_generator/planning.py",
+      "sha256": "c1f2abc2fdff7ae03b6825bb5e9bb06d128fd0a7bb30bf5dd2873fe633dd5261"
+    },
+    {
+      "path": "dist/erie-hls-generator-v0.1.2/erie-hls-generator/runtime/hls_generator/prompt.py",
+      "sha256": "1d3ebb852d9f1965ae92814137d17b01aeeeb5d307ec074d593b6ab4cab9ac12"
+    },
+    {
+      "path": "dist/erie-hls-generator-v0.1.2/erie-hls-generator/runtime/hls_generator/reference_contract.py",
+      "sha256": "0311756342233183accc806e683f388e7cdb1fd7e407e776379986f041fcd94f"
+    },
+    {
+      "path": "dist/erie-hls-generator-v0.1.2/erie-hls-generator/runtime/hls_generator/requirements.py",
+      "sha256": "45821b59a8a74576dd5e008289111d0855604914d1941156e5a6bd3b53a9fbeb"
+    },
+    {
+      "path": "dist/erie-hls-generator-v0.1.2/erie-hls-generator/runtime/hls_generator/runtime_config.json",
+      "sha256": "ffdf3957964de1af7a37b0c5aafcdfe1e9404cebcb7d36330525222ca2543735"
+    },
+    {
+      "path": "dist/erie-hls-generator-v0.1.2/erie-hls-generator/runtime/hls_generator/skill_dependencies.py",
+      "sha256": "3003e6c38fb1a3f9e0a60946a45e183d7f0ea9a8004a21a269a1362f5dcfbc1e"
+    },
+    {
+      "path": "dist/erie-hls-generator-v0.1.2/erie-hls-generator/runtime/hls_generator/spec.py",
+      "sha256": "fb5c212d8df454f5a167f6447986a623e6edc05a7f1ce137695f3435c6659a05"
+    },
+    {
+      "path": "dist/erie-hls-generator-v0.1.2/erie-hls-generator/runtime/hls_generator/trace.py",
+      "sha256": "cc773b2a3813f02a9591b3917e77f953d652b24219b03ea92577cea3142de088"
+    },
+    {
+      "path": "dist/erie-hls-generator-v0.1.2/erie-hls-generator/runtime/hls_generator/user_config.py",
+      "sha256": "dbd992e3f2b10ce3814d6d6bf5f71bde25959b5c2398ac9e08c740c2de105b19"
+    },
+    {
+      "path": "dist/erie-hls-generator-v0.1.2/erie-hls-generator/runtime/hls_generator/validation.py",
+      "sha256": "389eae43936e479a30aff7a9edc464b4768e5ca9d612bf3be172b44f3112c77e"
+    },
+    {
+      "path": "dist/erie-hls-generator-v0.1.2/erie-hls-generator/runtime/hls_generator/vectors.py",
+      "sha256": "a455e5c842d9cbbd6f4cb381cbc900a051b814b6ddc2c9cac23f42dc32d63b1e"
+    },
+    {
+      "path": "dist/erie-hls-generator-v0.1.2/erie-hls-generator/runtime/hls_generator/verifier.py",
+      "sha256": "cd81295ddaebb783ea27022fc03d922e890dbaeb45b9c2442955e130086f1d21"
+    },
+    {
+      "path": "dist/erie-hls-generator-v0.1.2/erie-hls-generator/runtime/hls_generator/vitis_rules.py",
+      "sha256": "e2feae9da12b8b73a83bd2db54e93131c88d82b4db7620b7406f440b1fc0ab75"
+    },
+    {
+      "path": "dist/erie-hls-generator-v0.1.2/erie-hls-generator/runtime/hls_generator/workflow.py",
+      "sha256": "eb9b8b5b5246086151b76d4ced95fa86d0b3b904373392f673a8a1797a2a378c"
+    },
+    {
+      "path": "dist/erie-hls-generator-v0.1.2/erie-hls-generator/runtime/hls_generator/workspace.py",
+      "sha256": "9a1c5596f94ad01e2c5257f0850d235a1821df0ddcd8330bb3ad3477d7e3cae1"
+    },
+    {
+      "path": "dist/erie-hls-generator-v0.1.2/erie-hls-generator/scripts/confidence_loop.py",
+      "sha256": "1fa5a9abe59216939ced05b34e2a9eb1b89da0df4842c4b1e0b6a8877f99f6d2"
+    },
+    {
+      "path": "dist/erie-hls-generator-v0.1.2/erie-hls-generator/scripts/prepare_release.py",
+      "sha256": "23a961d27476426a29652cecf99b29577f86267a0d0d09bc3a343cdb1ed8a4d5"
+    },
+    {
+      "path": "dist/erie-hls-generator-v0.1.2/erie-hls-generator/scripts/remote_vitis_acceptance.py",
+      "sha256": "1e267cedb3114d84a27d5418bff2f526de99dafae178235b412ec84da4aaf06e"
+    },
+    {
+      "path": "dist/erie-hls-generator-v0.1.2/erie-hls-generator/SKILL.md",
+      "sha256": "5db1efa4cdfc355014dcc6d674033d97d61fadff90e38e0484bd48304538f52a"
+    },
+    {
+      "path": "dist/erie-hls-generator-v0.1.2/erie-hls-generator/smoke/run_smoke.py",
+      "sha256": "6a4ce0202719fe13fb49be6d38e84efab034f8e78e87f030aa4624e0c315150c"
+    },
+    {
+      "path": "dist/erie-hls-generator-v0.1.2/erie-hls-generator/tests/test_skill_dependencies.py",
+      "sha256": "c1aab59d1e35deb016d23feb8e6fdb2b44210f3cd7a3be4f55afe47818761b2f"
+    },
+    {
+      "path": "dist/erie-hls-generator-v0.1.2/RELEASE_MANIFEST.json",
+      "sha256": "ae135a9c5b9f6f0905296c8114fb9e81e4bd12a6467356d41bb2a923a0ccfa0f"
+    },
+    {
+      "path": "dist/erie-hls-generator-v0.1.2.zip",
+      "sha256": "beadbd2502c09f2c2f01a1a312ee33f36f0f51966c66e9c1ba87f2951a0a9b0a"
+    },
+    {
+      "path": "dist/erie-hls-generator-v0.1.3/checksums.sha256",
+      "sha256": "ef8d95ec520a0a5dfbd4db8cf2c4bb87b551b721c3f00421bf0a705ddd9d56ed"
+    },
+    {
+      "path": "dist/erie-hls-generator-v0.1.3/erie-hls-generator/.gitignore",
+      "sha256": "9c99732a61888573a3daf62d096168e061feacfa1ad0aaa93d79b712b8a7b590"
+    },
+    {
+      "path": "dist/erie-hls-generator-v0.1.3/erie-hls-generator/agents/openai.yaml",
+      "sha256": "57ae4f6215d94a450e47d4f4fbef1eb671cf2d9d9c4a5c45d0c8dd319cd1cbd5"
+    },
+    {
+      "path": "dist/erie-hls-generator-v0.1.3/erie-hls-generator/assets/examples/hls_array_reshape_vector_scale_spec.json",
+      "sha256": "ffc92b412ca7e645ed27f8be1a95e4bb3104c0806017e23b0dbf90a514c6e8c1"
+    },
+    {
+      "path": "dist/erie-hls-generator-v0.1.3/erie-hls-generator/assets/examples/hls_axis_increment_spec.json",
+      "sha256": "541457801560d17309beb213a422579d9123c3f7e03c169063bf531b857e296d"
+    },
+    {
+      "path": "dist/erie-hls-generator-v0.1.3/erie-hls-generator/assets/examples/hls_dataflow_axis_spec.json",
+      "sha256": "393e9ceca421d21d95fabe1a605853e6d872f145e33daec51a75851882736de9"
+    },
+    {
+      "path": "dist/erie-hls-generator-v0.1.3/erie-hls-generator/assets/examples/hls_fixed_point_scale_spec.json",
+      "sha256": "2f15306a422ca2737beb3e43c0febc034a912d6002d47c2d6d08582aa1076783"
+    },
+    {
+      "path": "dist/erie-hls-generator-v0.1.3/erie-hls-generator/assets/examples/hls_multi_m_axi_add_spec.json",
+      "sha256": "fe9a6a6f53d4b32a1e753cfb0be42aef9aa1e2652e61dfa041bd6830c3391686"
+    },
+    {
+      "path": "dist/erie-hls-generator-v0.1.3/erie-hls-generator/assets/examples/hls_partition_vector_scale_spec.json",
+      "sha256": "a8d00b6b28747b11bf927cfea4a65f701ede2c87d9f3e1441033ea718d8bdf48"
+    },
+    {
+      "path": "dist/erie-hls-generator-v0.1.3/erie-hls-generator/assets/examples/hls_vector_scale_mock_spec.json",
+      "sha256": "3355aa978961f634d668db5bad133dfe3835051be1d8e5818710d1f7c02e56ef"
+    },
+    {
+      "path": "dist/erie-hls-generator-v0.1.3/erie-hls-generator/assets/examples/hls_vector_scale_spec.json",
+      "sha256": "ccc74d7cd0e1f7c9b52d01dcd7269041a06caecc7f109aecf563644be4f0b986"
+    },
+    {
+      "path": "dist/erie-hls-generator-v0.1.3/erie-hls-generator/DESIGN_GOALS.md",
+      "sha256": "275eb544eedbc3fa496b002edecf9f2f480f091f0b0e7532d5cb9e15b397d827"
+    },
+    {
+      "path": "dist/erie-hls-generator-v0.1.3/erie-hls-generator/integration/__init__.py",
+      "sha256": "bc2f88fc551d438ee45a529941c3d7ee8b7218fa86d4dfeef103168a5509d6ef"
+    },
+    {
+      "path": "dist/erie-hls-generator-v0.1.3/erie-hls-generator/integration/default_workflow_config.json",
+      "sha256": "50de84c5ba0232a84622667d661272e3544a8fcc1d23e00619afa2c3b32e5690"
+    },
+    {
+      "path": "dist/erie-hls-generator-v0.1.3/erie-hls-generator/integration/hls_adapter.py",
+      "sha256": "dc080e30295c6eb78bd81b73190afe61560a30b201e6258c2ef57f1f4ba7f378"
+    },
+    {
+      "path": "dist/erie-hls-generator-v0.1.3/erie-hls-generator/references/configuration.md",
+      "sha256": "93891f51d2761ba45fd943fbe9edff168363d08d012c6c52d161302da25001ca"
+    },
+    {
+      "path": "dist/erie-hls-generator-v0.1.3/erie-hls-generator/references/hls-comment-style.md",
+      "sha256": "4d4861fc836ff30790871e9ab681f5b519a22077c8e9c32c3c3abf1e3d7fd759"
+    },
+    {
+      "path": "dist/erie-hls-generator-v0.1.3/erie-hls-generator/references/hls-library-policy.md",
+      "sha256": "af1fb53a8647f6ab08c46694c1871ef017d25775773e24099c572136b346415e"
+    },
+    {
+      "path": "dist/erie-hls-generator-v0.1.3/erie-hls-generator/references/integration.md",
+      "sha256": "46d09547acd4053545ce81cb1f44e978666a41969665d9348051bcaeb6b19c7f"
+    },
+    {
+      "path": "dist/erie-hls-generator-v0.1.3/erie-hls-generator/references/vitis-hls-2024-2-script-guide.md",
+      "sha256": "15a45348fdd243e46b5ced0cdab699f129b0059e396082e3244ad660cc4e602e"
+    },
+    {
+      "path": "dist/erie-hls-generator-v0.1.3/erie-hls-generator/references/vitis-hls-official-patterns.md",
+      "sha256": "973fdf5bc7b5cf3aa8264e61f9ae9959f8f6c78d229c5845e1419c941bb79f27"
+    },
+    {
+      "path": "dist/erie-hls-generator-v0.1.3/erie-hls-generator/references/workflow-contracts.md",
+      "sha256": "f0607ba8c22193274ca3e087fe5d863e999f82195304833a8f999f36ef8777da"
+    },
+    {
+      "path": "dist/erie-hls-generator-v0.1.3/erie-hls-generator/runtime/__init__.py",
+      "sha256": "bbac4643de7d4e94a78094973d78482bf0bbf3694d18ab704b4dcfd265b129e7"
+    },
+    {
+      "path": "dist/erie-hls-generator-v0.1.3/erie-hls-generator/runtime/hls_generator/__init__.py",
+      "sha256": "f2647ee52a96b5a27f2da44ab73e4f3a77332869550933efef130d34dcd5fc0a"
+    },
+    {
+      "path": "dist/erie-hls-generator-v0.1.3/erie-hls-generator/runtime/hls_generator/__main__.py",
+      "sha256": "9dbb2b94e18a1b4c981e4277684bc93089b7a2e0a127118d273fc9a7723ed601"
+    },
+    {
+      "path": "dist/erie-hls-generator-v0.1.3/erie-hls-generator/runtime/hls_generator/cli.py",
+      "sha256": "b6929bacc0fe45303e3c6f882de127708a36546a8f81621cc7c09b8af29d16ce"
+    },
+    {
+      "path": "dist/erie-hls-generator-v0.1.3/erie-hls-generator/runtime/hls_generator/config.py",
+      "sha256": "4b71eca3cafae4d24ae9a9af9cd92d807661ffce91d57d6aa20638bffec8a56b"
+    },
+    {
+      "path": "dist/erie-hls-generator-v0.1.3/erie-hls-generator/runtime/hls_generator/extractor.py",
+      "sha256": "2e7df8bef1c23719f7e7c4c86116802020d78bfff4cf64870948514c2684e036"
+    },
+    {
+      "path": "dist/erie-hls-generator-v0.1.3/erie-hls-generator/runtime/hls_generator/hls_cfg.py",
+      "sha256": "20db67ccae54028ebae18dd580d869ef62e9afd13b10a4bec18a2134f5784b68"
+    },
+    {
+      "path": "dist/erie-hls-generator-v0.1.3/erie-hls-generator/runtime/hls_generator/hls_profile.py",
+      "sha256": "d28dc56212edf3e5ef03173e2d91e5d075ad625ad7a77f4da25f045ef49efd1f"
+    },
+    {
+      "path": "dist/erie-hls-generator-v0.1.3/erie-hls-generator/runtime/hls_generator/hls_reports.py",
+      "sha256": "7002f128e57c4bf462e0bc6c1b343d6ab5135eeefeed47fd84e488204ba016bc"
+    },
+    {
+      "path": "dist/erie-hls-generator-v0.1.3/erie-hls-generator/runtime/hls_generator/hls_tcl.py",
+      "sha256": "e9910f44657464346790e9f4ae8dbc098ac1b8cf4dfececb336f2bfbc230f441"
+    },
+    {
+      "path": "dist/erie-hls-generator-v0.1.3/erie-hls-generator/runtime/hls_generator/interface_contract.py",
+      "sha256": "c3bbade98d6f7a9e91bd0962385554136bdfac7617491f18cc79b6d83bb9bdf5"
+    },
+    {
+      "path": "dist/erie-hls-generator-v0.1.3/erie-hls-generator/runtime/hls_generator/intervention.py",
+      "sha256": "4ee84988b2f19bf5e7456fea185eca9ab5a7862e3db81f024d61eda9537a897c"
+    },
+    {
+      "path": "dist/erie-hls-generator-v0.1.3/erie-hls-generator/runtime/hls_generator/model_provider.py",
+      "sha256": "f2a994df373b729fa2962861126efc6bb4db967f0b2529e16d3405310f64efd6"
+    },
+    {
+      "path": "dist/erie-hls-generator-v0.1.3/erie-hls-generator/runtime/hls_generator/planning.py",
+      "sha256": "c1f2abc2fdff7ae03b6825bb5e9bb06d128fd0a7bb30bf5dd2873fe633dd5261"
+    },
+    {
+      "path": "dist/erie-hls-generator-v0.1.3/erie-hls-generator/runtime/hls_generator/prompt.py",
+      "sha256": "1d3ebb852d9f1965ae92814137d17b01aeeeb5d307ec074d593b6ab4cab9ac12"
+    },
+    {
+      "path": "dist/erie-hls-generator-v0.1.3/erie-hls-generator/runtime/hls_generator/reference_contract.py",
+      "sha256": "0311756342233183accc806e683f388e7cdb1fd7e407e776379986f041fcd94f"
+    },
+    {
+      "path": "dist/erie-hls-generator-v0.1.3/erie-hls-generator/runtime/hls_generator/requirements.py",
+      "sha256": "45821b59a8a74576dd5e008289111d0855604914d1941156e5a6bd3b53a9fbeb"
+    },
+    {
+      "path": "dist/erie-hls-generator-v0.1.3/erie-hls-generator/runtime/hls_generator/runtime_config.json",
+      "sha256": "ffdf3957964de1af7a37b0c5aafcdfe1e9404cebcb7d36330525222ca2543735"
+    },
+    {
+      "path": "dist/erie-hls-generator-v0.1.3/erie-hls-generator/runtime/hls_generator/skill_dependencies.py",
+      "sha256": "3003e6c38fb1a3f9e0a60946a45e183d7f0ea9a8004a21a269a1362f5dcfbc1e"
+    },
+    {
+      "path": "dist/erie-hls-generator-v0.1.3/erie-hls-generator/runtime/hls_generator/spec.py",
+      "sha256": "fb5c212d8df454f5a167f6447986a623e6edc05a7f1ce137695f3435c6659a05"
+    },
+    {
+      "path": "dist/erie-hls-generator-v0.1.3/erie-hls-generator/runtime/hls_generator/trace.py",
+      "sha256": "cc773b2a3813f02a9591b3917e77f953d652b24219b03ea92577cea3142de088"
+    },
+    {
+      "path": "dist/erie-hls-generator-v0.1.3/erie-hls-generator/runtime/hls_generator/user_config.py",
+      "sha256": "dbd992e3f2b10ce3814d6d6bf5f71bde25959b5c2398ac9e08c740c2de105b19"
+    },
+    {
+      "path": "dist/erie-hls-generator-v0.1.3/erie-hls-generator/runtime/hls_generator/validation.py",
+      "sha256": "389eae43936e479a30aff7a9edc464b4768e5ca9d612bf3be172b44f3112c77e"
+    },
+    {
+      "path": "dist/erie-hls-generator-v0.1.3/erie-hls-generator/runtime/hls_generator/vectors.py",
+      "sha256": "a455e5c842d9cbbd6f4cb381cbc900a051b814b6ddc2c9cac23f42dc32d63b1e"
+    },
+    {
+      "path": "dist/erie-hls-generator-v0.1.3/erie-hls-generator/runtime/hls_generator/verifier.py",
+      "sha256": "cd81295ddaebb783ea27022fc03d922e890dbaeb45b9c2442955e130086f1d21"
+    },
+    {
+      "path": "dist/erie-hls-generator-v0.1.3/erie-hls-generator/runtime/hls_generator/vitis_rules.py",
+      "sha256": "e2feae9da12b8b73a83bd2db54e93131c88d82b4db7620b7406f440b1fc0ab75"
+    },
+    {
+      "path": "dist/erie-hls-generator-v0.1.3/erie-hls-generator/runtime/hls_generator/workflow.py",
+      "sha256": "eb9b8b5b5246086151b76d4ced95fa86d0b3b904373392f673a8a1797a2a378c"
+    },
+    {
+      "path": "dist/erie-hls-generator-v0.1.3/erie-hls-generator/runtime/hls_generator/workspace.py",
+      "sha256": "9a1c5596f94ad01e2c5257f0850d235a1821df0ddcd8330bb3ad3477d7e3cae1"
+    },
+    {
+      "path": "dist/erie-hls-generator-v0.1.3/erie-hls-generator/scripts/confidence_loop.py",
+      "sha256": "1fa5a9abe59216939ced05b34e2a9eb1b89da0df4842c4b1e0b6a8877f99f6d2"
+    },
+    {
+      "path": "dist/erie-hls-generator-v0.1.3/erie-hls-generator/scripts/prepare_release.py",
+      "sha256": "1fc0480e1f2fc6fa6a40e16bbcf27bd4bda09811abb22b0fe56d83afec0cd46c"
+    },
+    {
+      "path": "dist/erie-hls-generator-v0.1.3/erie-hls-generator/scripts/remote_vitis_acceptance.py",
+      "sha256": "1e267cedb3114d84a27d5418bff2f526de99dafae178235b412ec84da4aaf06e"
+    },
+    {
+      "path": "dist/erie-hls-generator-v0.1.3/erie-hls-generator/SKILL.md",
+      "sha256": "06208123ef43f9491cd0662c5899aca67df33a813a61a1a7a00966214a38dcfe"
+    },
+    {
+      "path": "dist/erie-hls-generator-v0.1.3/erie-hls-generator/smoke/run_smoke.py",
+      "sha256": "7c1641e8adb022bf76dc8e7ffb7832e9d30a46a9e362bfc33fc7460bcfcff451"
+    },
+    {
+      "path": "dist/erie-hls-generator-v0.1.3/erie-hls-generator/tests/test_skill_dependencies.py",
+      "sha256": "c1aab59d1e35deb016d23feb8e6fdb2b44210f3cd7a3be4f55afe47818761b2f"
+    },
+    {
+      "path": "dist/erie-hls-generator-v0.1.3/RELEASE_MANIFEST.json",
+      "sha256": "01ce8311c2217dddeed80d9ee9b689f6f6bbf6d44cf623768c879232c7a5b864"
+    },
+    {
+      "path": "dist/erie-hls-generator-v0.1.3.zip",
+      "sha256": "7c14b3a4d937d34b6e7a72542b71cd2f2c7b96ef29823dd1a6b51d63cb340802"
+    },
+    {
+      "path": "dist/erie-hls-generator-v0.1.4/checksums.sha256",
+      "sha256": "23ddea704efab35e931994ee3fd0db9a338214b5d236ce1bbc1a3bd440ddb71f"
+    },
+    {
+      "path": "dist/erie-hls-generator-v0.1.4/erie-hls-generator/.gitignore",
+      "sha256": "9c99732a61888573a3daf62d096168e061feacfa1ad0aaa93d79b712b8a7b590"
+    },
+    {
+      "path": "dist/erie-hls-generator-v0.1.4/erie-hls-generator/agents/openai.yaml",
+      "sha256": "57ae4f6215d94a450e47d4f4fbef1eb671cf2d9d9c4a5c45d0c8dd319cd1cbd5"
+    },
+    {
+      "path": "dist/erie-hls-generator-v0.1.4/erie-hls-generator/assets/examples/hls_array_reshape_vector_scale_spec.json",
+      "sha256": "ffc92b412ca7e645ed27f8be1a95e4bb3104c0806017e23b0dbf90a514c6e8c1"
+    },
+    {
+      "path": "dist/erie-hls-generator-v0.1.4/erie-hls-generator/assets/examples/hls_axis_increment_spec.json",
+      "sha256": "541457801560d17309beb213a422579d9123c3f7e03c169063bf531b857e296d"
+    },
+    {
+      "path": "dist/erie-hls-generator-v0.1.4/erie-hls-generator/assets/examples/hls_dataflow_axis_spec.json",
+      "sha256": "393e9ceca421d21d95fabe1a605853e6d872f145e33daec51a75851882736de9"
+    },
+    {
+      "path": "dist/erie-hls-generator-v0.1.4/erie-hls-generator/assets/examples/hls_fixed_point_scale_spec.json",
+      "sha256": "2f15306a422ca2737beb3e43c0febc034a912d6002d47c2d6d08582aa1076783"
+    },
+    {
+      "path": "dist/erie-hls-generator-v0.1.4/erie-hls-generator/assets/examples/hls_multi_m_axi_add_spec.json",
+      "sha256": "fe9a6a6f53d4b32a1e753cfb0be42aef9aa1e2652e61dfa041bd6830c3391686"
+    },
+    {
+      "path": "dist/erie-hls-generator-v0.1.4/erie-hls-generator/assets/examples/hls_partition_vector_scale_spec.json",
+      "sha256": "a8d00b6b28747b11bf927cfea4a65f701ede2c87d9f3e1441033ea718d8bdf48"
+    },
+    {
+      "path": "dist/erie-hls-generator-v0.1.4/erie-hls-generator/assets/examples/hls_vector_scale_mock_spec.json",
+      "sha256": "3355aa978961f634d668db5bad133dfe3835051be1d8e5818710d1f7c02e56ef"
+    },
+    {
+      "path": "dist/erie-hls-generator-v0.1.4/erie-hls-generator/assets/examples/hls_vector_scale_spec.json",
+      "sha256": "ccc74d7cd0e1f7c9b52d01dcd7269041a06caecc7f109aecf563644be4f0b986"
+    },
+    {
+      "path": "dist/erie-hls-generator-v0.1.4/erie-hls-generator/DESIGN_GOALS.md",
+      "sha256": "275eb544eedbc3fa496b002edecf9f2f480f091f0b0e7532d5cb9e15b397d827"
+    },
+    {
+      "path": "dist/erie-hls-generator-v0.1.4/erie-hls-generator/integration/__init__.py",
+      "sha256": "bc2f88fc551d438ee45a529941c3d7ee8b7218fa86d4dfeef103168a5509d6ef"
+    },
+    {
+      "path": "dist/erie-hls-generator-v0.1.4/erie-hls-generator/integration/default_workflow_config.json",
+      "sha256": "50de84c5ba0232a84622667d661272e3544a8fcc1d23e00619afa2c3b32e5690"
+    },
+    {
+      "path": "dist/erie-hls-generator-v0.1.4/erie-hls-generator/integration/hls_adapter.py",
+      "sha256": "dc080e30295c6eb78bd81b73190afe61560a30b201e6258c2ef57f1f4ba7f378"
+    },
+    {
+      "path": "dist/erie-hls-generator-v0.1.4/erie-hls-generator/references/configuration.md",
+      "sha256": "46fa374338114931c4870fdb4e461a18c193b44b7457e44599bcd8e447a41ca6"
+    },
+    {
+      "path": "dist/erie-hls-generator-v0.1.4/erie-hls-generator/references/hls-comment-style.md",
+      "sha256": "4d4861fc836ff30790871e9ab681f5b519a22077c8e9c32c3c3abf1e3d7fd759"
+    },
+    {
+      "path": "dist/erie-hls-generator-v0.1.4/erie-hls-generator/references/hls-library-policy.md",
+      "sha256": "af1fb53a8647f6ab08c46694c1871ef017d25775773e24099c572136b346415e"
+    },
+    {
+      "path": "dist/erie-hls-generator-v0.1.4/erie-hls-generator/references/integration.md",
+      "sha256": "46d09547acd4053545ce81cb1f44e978666a41969665d9348051bcaeb6b19c7f"
+    },
+    {
+      "path": "dist/erie-hls-generator-v0.1.4/erie-hls-generator/references/vitis-hls-2024-2-script-guide.md",
+      "sha256": "15a45348fdd243e46b5ced0cdab699f129b0059e396082e3244ad660cc4e602e"
+    },
+    {
+      "path": "dist/erie-hls-generator-v0.1.4/erie-hls-generator/references/vitis-hls-official-patterns.md",
+      "sha256": "973fdf5bc7b5cf3aa8264e61f9ae9959f8f6c78d229c5845e1419c941bb79f27"
+    },
+    {
+      "path": "dist/erie-hls-generator-v0.1.4/erie-hls-generator/references/workflow-contracts.md",
+      "sha256": "f0607ba8c22193274ca3e087fe5d863e999f82195304833a8f999f36ef8777da"
+    },
+    {
+      "path": "dist/erie-hls-generator-v0.1.4/erie-hls-generator/runtime/__init__.py",
+      "sha256": "bbac4643de7d4e94a78094973d78482bf0bbf3694d18ab704b4dcfd265b129e7"
+    },
+    {
+      "path": "dist/erie-hls-generator-v0.1.4/erie-hls-generator/runtime/hls_generator/__init__.py",
+      "sha256": "04f7508be5f69797faed45cb53f2f35d5d3700c130389bef50228edb292afd3f"
+    },
+    {
+      "path": "dist/erie-hls-generator-v0.1.4/erie-hls-generator/runtime/hls_generator/__main__.py",
+      "sha256": "9dbb2b94e18a1b4c981e4277684bc93089b7a2e0a127118d273fc9a7723ed601"
+    },
+    {
+      "path": "dist/erie-hls-generator-v0.1.4/erie-hls-generator/runtime/hls_generator/cli.py",
+      "sha256": "9d0530910e91de562b1c05912a1d9a273f0775b3ddcadc0e85d6ef4a134e9c6f"
+    },
+    {
+      "path": "dist/erie-hls-generator-v0.1.4/erie-hls-generator/runtime/hls_generator/config.py",
+      "sha256": "3d95637eafdd99193317251bfb94ce4d951ef4e82c35bf46b4593248c6893e89"
+    },
+    {
+      "path": "dist/erie-hls-generator-v0.1.4/erie-hls-generator/runtime/hls_generator/extractor.py",
+      "sha256": "2e7df8bef1c23719f7e7c4c86116802020d78bfff4cf64870948514c2684e036"
+    },
+    {
+      "path": "dist/erie-hls-generator-v0.1.4/erie-hls-generator/runtime/hls_generator/hls_cfg.py",
+      "sha256": "20db67ccae54028ebae18dd580d869ef62e9afd13b10a4bec18a2134f5784b68"
+    },
+    {
+      "path": "dist/erie-hls-generator-v0.1.4/erie-hls-generator/runtime/hls_generator/hls_profile.py",
+      "sha256": "d28dc56212edf3e5ef03173e2d91e5d075ad625ad7a77f4da25f045ef49efd1f"
+    },
+    {
+      "path": "dist/erie-hls-generator-v0.1.4/erie-hls-generator/runtime/hls_generator/hls_reports.py",
+      "sha256": "7002f128e57c4bf462e0bc6c1b343d6ab5135eeefeed47fd84e488204ba016bc"
+    },
+    {
+      "path": "dist/erie-hls-generator-v0.1.4/erie-hls-generator/runtime/hls_generator/hls_tcl.py",
+      "sha256": "e9910f44657464346790e9f4ae8dbc098ac1b8cf4dfececb336f2bfbc230f441"
+    },
+    {
+      "path": "dist/erie-hls-generator-v0.1.4/erie-hls-generator/runtime/hls_generator/interface_contract.py",
+      "sha256": "c3bbade98d6f7a9e91bd0962385554136bdfac7617491f18cc79b6d83bb9bdf5"
+    },
+    {
+      "path": "dist/erie-hls-generator-v0.1.4/erie-hls-generator/runtime/hls_generator/intervention.py",
+      "sha256": "4ee84988b2f19bf5e7456fea185eca9ab5a7862e3db81f024d61eda9537a897c"
+    },
+    {
+      "path": "dist/erie-hls-generator-v0.1.4/erie-hls-generator/runtime/hls_generator/model_provider.py",
+      "sha256": "f2a994df373b729fa2962861126efc6bb4db967f0b2529e16d3405310f64efd6"
+    },
+    {
+      "path": "dist/erie-hls-generator-v0.1.4/erie-hls-generator/runtime/hls_generator/planning.py",
+      "sha256": "c1f2abc2fdff7ae03b6825bb5e9bb06d128fd0a7bb30bf5dd2873fe633dd5261"
+    },
+    {
+      "path": "dist/erie-hls-generator-v0.1.4/erie-hls-generator/runtime/hls_generator/prompt.py",
+      "sha256": "298e0026c2a335bffbf60d6107e18c23a9a5333b4cc40cf2be92495b995531a9"
+    },
+    {
+      "path": "dist/erie-hls-generator-v0.1.4/erie-hls-generator/runtime/hls_generator/reference_contract.py",
+      "sha256": "0311756342233183accc806e683f388e7cdb1fd7e407e776379986f041fcd94f"
+    },
+    {
+      "path": "dist/erie-hls-generator-v0.1.4/erie-hls-generator/runtime/hls_generator/requirements.py",
+      "sha256": "45821b59a8a74576dd5e008289111d0855604914d1941156e5a6bd3b53a9fbeb"
+    },
+    {
+      "path": "dist/erie-hls-generator-v0.1.4/erie-hls-generator/runtime/hls_generator/runtime_config.json",
+      "sha256": "3c45972ebc7b176dd38d5f6e71941c2b0f063ca522daec06b6d229c988db603c"
+    },
+    {
+      "path": "dist/erie-hls-generator-v0.1.4/erie-hls-generator/runtime/hls_generator/skill_dependencies.py",
+      "sha256": "c5e10012c40e03fc8b4de924cfacee4163e25bc5fd9b5060f483c8e75ae02435"
+    },
+    {
+      "path": "dist/erie-hls-generator-v0.1.4/erie-hls-generator/runtime/hls_generator/spec.py",
+      "sha256": "fb5c212d8df454f5a167f6447986a623e6edc05a7f1ce137695f3435c6659a05"
+    },
+    {
+      "path": "dist/erie-hls-generator-v0.1.4/erie-hls-generator/runtime/hls_generator/trace.py",
+      "sha256": "cc773b2a3813f02a9591b3917e77f953d652b24219b03ea92577cea3142de088"
+    },
+    {
+      "path": "dist/erie-hls-generator-v0.1.4/erie-hls-generator/runtime/hls_generator/user_config.py",
+      "sha256": "dbd992e3f2b10ce3814d6d6bf5f71bde25959b5c2398ac9e08c740c2de105b19"
+    },
+    {
+      "path": "dist/erie-hls-generator-v0.1.4/erie-hls-generator/runtime/hls_generator/validation.py",
+      "sha256": "389eae43936e479a30aff7a9edc464b4768e5ca9d612bf3be172b44f3112c77e"
+    },
+    {
+      "path": "dist/erie-hls-generator-v0.1.4/erie-hls-generator/runtime/hls_generator/vectors.py",
+      "sha256": "a455e5c842d9cbbd6f4cb381cbc900a051b814b6ddc2c9cac23f42dc32d63b1e"
+    },
+    {
+      "path": "dist/erie-hls-generator-v0.1.4/erie-hls-generator/runtime/hls_generator/verifier.py",
+      "sha256": "cd81295ddaebb783ea27022fc03d922e890dbaeb45b9c2442955e130086f1d21"
+    },
+    {
+      "path": "dist/erie-hls-generator-v0.1.4/erie-hls-generator/runtime/hls_generator/vitis_rules.py",
+      "sha256": "e2feae9da12b8b73a83bd2db54e93131c88d82b4db7620b7406f440b1fc0ab75"
+    },
+    {
+      "path": "dist/erie-hls-generator-v0.1.4/erie-hls-generator/runtime/hls_generator/workflow.py",
+      "sha256": "61e4e1fab1e0fb9b745ebdeda11ab838c46eac80a5b9613806d871667d1e8cf6"
+    },
+    {
+      "path": "dist/erie-hls-generator-v0.1.4/erie-hls-generator/runtime/hls_generator/workspace.py",
+      "sha256": "9a1c5596f94ad01e2c5257f0850d235a1821df0ddcd8330bb3ad3477d7e3cae1"
+    },
+    {
+      "path": "dist/erie-hls-generator-v0.1.4/erie-hls-generator/scripts/confidence_loop.py",
+      "sha256": "1fa5a9abe59216939ced05b34e2a9eb1b89da0df4842c4b1e0b6a8877f99f6d2"
+    },
+    {
+      "path": "dist/erie-hls-generator-v0.1.4/erie-hls-generator/scripts/prepare_release.py",
+      "sha256": "0bc50b114b022cc04e73f236811d2c795674b23dc95af7660aea3e3f1ed50574"
+    },
+    {
+      "path": "dist/erie-hls-generator-v0.1.4/erie-hls-generator/scripts/remote_vitis_acceptance.py",
+      "sha256": "1e267cedb3114d84a27d5418bff2f526de99dafae178235b412ec84da4aaf06e"
+    },
+    {
+      "path": "dist/erie-hls-generator-v0.1.4/erie-hls-generator/SKILL.md",
+      "sha256": "54ba6bbefdaaed6291b6b4809b2b59f7c85ec005fd5a6772e7722987ce898514"
+    },
+    {
+      "path": "dist/erie-hls-generator-v0.1.4/erie-hls-generator/smoke/run_smoke.py",
+      "sha256": "9d3aaa749dee594ec8e327d30b57c186fcd82d668617dd8240e906cdf40d65af"
+    },
+    {
+      "path": "dist/erie-hls-generator-v0.1.4/erie-hls-generator/tests/test_skill_dependencies.py",
+      "sha256": "5cddd8882777208c256a0fda2c14c41a3c45faab729bc59c23827e0c0bfd03ba"
+    },
+    {
+      "path": "dist/erie-hls-generator-v0.1.4/RELEASE_MANIFEST.json",
+      "sha256": "0f6e2b16f66046abbf979b3a97e5f11a77467c1cbfbba7fd38ec3ae6788b870e"
+    },
+    {
+      "path": "dist/erie-hls-generator-v0.1.4.zip",
+      "sha256": "9290d97886cdbc2562e49a31f2ae3e2800ae20cddd4be7ac556dc3817e51f459"
+    },
+    {
+      "path": "dist/erie-hls-generator-v0.1.5/checksums.sha256",
+      "sha256": "83e88ae5bf59bf82e000bb14ad029b0ff74b3f8be2f7d2a131864bc6c40fb666"
+    },
+    {
+      "path": "dist/erie-hls-generator-v0.1.5/RELEASE_MANIFEST.json",
+      "sha256": "2577f76707f490f7da053619f3960f758292acdebd9aab0c7d93daf1742104d9"
+    },
+    {
+      "path": "dist/erie-hls-generator-v0.1.5/skills/erie-hls-generator/.gitignore",
+      "sha256": "9c99732a61888573a3daf62d096168e061feacfa1ad0aaa93d79b712b8a7b590"
+    },
+    {
+      "path": "dist/erie-hls-generator-v0.1.5/skills/erie-hls-generator/agents/openai.yaml",
+      "sha256": "57ae4f6215d94a450e47d4f4fbef1eb671cf2d9d9c4a5c45d0c8dd319cd1cbd5"
+    },
+    {
+      "path": "dist/erie-hls-generator-v0.1.5/skills/erie-hls-generator/assets/examples/hls_array_reshape_vector_scale_spec.json",
+      "sha256": "ffc92b412ca7e645ed27f8be1a95e4bb3104c0806017e23b0dbf90a514c6e8c1"
+    },
+    {
+      "path": "dist/erie-hls-generator-v0.1.5/skills/erie-hls-generator/assets/examples/hls_axis_increment_spec.json",
+      "sha256": "541457801560d17309beb213a422579d9123c3f7e03c169063bf531b857e296d"
+    },
+    {
+      "path": "dist/erie-hls-generator-v0.1.5/skills/erie-hls-generator/assets/examples/hls_dataflow_axis_spec.json",
+      "sha256": "393e9ceca421d21d95fabe1a605853e6d872f145e33daec51a75851882736de9"
+    },
+    {
+      "path": "dist/erie-hls-generator-v0.1.5/skills/erie-hls-generator/assets/examples/hls_fixed_point_scale_spec.json",
+      "sha256": "2f15306a422ca2737beb3e43c0febc034a912d6002d47c2d6d08582aa1076783"
+    },
+    {
+      "path": "dist/erie-hls-generator-v0.1.5/skills/erie-hls-generator/assets/examples/hls_multi_m_axi_add_spec.json",
+      "sha256": "fe9a6a6f53d4b32a1e753cfb0be42aef9aa1e2652e61dfa041bd6830c3391686"
+    },
+    {
+      "path": "dist/erie-hls-generator-v0.1.5/skills/erie-hls-generator/assets/examples/hls_partition_vector_scale_spec.json",
+      "sha256": "a8d00b6b28747b11bf927cfea4a65f701ede2c87d9f3e1441033ea718d8bdf48"
+    },
+    {
+      "path": "dist/erie-hls-generator-v0.1.5/skills/erie-hls-generator/assets/examples/hls_vector_scale_mock_spec.json",
+      "sha256": "3355aa978961f634d668db5bad133dfe3835051be1d8e5818710d1f7c02e56ef"
+    },
+    {
+      "path": "dist/erie-hls-generator-v0.1.5/skills/erie-hls-generator/assets/examples/hls_vector_scale_spec.json",
+      "sha256": "ccc74d7cd0e1f7c9b52d01dcd7269041a06caecc7f109aecf563644be4f0b986"
+    },
+    {
+      "path": "dist/erie-hls-generator-v0.1.5/skills/erie-hls-generator/DESIGN_GOALS.md",
+      "sha256": "cdf34df374356c8c0a7eb5fa37ea7af4e67c36110722790418d7cafa3e337659"
+    },
+    {
+      "path": "dist/erie-hls-generator-v0.1.5/skills/erie-hls-generator/integration/__init__.py",
+      "sha256": "bc2f88fc551d438ee45a529941c3d7ee8b7218fa86d4dfeef103168a5509d6ef"
+    },
+    {
+      "path": "dist/erie-hls-generator-v0.1.5/skills/erie-hls-generator/integration/default_workflow_config.json",
+      "sha256": "50de84c5ba0232a84622667d661272e3544a8fcc1d23e00619afa2c3b32e5690"
+    },
+    {
+      "path": "dist/erie-hls-generator-v0.1.5/skills/erie-hls-generator/integration/hls_adapter.py",
+      "sha256": "77fc3eb1d5fad297719ca538fc580b3d41d8aca5b695274ee4a508b269b2a9bc"
+    },
+    {
+      "path": "dist/erie-hls-generator-v0.1.5/skills/erie-hls-generator/references/configuration.md",
+      "sha256": "46fa374338114931c4870fdb4e461a18c193b44b7457e44599bcd8e447a41ca6"
+    },
+    {
+      "path": "dist/erie-hls-generator-v0.1.5/skills/erie-hls-generator/references/hls-comment-style.md",
+      "sha256": "4d4861fc836ff30790871e9ab681f5b519a22077c8e9c32c3c3abf1e3d7fd759"
+    },
+    {
+      "path": "dist/erie-hls-generator-v0.1.5/skills/erie-hls-generator/references/hls-library-policy.md",
+      "sha256": "af1fb53a8647f6ab08c46694c1871ef017d25775773e24099c572136b346415e"
+    },
+    {
+      "path": "dist/erie-hls-generator-v0.1.5/skills/erie-hls-generator/references/hls-modeling-strategy.md",
+      "sha256": "854f67bf474e8b915f83b4575f2a35844c2ce97b335c9662187805d772d2752d"
+    },
+    {
+      "path": "dist/erie-hls-generator-v0.1.5/skills/erie-hls-generator/references/hls-task-parallel-strategy.md",
+      "sha256": "7f917d862cf459b7d63ab3cdc04aa1842b09913efd985b89a0a1d7bdacc0214e"
+    },
+    {
+      "path": "dist/erie-hls-generator-v0.1.5/skills/erie-hls-generator/references/integration.md",
+      "sha256": "46d09547acd4053545ce81cb1f44e978666a41969665d9348051bcaeb6b19c7f"
+    },
+    {
+      "path": "dist/erie-hls-generator-v0.1.5/skills/erie-hls-generator/references/vitis-hls-2024-2-script-guide.md",
+      "sha256": "cf1ef8dda8c77b123eed1eca57e5445280449f20da3b410634148f19857dc80d"
+    },
+    {
+      "path": "dist/erie-hls-generator-v0.1.5/skills/erie-hls-generator/references/vitis-hls-official-patterns.md",
+      "sha256": "f9162fc4a80e1043745997a0cadb83277da9a4334729d98e8a4cb603f8196b46"
+    },
+    {
+      "path": "dist/erie-hls-generator-v0.1.5/skills/erie-hls-generator/references/workflow-contracts.md",
+      "sha256": "f0607ba8c22193274ca3e087fe5d863e999f82195304833a8f999f36ef8777da"
+    },
+    {
+      "path": "dist/erie-hls-generator-v0.1.5/skills/erie-hls-generator/runtime/__init__.py",
+      "sha256": "bbac4643de7d4e94a78094973d78482bf0bbf3694d18ab704b4dcfd265b129e7"
+    },
+    {
+      "path": "dist/erie-hls-generator-v0.1.5/skills/erie-hls-generator/runtime/hls_generator/__init__.py",
+      "sha256": "6acd9e57ee8b8bbe3ab86da4281631ad6e7af18396dda3f22f553c9bc9e98d15"
+    },
+    {
+      "path": "dist/erie-hls-generator-v0.1.5/skills/erie-hls-generator/runtime/hls_generator/__main__.py",
+      "sha256": "9dbb2b94e18a1b4c981e4277684bc93089b7a2e0a127118d273fc9a7723ed601"
+    },
+    {
+      "path": "dist/erie-hls-generator-v0.1.5/skills/erie-hls-generator/runtime/hls_generator/cli.py",
+      "sha256": "27e8a669c52b955028577897e5cb0a1259f5097d7c563efab63c154cc90b38ec"
+    },
+    {
+      "path": "dist/erie-hls-generator-v0.1.5/skills/erie-hls-generator/runtime/hls_generator/config.py",
+      "sha256": "3d95637eafdd99193317251bfb94ce4d951ef4e82c35bf46b4593248c6893e89"
+    },
+    {
+      "path": "dist/erie-hls-generator-v0.1.5/skills/erie-hls-generator/runtime/hls_generator/extractor.py",
+      "sha256": "2e7df8bef1c23719f7e7c4c86116802020d78bfff4cf64870948514c2684e036"
+    },
+    {
+      "path": "dist/erie-hls-generator-v0.1.5/skills/erie-hls-generator/runtime/hls_generator/hls_cfg.py",
+      "sha256": "20db67ccae54028ebae18dd580d869ef62e9afd13b10a4bec18a2134f5784b68"
+    },
+    {
+      "path": "dist/erie-hls-generator-v0.1.5/skills/erie-hls-generator/runtime/hls_generator/hls_profile.py",
+      "sha256": "d28dc56212edf3e5ef03173e2d91e5d075ad625ad7a77f4da25f045ef49efd1f"
+    },
+    {
+      "path": "dist/erie-hls-generator-v0.1.5/skills/erie-hls-generator/runtime/hls_generator/hls_reports.py",
+      "sha256": "7002f128e57c4bf462e0bc6c1b343d6ab5135eeefeed47fd84e488204ba016bc"
+    },
+    {
+      "path": "dist/erie-hls-generator-v0.1.5/skills/erie-hls-generator/runtime/hls_generator/hls_tcl.py",
+      "sha256": "e9910f44657464346790e9f4ae8dbc098ac1b8cf4dfececb336f2bfbc230f441"
+    },
+    {
+      "path": "dist/erie-hls-generator-v0.1.5/skills/erie-hls-generator/runtime/hls_generator/interface_contract.py",
+      "sha256": "c3bbade98d6f7a9e91bd0962385554136bdfac7617491f18cc79b6d83bb9bdf5"
+    },
+    {
+      "path": "dist/erie-hls-generator-v0.1.5/skills/erie-hls-generator/runtime/hls_generator/intervention.py",
+      "sha256": "4ee84988b2f19bf5e7456fea185eca9ab5a7862e3db81f024d61eda9537a897c"
+    },
+    {
+      "path": "dist/erie-hls-generator-v0.1.5/skills/erie-hls-generator/runtime/hls_generator/model_provider.py",
+      "sha256": "f2a994df373b729fa2962861126efc6bb4db967f0b2529e16d3405310f64efd6"
+    },
+    {
+      "path": "dist/erie-hls-generator-v0.1.5/skills/erie-hls-generator/runtime/hls_generator/planning.py",
+      "sha256": "c1f2abc2fdff7ae03b6825bb5e9bb06d128fd0a7bb30bf5dd2873fe633dd5261"
+    },
+    {
+      "path": "dist/erie-hls-generator-v0.1.5/skills/erie-hls-generator/runtime/hls_generator/prompt.py",
+      "sha256": "19e6bf16988d35dac1e4b0d5ae4b418741f5aaea3591084ff36cc915580f108d"
+    },
+    {
+      "path": "dist/erie-hls-generator-v0.1.5/skills/erie-hls-generator/runtime/hls_generator/reference_contract.py",
+      "sha256": "0311756342233183accc806e683f388e7cdb1fd7e407e776379986f041fcd94f"
+    },
+    {
+      "path": "dist/erie-hls-generator-v0.1.5/skills/erie-hls-generator/runtime/hls_generator/requirements.py",
+      "sha256": "45821b59a8a74576dd5e008289111d0855604914d1941156e5a6bd3b53a9fbeb"
+    },
+    {
+      "path": "dist/erie-hls-generator-v0.1.5/skills/erie-hls-generator/runtime/hls_generator/runtime_config.json",
+      "sha256": "e2b57b6b1d0dd3f0605565c8889fbc19e944b46db637c220b179d8b2312439cf"
+    },
+    {
+      "path": "dist/erie-hls-generator-v0.1.5/skills/erie-hls-generator/runtime/hls_generator/skill_dependencies.py",
+      "sha256": "da979525443d2071e3ce6c4c3952e1118c770144a5f0e4d9ba96137b122c542c"
+    },
+    {
+      "path": "dist/erie-hls-generator-v0.1.5/skills/erie-hls-generator/runtime/hls_generator/spec.py",
+      "sha256": "fb5c212d8df454f5a167f6447986a623e6edc05a7f1ce137695f3435c6659a05"
+    },
+    {
+      "path": "dist/erie-hls-generator-v0.1.5/skills/erie-hls-generator/runtime/hls_generator/trace.py",
+      "sha256": "cc773b2a3813f02a9591b3917e77f953d652b24219b03ea92577cea3142de088"
+    },
+    {
+      "path": "dist/erie-hls-generator-v0.1.5/skills/erie-hls-generator/runtime/hls_generator/user_config.py",
+      "sha256": "dbd992e3f2b10ce3814d6d6bf5f71bde25959b5c2398ac9e08c740c2de105b19"
+    },
+    {
+      "path": "dist/erie-hls-generator-v0.1.5/skills/erie-hls-generator/runtime/hls_generator/validation.py",
+      "sha256": "389eae43936e479a30aff7a9edc464b4768e5ca9d612bf3be172b44f3112c77e"
+    },
+    {
+      "path": "dist/erie-hls-generator-v0.1.5/skills/erie-hls-generator/runtime/hls_generator/vectors.py",
+      "sha256": "a455e5c842d9cbbd6f4cb381cbc900a051b814b6ddc2c9cac23f42dc32d63b1e"
+    },
+    {
+      "path": "dist/erie-hls-generator-v0.1.5/skills/erie-hls-generator/runtime/hls_generator/verifier.py",
+      "sha256": "cd81295ddaebb783ea27022fc03d922e890dbaeb45b9c2442955e130086f1d21"
+    },
+    {
+      "path": "dist/erie-hls-generator-v0.1.5/skills/erie-hls-generator/runtime/hls_generator/vitis_rules.py",
+      "sha256": "e2feae9da12b8b73a83bd2db54e93131c88d82b4db7620b7406f440b1fc0ab75"
+    },
+    {
+      "path": "dist/erie-hls-generator-v0.1.5/skills/erie-hls-generator/runtime/hls_generator/workflow.py",
+      "sha256": "61e4e1fab1e0fb9b745ebdeda11ab838c46eac80a5b9613806d871667d1e8cf6"
+    },
+    {
+      "path": "dist/erie-hls-generator-v0.1.5/skills/erie-hls-generator/runtime/hls_generator/workspace.py",
+      "sha256": "9a1c5596f94ad01e2c5257f0850d235a1821df0ddcd8330bb3ad3477d7e3cae1"
+    },
+    {
+      "path": "dist/erie-hls-generator-v0.1.5/skills/erie-hls-generator/scripts/confidence_loop.py",
+      "sha256": "cc0936fc5780e066fd65ec3b1eb38b2343109fa2b46da876a4fb593712652e61"
+    },
+    {
+      "path": "dist/erie-hls-generator-v0.1.5/skills/erie-hls-generator/scripts/prepare_release.py",
+      "sha256": "52681646ad4a4538687b0dc3b25c161f9c6684e2246ed1888e3f4a2b03526392"
+    },
+    {
+      "path": "dist/erie-hls-generator-v0.1.5/skills/erie-hls-generator/scripts/remote_vitis_acceptance.py",
+      "sha256": "8b72e689bcdf2080c1ca5fdb3633f87bdb29ede7a1fb8ef10e051cdd9d6dafd4"
+    },
+    {
+      "path": "dist/erie-hls-generator-v0.1.5/skills/erie-hls-generator/SKILL.md",
+      "sha256": "d49df3477eb4efadce3ec256a1612c27a80c9f24fca095fa25afb0af809dd3e8"
+    },
+    {
+      "path": "dist/erie-hls-generator-v0.1.5/skills/erie-hls-generator/smoke/run_smoke.py",
+      "sha256": "331ed11155673b3bbc2381dcbf737e70d158183c6f36d1c33f988ed60d37313e"
+    },
+    {
+      "path": "dist/erie-hls-generator-v0.1.5/skills/erie-hls-generator/tests/test_skill_dependencies.py",
+      "sha256": "3902ab67bf7136f2851d2547bae0ba22a2f6970ab6dd752853da1f2f923be864"
+    },
+    {
+      "path": "dist/erie-hls-generator-v0.1.5.zip",
+      "sha256": "3544d09c8d9d51fe5b34008ea54788d4af9415a65a0129a4559be0b9b6a81efb"
+    },
+    {
+      "path": "dist/erie-hls-generator-v0.1.6/checksums.sha256",
+      "sha256": "605adb0bc121e7d91f955428b152f403b2721532436b1c95e97822bf826465dd"
+    },
+    {
+      "path": "dist/erie-hls-generator-v0.1.6/RELEASE_MANIFEST.json",
+      "sha256": "e556e1ff35d2d058e688e17ebc77651ec50fc1de4a3846fc22ffafa524ab4bd4"
+    },
+    {
+      "path": "dist/erie-hls-generator-v0.1.6/skills/erie-hls-generator/.gitignore",
+      "sha256": "9c99732a61888573a3daf62d096168e061feacfa1ad0aaa93d79b712b8a7b590"
+    },
+    {
+      "path": "dist/erie-hls-generator-v0.1.6/skills/erie-hls-generator/agents/openai.yaml",
+      "sha256": "57ae4f6215d94a450e47d4f4fbef1eb671cf2d9d9c4a5c45d0c8dd319cd1cbd5"
+    },
+    {
+      "path": "dist/erie-hls-generator-v0.1.6/skills/erie-hls-generator/assets/examples/hls_array_reshape_vector_scale_spec.json",
+      "sha256": "ffc92b412ca7e645ed27f8be1a95e4bb3104c0806017e23b0dbf90a514c6e8c1"
+    },
+    {
+      "path": "dist/erie-hls-generator-v0.1.6/skills/erie-hls-generator/assets/examples/hls_axis_increment_spec.json",
+      "sha256": "541457801560d17309beb213a422579d9123c3f7e03c169063bf531b857e296d"
+    },
+    {
+      "path": "dist/erie-hls-generator-v0.1.6/skills/erie-hls-generator/assets/examples/hls_dataflow_axis_spec.json",
+      "sha256": "393e9ceca421d21d95fabe1a605853e6d872f145e33daec51a75851882736de9"
+    },
+    {
+      "path": "dist/erie-hls-generator-v0.1.6/skills/erie-hls-generator/assets/examples/hls_fixed_point_scale_spec.json",
+      "sha256": "2f15306a422ca2737beb3e43c0febc034a912d6002d47c2d6d08582aa1076783"
+    },
+    {
+      "path": "dist/erie-hls-generator-v0.1.6/skills/erie-hls-generator/assets/examples/hls_multi_m_axi_add_spec.json",
+      "sha256": "fe9a6a6f53d4b32a1e753cfb0be42aef9aa1e2652e61dfa041bd6830c3391686"
+    },
+    {
+      "path": "dist/erie-hls-generator-v0.1.6/skills/erie-hls-generator/assets/examples/hls_partition_vector_scale_spec.json",
+      "sha256": "a8d00b6b28747b11bf927cfea4a65f701ede2c87d9f3e1441033ea718d8bdf48"
+    },
+    {
+      "path": "dist/erie-hls-generator-v0.1.6/skills/erie-hls-generator/assets/examples/hls_vector_scale_mock_spec.json",
+      "sha256": "3355aa978961f634d668db5bad133dfe3835051be1d8e5818710d1f7c02e56ef"
+    },
+    {
+      "path": "dist/erie-hls-generator-v0.1.6/skills/erie-hls-generator/assets/examples/hls_vector_scale_spec.json",
+      "sha256": "ccc74d7cd0e1f7c9b52d01dcd7269041a06caecc7f109aecf563644be4f0b986"
+    },
+    {
+      "path": "dist/erie-hls-generator-v0.1.6/skills/erie-hls-generator/DESIGN_GOALS.md",
+      "sha256": "cdf34df374356c8c0a7eb5fa37ea7af4e67c36110722790418d7cafa3e337659"
+    },
+    {
+      "path": "dist/erie-hls-generator-v0.1.6/skills/erie-hls-generator/integration/__init__.py",
+      "sha256": "bc2f88fc551d438ee45a529941c3d7ee8b7218fa86d4dfeef103168a5509d6ef"
+    },
+    {
+      "path": "dist/erie-hls-generator-v0.1.6/skills/erie-hls-generator/integration/default_workflow_config.json",
+      "sha256": "50de84c5ba0232a84622667d661272e3544a8fcc1d23e00619afa2c3b32e5690"
+    },
+    {
+      "path": "dist/erie-hls-generator-v0.1.6/skills/erie-hls-generator/integration/hls_adapter.py",
+      "sha256": "77fc3eb1d5fad297719ca538fc580b3d41d8aca5b695274ee4a508b269b2a9bc"
+    },
+    {
+      "path": "dist/erie-hls-generator-v0.1.6/skills/erie-hls-generator/references/configuration.md",
+      "sha256": "46fa374338114931c4870fdb4e461a18c193b44b7457e44599bcd8e447a41ca6"
+    },
+    {
+      "path": "dist/erie-hls-generator-v0.1.6/skills/erie-hls-generator/references/hls-comment-style.md",
+      "sha256": "4d4861fc836ff30790871e9ab681f5b519a22077c8e9c32c3c3abf1e3d7fd759"
+    },
+    {
+      "path": "dist/erie-hls-generator-v0.1.6/skills/erie-hls-generator/references/hls-device-migration-strategy.md",
+      "sha256": "ab43350dab073709fa5a8b671be912cbb7e28fa9ad5ea05acb298feff9c92f33"
+    },
+    {
+      "path": "dist/erie-hls-generator-v0.1.6/skills/erie-hls-generator/references/hls-library-policy.md",
+      "sha256": "af1fb53a8647f6ab08c46694c1871ef017d25775773e24099c572136b346415e"
+    },
+    {
+      "path": "dist/erie-hls-generator-v0.1.6/skills/erie-hls-generator/references/hls-modeling-strategy.md",
+      "sha256": "f0b9531822f0c6a4474ced955013f5174b8253dd8049938418bcc1fd6fc60b49"
+    },
+    {
+      "path": "dist/erie-hls-generator-v0.1.6/skills/erie-hls-generator/references/hls-optimization-patterns.md",
+      "sha256": "c5674200026bdbd1268772b6ef27215fbbf25315cbc68f947e7bf63e4ebee1b9"
+    },
+    {
+      "path": "dist/erie-hls-generator-v0.1.6/skills/erie-hls-generator/references/hls-report-driven-optimization.md",
+      "sha256": "3b0ad89a4fe9cced8916e66a6a49b26cf44a3f63d649d94545eb13eda682d6e1"
+    },
+    {
+      "path": "dist/erie-hls-generator-v0.1.6/skills/erie-hls-generator/references/hls-task-parallel-strategy.md",
+      "sha256": "8d32c04f21ade18c536baf205a31b1115a81e59e5f86b72141bf12f43a3ece9d"
+    },
+    {
+      "path": "dist/erie-hls-generator-v0.1.6/skills/erie-hls-generator/references/integration.md",
+      "sha256": "46d09547acd4053545ce81cb1f44e978666a41969665d9348051bcaeb6b19c7f"
+    },
+    {
+      "path": "dist/erie-hls-generator-v0.1.6/skills/erie-hls-generator/references/vitis-hls-2024-2-script-guide.md",
+      "sha256": "0e1bed0df8e13bf1ee1a096eb4834eb3d96b7adeaa86ebe8d64e64eb78339ee6"
+    },
+    {
+      "path": "dist/erie-hls-generator-v0.1.6/skills/erie-hls-generator/references/workflow-contracts.md",
+      "sha256": "f0607ba8c22193274ca3e087fe5d863e999f82195304833a8f999f36ef8777da"
+    },
+    {
+      "path": "dist/erie-hls-generator-v0.1.6/skills/erie-hls-generator/runtime/__init__.py",
+      "sha256": "bbac4643de7d4e94a78094973d78482bf0bbf3694d18ab704b4dcfd265b129e7"
+    },
+    {
+      "path": "dist/erie-hls-generator-v0.1.6/skills/erie-hls-generator/runtime/hls_generator/__init__.py",
+      "sha256": "32349bbabd5bbc1995dc0662be1dd00be415a966be92ade8bbb28682122c87fd"
+    },
+    {
+      "path": "dist/erie-hls-generator-v0.1.6/skills/erie-hls-generator/runtime/hls_generator/__main__.py",
+      "sha256": "9dbb2b94e18a1b4c981e4277684bc93089b7a2e0a127118d273fc9a7723ed601"
+    },
+    {
+      "path": "dist/erie-hls-generator-v0.1.6/skills/erie-hls-generator/runtime/hls_generator/cli.py",
+      "sha256": "0cb0fdf9b0877418e830d7a68a5669da7f50733817c8aacee575308debb63a32"
+    },
+    {
+      "path": "dist/erie-hls-generator-v0.1.6/skills/erie-hls-generator/runtime/hls_generator/config.py",
+      "sha256": "3d95637eafdd99193317251bfb94ce4d951ef4e82c35bf46b4593248c6893e89"
+    },
+    {
+      "path": "dist/erie-hls-generator-v0.1.6/skills/erie-hls-generator/runtime/hls_generator/extractor.py",
+      "sha256": "2e7df8bef1c23719f7e7c4c86116802020d78bfff4cf64870948514c2684e036"
+    },
+    {
+      "path": "dist/erie-hls-generator-v0.1.6/skills/erie-hls-generator/runtime/hls_generator/hls_cfg.py",
+      "sha256": "20db67ccae54028ebae18dd580d869ef62e9afd13b10a4bec18a2134f5784b68"
+    },
+    {
+      "path": "dist/erie-hls-generator-v0.1.6/skills/erie-hls-generator/runtime/hls_generator/hls_profile.py",
+      "sha256": "d28dc56212edf3e5ef03173e2d91e5d075ad625ad7a77f4da25f045ef49efd1f"
+    },
+    {
+      "path": "dist/erie-hls-generator-v0.1.6/skills/erie-hls-generator/runtime/hls_generator/hls_reports.py",
+      "sha256": "7002f128e57c4bf462e0bc6c1b343d6ab5135eeefeed47fd84e488204ba016bc"
+    },
+    {
+      "path": "dist/erie-hls-generator-v0.1.6/skills/erie-hls-generator/runtime/hls_generator/hls_tcl.py",
+      "sha256": "e9910f44657464346790e9f4ae8dbc098ac1b8cf4dfececb336f2bfbc230f441"
+    },
+    {
+      "path": "dist/erie-hls-generator-v0.1.6/skills/erie-hls-generator/runtime/hls_generator/interface_contract.py",
+      "sha256": "c3bbade98d6f7a9e91bd0962385554136bdfac7617491f18cc79b6d83bb9bdf5"
+    },
+    {
+      "path": "dist/erie-hls-generator-v0.1.6/skills/erie-hls-generator/runtime/hls_generator/intervention.py",
+      "sha256": "4ee84988b2f19bf5e7456fea185eca9ab5a7862e3db81f024d61eda9537a897c"
+    },
+    {
+      "path": "dist/erie-hls-generator-v0.1.6/skills/erie-hls-generator/runtime/hls_generator/model_provider.py",
+      "sha256": "f2a994df373b729fa2962861126efc6bb4db967f0b2529e16d3405310f64efd6"
+    },
+    {
+      "path": "dist/erie-hls-generator-v0.1.6/skills/erie-hls-generator/runtime/hls_generator/planning.py",
+      "sha256": "c1f2abc2fdff7ae03b6825bb5e9bb06d128fd0a7bb30bf5dd2873fe633dd5261"
+    },
+    {
+      "path": "dist/erie-hls-generator-v0.1.6/skills/erie-hls-generator/runtime/hls_generator/prompt.py",
+      "sha256": "5a5f41dd9c34d12c64fc481b3b62b7d3b853eb5a5cc02f86cd2a7bac2f08bede"
+    },
+    {
+      "path": "dist/erie-hls-generator-v0.1.6/skills/erie-hls-generator/runtime/hls_generator/reference_contract.py",
+      "sha256": "0311756342233183accc806e683f388e7cdb1fd7e407e776379986f041fcd94f"
+    },
+    {
+      "path": "dist/erie-hls-generator-v0.1.6/skills/erie-hls-generator/runtime/hls_generator/requirements.py",
+      "sha256": "45821b59a8a74576dd5e008289111d0855604914d1941156e5a6bd3b53a9fbeb"
+    },
+    {
+      "path": "dist/erie-hls-generator-v0.1.6/skills/erie-hls-generator/runtime/hls_generator/runtime_config.json",
+      "sha256": "e2b57b6b1d0dd3f0605565c8889fbc19e944b46db637c220b179d8b2312439cf"
+    },
+    {
+      "path": "dist/erie-hls-generator-v0.1.6/skills/erie-hls-generator/runtime/hls_generator/skill_dependencies.py",
+      "sha256": "da979525443d2071e3ce6c4c3952e1118c770144a5f0e4d9ba96137b122c542c"
+    },
+    {
+      "path": "dist/erie-hls-generator-v0.1.6/skills/erie-hls-generator/runtime/hls_generator/spec.py",
+      "sha256": "fb5c212d8df454f5a167f6447986a623e6edc05a7f1ce137695f3435c6659a05"
+    },
+    {
+      "path": "dist/erie-hls-generator-v0.1.6/skills/erie-hls-generator/runtime/hls_generator/trace.py",
+      "sha256": "cc773b2a3813f02a9591b3917e77f953d652b24219b03ea92577cea3142de088"
+    },
+    {
+      "path": "dist/erie-hls-generator-v0.1.6/skills/erie-hls-generator/runtime/hls_generator/user_config.py",
+      "sha256": "dbd992e3f2b10ce3814d6d6bf5f71bde25959b5c2398ac9e08c740c2de105b19"
+    },
+    {
+      "path": "dist/erie-hls-generator-v0.1.6/skills/erie-hls-generator/runtime/hls_generator/validation.py",
+      "sha256": "389eae43936e479a30aff7a9edc464b4768e5ca9d612bf3be172b44f3112c77e"
+    },
+    {
+      "path": "dist/erie-hls-generator-v0.1.6/skills/erie-hls-generator/runtime/hls_generator/vectors.py",
+      "sha256": "a455e5c842d9cbbd6f4cb381cbc900a051b814b6ddc2c9cac23f42dc32d63b1e"
+    },
+    {
+      "path": "dist/erie-hls-generator-v0.1.6/skills/erie-hls-generator/runtime/hls_generator/verifier.py",
+      "sha256": "cd81295ddaebb783ea27022fc03d922e890dbaeb45b9c2442955e130086f1d21"
+    },
+    {
+      "path": "dist/erie-hls-generator-v0.1.6/skills/erie-hls-generator/runtime/hls_generator/vitis_rules.py",
+      "sha256": "e2feae9da12b8b73a83bd2db54e93131c88d82b4db7620b7406f440b1fc0ab75"
+    },
+    {
+      "path": "dist/erie-hls-generator-v0.1.6/skills/erie-hls-generator/runtime/hls_generator/workflow.py",
+      "sha256": "61e4e1fab1e0fb9b745ebdeda11ab838c46eac80a5b9613806d871667d1e8cf6"
+    },
+    {
+      "path": "dist/erie-hls-generator-v0.1.6/skills/erie-hls-generator/runtime/hls_generator/workspace.py",
+      "sha256": "9a1c5596f94ad01e2c5257f0850d235a1821df0ddcd8330bb3ad3477d7e3cae1"
+    },
+    {
+      "path": "dist/erie-hls-generator-v0.1.6/skills/erie-hls-generator/scripts/confidence_loop.py",
+      "sha256": "8a0f7de165110ae0812057a9a659db87546b603f0978783a378f9b23abb4c7c6"
+    },
+    {
+      "path": "dist/erie-hls-generator-v0.1.6/skills/erie-hls-generator/scripts/prepare_release.py",
+      "sha256": "52681646ad4a4538687b0dc3b25c161f9c6684e2246ed1888e3f4a2b03526392"
+    },
+    {
+      "path": "dist/erie-hls-generator-v0.1.6/skills/erie-hls-generator/scripts/remote_vitis_acceptance.py",
+      "sha256": "8b72e689bcdf2080c1ca5fdb3633f87bdb29ede7a1fb8ef10e051cdd9d6dafd4"
+    },
+    {
+      "path": "dist/erie-hls-generator-v0.1.6/skills/erie-hls-generator/SKILL.md",
+      "sha256": "8b8c17a17aa149e4201a2962fc34205fc3fadb8b952872fbdbaa49d2396b18e3"
+    },
+    {
+      "path": "dist/erie-hls-generator-v0.1.6/skills/erie-hls-generator/smoke/run_smoke.py",
+      "sha256": "89df02813159f252dbe09cb02f767ab97e42bf16f9c337d8784ff6e9ab33773c"
+    },
+    {
+      "path": "dist/erie-hls-generator-v0.1.6/skills/erie-hls-generator/tests/test_confidence_loop.py",
+      "sha256": "68f740bdd4c80c3ba63e6ed93bf08086868d0dc438a022e604ae8e9c2e46f787"
+    },
+    {
+      "path": "dist/erie-hls-generator-v0.1.6/skills/erie-hls-generator/tests/test_remote_vitis_acceptance.py",
+      "sha256": "af71f6cae130d74cffdea7f51ab45e47a243706b2bcbb210a98b79dd8faf4c14"
+    },
+    {
+      "path": "dist/erie-hls-generator-v0.1.6/skills/erie-hls-generator/tests/test_skill_dependencies.py",
+      "sha256": "3902ab67bf7136f2851d2547bae0ba22a2f6970ab6dd752853da1f2f923be864"
+    },
+    {
+      "path": "dist/erie-hls-generator-v0.1.6.zip",
+      "sha256": "db4992a2b48ca6a59e6d80c66ab2c9c333fbd04fa908428f613b07ec4b7114ce"
+    },
+    {
+      "path": "dist/erie-hls-generator-v0.1.7/checksums.sha256",
+      "sha256": "bf6816472665a8266388eabcf08ad7662f314d5392b00a2708a6648938e01496"
+    },
+    {
+      "path": "dist/erie-hls-generator-v0.1.7/RELEASE_MANIFEST.json",
+      "sha256": "5dd9310264d1cf220b7f3030e2d1813df7402742f76f12bdbc5cd116f4c0bc80"
+    },
+    {
+      "path": "dist/erie-hls-generator-v0.1.7/skills/erie-hls-generator/.gitignore",
+      "sha256": "9c99732a61888573a3daf62d096168e061feacfa1ad0aaa93d79b712b8a7b590"
+    },
+    {
+      "path": "dist/erie-hls-generator-v0.1.7/skills/erie-hls-generator/agents/openai.yaml",
+      "sha256": "57ae4f6215d94a450e47d4f4fbef1eb671cf2d9d9c4a5c45d0c8dd319cd1cbd5"
+    },
+    {
+      "path": "dist/erie-hls-generator-v0.1.7/skills/erie-hls-generator/assets/examples/hls_array_reshape_vector_scale_spec.json",
+      "sha256": "ffc92b412ca7e645ed27f8be1a95e4bb3104c0806017e23b0dbf90a514c6e8c1"
+    },
+    {
+      "path": "dist/erie-hls-generator-v0.1.7/skills/erie-hls-generator/assets/examples/hls_axis_increment_spec.json",
+      "sha256": "541457801560d17309beb213a422579d9123c3f7e03c169063bf531b857e296d"
+    },
+    {
+      "path": "dist/erie-hls-generator-v0.1.7/skills/erie-hls-generator/assets/examples/hls_dataflow_axis_spec.json",
+      "sha256": "393e9ceca421d21d95fabe1a605853e6d872f145e33daec51a75851882736de9"
+    },
+    {
+      "path": "dist/erie-hls-generator-v0.1.7/skills/erie-hls-generator/assets/examples/hls_fixed_point_scale_spec.json",
+      "sha256": "2f15306a422ca2737beb3e43c0febc034a912d6002d47c2d6d08582aa1076783"
+    },
+    {
+      "path": "dist/erie-hls-generator-v0.1.7/skills/erie-hls-generator/assets/examples/hls_multi_m_axi_add_spec.json",
+      "sha256": "fe9a6a6f53d4b32a1e753cfb0be42aef9aa1e2652e61dfa041bd6830c3391686"
+    },
+    {
+      "path": "dist/erie-hls-generator-v0.1.7/skills/erie-hls-generator/assets/examples/hls_partition_vector_scale_spec.json",
+      "sha256": "a8d00b6b28747b11bf927cfea4a65f701ede2c87d9f3e1441033ea718d8bdf48"
+    },
+    {
+      "path": "dist/erie-hls-generator-v0.1.7/skills/erie-hls-generator/assets/examples/hls_vector_scale_mock_spec.json",
+      "sha256": "3355aa978961f634d668db5bad133dfe3835051be1d8e5818710d1f7c02e56ef"
+    },
+    {
+      "path": "dist/erie-hls-generator-v0.1.7/skills/erie-hls-generator/assets/examples/hls_vector_scale_spec.json",
+      "sha256": "ccc74d7cd0e1f7c9b52d01dcd7269041a06caecc7f109aecf563644be4f0b986"
+    },
+    {
+      "path": "dist/erie-hls-generator-v0.1.7/skills/erie-hls-generator/DESIGN_GOALS.md",
+      "sha256": "cdf34df374356c8c0a7eb5fa37ea7af4e67c36110722790418d7cafa3e337659"
+    },
+    {
+      "path": "dist/erie-hls-generator-v0.1.7/skills/erie-hls-generator/integration/__init__.py",
+      "sha256": "bc2f88fc551d438ee45a529941c3d7ee8b7218fa86d4dfeef103168a5509d6ef"
+    },
+    {
+      "path": "dist/erie-hls-generator-v0.1.7/skills/erie-hls-generator/integration/default_workflow_config.json",
+      "sha256": "50de84c5ba0232a84622667d661272e3544a8fcc1d23e00619afa2c3b32e5690"
+    },
+    {
+      "path": "dist/erie-hls-generator-v0.1.7/skills/erie-hls-generator/integration/hls_adapter.py",
+      "sha256": "77fc3eb1d5fad297719ca538fc580b3d41d8aca5b695274ee4a508b269b2a9bc"
+    },
+    {
+      "path": "dist/erie-hls-generator-v0.1.7/skills/erie-hls-generator/references/configuration.md",
+      "sha256": "46fa374338114931c4870fdb4e461a18c193b44b7457e44599bcd8e447a41ca6"
+    },
+    {
+      "path": "dist/erie-hls-generator-v0.1.7/skills/erie-hls-generator/references/hls-comment-style.md",
+      "sha256": "4d4861fc836ff30790871e9ab681f5b519a22077c8e9c32c3c3abf1e3d7fd759"
+    },
+    {
+      "path": "dist/erie-hls-generator-v0.1.7/skills/erie-hls-generator/references/hls-device-migration-strategy.md",
+      "sha256": "ab43350dab073709fa5a8b671be912cbb7e28fa9ad5ea05acb298feff9c92f33"
+    },
+    {
+      "path": "dist/erie-hls-generator-v0.1.7/skills/erie-hls-generator/references/hls-library-policy.md",
+      "sha256": "af1fb53a8647f6ab08c46694c1871ef017d25775773e24099c572136b346415e"
+    },
+    {
+      "path": "dist/erie-hls-generator-v0.1.7/skills/erie-hls-generator/references/hls-modeling-strategy.md",
+      "sha256": "f0b9531822f0c6a4474ced955013f5174b8253dd8049938418bcc1fd6fc60b49"
+    },
+    {
+      "path": "dist/erie-hls-generator-v0.1.7/skills/erie-hls-generator/references/hls-optimization-patterns.md",
+      "sha256": "c5674200026bdbd1268772b6ef27215fbbf25315cbc68f947e7bf63e4ebee1b9"
+    },
+    {
+      "path": "dist/erie-hls-generator-v0.1.7/skills/erie-hls-generator/references/hls-report-driven-optimization.md",
+      "sha256": "3b0ad89a4fe9cced8916e66a6a49b26cf44a3f63d649d94545eb13eda682d6e1"
+    },
+    {
+      "path": "dist/erie-hls-generator-v0.1.7/skills/erie-hls-generator/references/hls-task-parallel-strategy.md",
+      "sha256": "8d32c04f21ade18c536baf205a31b1115a81e59e5f86b72141bf12f43a3ece9d"
+    },
+    {
+      "path": "dist/erie-hls-generator-v0.1.7/skills/erie-hls-generator/references/integration.md",
+      "sha256": "46d09547acd4053545ce81cb1f44e978666a41969665d9348051bcaeb6b19c7f"
+    },
+    {
+      "path": "dist/erie-hls-generator-v0.1.7/skills/erie-hls-generator/references/vitis-hls-2024-2-script-guide.md",
+      "sha256": "0e1bed0df8e13bf1ee1a096eb4834eb3d96b7adeaa86ebe8d64e64eb78339ee6"
+    },
+    {
+      "path": "dist/erie-hls-generator-v0.1.7/skills/erie-hls-generator/references/workflow-contracts.md",
+      "sha256": "f0607ba8c22193274ca3e087fe5d863e999f82195304833a8f999f36ef8777da"
+    },
+    {
+      "path": "dist/erie-hls-generator-v0.1.7/skills/erie-hls-generator/runtime/__init__.py",
+      "sha256": "bbac4643de7d4e94a78094973d78482bf0bbf3694d18ab704b4dcfd265b129e7"
+    },
+    {
+      "path": "dist/erie-hls-generator-v0.1.7/skills/erie-hls-generator/runtime/hls_generator/__init__.py",
+      "sha256": "113a74796152d35fa724cbee99deddfc24f817eaa56ec3cf80d2dc018b8f3550"
+    },
+    {
+      "path": "dist/erie-hls-generator-v0.1.7/skills/erie-hls-generator/runtime/hls_generator/__main__.py",
+      "sha256": "9dbb2b94e18a1b4c981e4277684bc93089b7a2e0a127118d273fc9a7723ed601"
+    },
+    {
+      "path": "dist/erie-hls-generator-v0.1.7/skills/erie-hls-generator/runtime/hls_generator/cli.py",
+      "sha256": "f4445a643ec11f3d8c55eb66c74ce4280f5d82239c4c73105c24aa635077765c"
+    },
+    {
+      "path": "dist/erie-hls-generator-v0.1.7/skills/erie-hls-generator/runtime/hls_generator/config.py",
+      "sha256": "3d95637eafdd99193317251bfb94ce4d951ef4e82c35bf46b4593248c6893e89"
+    },
+    {
+      "path": "dist/erie-hls-generator-v0.1.7/skills/erie-hls-generator/runtime/hls_generator/extractor.py",
+      "sha256": "2e7df8bef1c23719f7e7c4c86116802020d78bfff4cf64870948514c2684e036"
+    },
+    {
+      "path": "dist/erie-hls-generator-v0.1.7/skills/erie-hls-generator/runtime/hls_generator/hls_cfg.py",
+      "sha256": "20db67ccae54028ebae18dd580d869ef62e9afd13b10a4bec18a2134f5784b68"
+    },
+    {
+      "path": "dist/erie-hls-generator-v0.1.7/skills/erie-hls-generator/runtime/hls_generator/hls_profile.py",
+      "sha256": "d28dc56212edf3e5ef03173e2d91e5d075ad625ad7a77f4da25f045ef49efd1f"
+    },
+    {
+      "path": "dist/erie-hls-generator-v0.1.7/skills/erie-hls-generator/runtime/hls_generator/hls_reports.py",
+      "sha256": "7002f128e57c4bf462e0bc6c1b343d6ab5135eeefeed47fd84e488204ba016bc"
+    },
+    {
+      "path": "dist/erie-hls-generator-v0.1.7/skills/erie-hls-generator/runtime/hls_generator/hls_tcl.py",
+      "sha256": "e9910f44657464346790e9f4ae8dbc098ac1b8cf4dfececb336f2bfbc230f441"
+    },
+    {
+      "path": "dist/erie-hls-generator-v0.1.7/skills/erie-hls-generator/runtime/hls_generator/interface_contract.py",
+      "sha256": "c3bbade98d6f7a9e91bd0962385554136bdfac7617491f18cc79b6d83bb9bdf5"
+    },
+    {
+      "path": "dist/erie-hls-generator-v0.1.7/skills/erie-hls-generator/runtime/hls_generator/intervention.py",
+      "sha256": "4ee84988b2f19bf5e7456fea185eca9ab5a7862e3db81f024d61eda9537a897c"
+    },
+    {
+      "path": "dist/erie-hls-generator-v0.1.7/skills/erie-hls-generator/runtime/hls_generator/model_provider.py",
+      "sha256": "f2a994df373b729fa2962861126efc6bb4db967f0b2529e16d3405310f64efd6"
+    },
+    {
+      "path": "dist/erie-hls-generator-v0.1.7/skills/erie-hls-generator/runtime/hls_generator/planning.py",
+      "sha256": "c1f2abc2fdff7ae03b6825bb5e9bb06d128fd0a7bb30bf5dd2873fe633dd5261"
+    },
+    {
+      "path": "dist/erie-hls-generator-v0.1.7/skills/erie-hls-generator/runtime/hls_generator/prompt.py",
+      "sha256": "5a5f41dd9c34d12c64fc481b3b62b7d3b853eb5a5cc02f86cd2a7bac2f08bede"
+    },
+    {
+      "path": "dist/erie-hls-generator-v0.1.7/skills/erie-hls-generator/runtime/hls_generator/reference_contract.py",
+      "sha256": "0311756342233183accc806e683f388e7cdb1fd7e407e776379986f041fcd94f"
+    },
+    {
+      "path": "dist/erie-hls-generator-v0.1.7/skills/erie-hls-generator/runtime/hls_generator/requirements.py",
+      "sha256": "45821b59a8a74576dd5e008289111d0855604914d1941156e5a6bd3b53a9fbeb"
+    },
+    {
+      "path": "dist/erie-hls-generator-v0.1.7/skills/erie-hls-generator/runtime/hls_generator/runtime_config.json",
+      "sha256": "e2b57b6b1d0dd3f0605565c8889fbc19e944b46db637c220b179d8b2312439cf"
+    },
+    {
+      "path": "dist/erie-hls-generator-v0.1.7/skills/erie-hls-generator/runtime/hls_generator/skill_dependencies.py",
+      "sha256": "da979525443d2071e3ce6c4c3952e1118c770144a5f0e4d9ba96137b122c542c"
+    },
+    {
+      "path": "dist/erie-hls-generator-v0.1.7/skills/erie-hls-generator/runtime/hls_generator/spec.py",
+      "sha256": "fb5c212d8df454f5a167f6447986a623e6edc05a7f1ce137695f3435c6659a05"
+    },
+    {
+      "path": "dist/erie-hls-generator-v0.1.7/skills/erie-hls-generator/runtime/hls_generator/trace.py",
+      "sha256": "cc773b2a3813f02a9591b3917e77f953d652b24219b03ea92577cea3142de088"
+    },
+    {
+      "path": "dist/erie-hls-generator-v0.1.7/skills/erie-hls-generator/runtime/hls_generator/user_config.py",
+      "sha256": "dbd992e3f2b10ce3814d6d6bf5f71bde25959b5c2398ac9e08c740c2de105b19"
+    },
+    {
+      "path": "dist/erie-hls-generator-v0.1.7/skills/erie-hls-generator/runtime/hls_generator/validation.py",
+      "sha256": "389eae43936e479a30aff7a9edc464b4768e5ca9d612bf3be172b44f3112c77e"
+    },
+    {
+      "path": "dist/erie-hls-generator-v0.1.7/skills/erie-hls-generator/runtime/hls_generator/vectors.py",
+      "sha256": "a455e5c842d9cbbd6f4cb381cbc900a051b814b6ddc2c9cac23f42dc32d63b1e"
+    },
+    {
+      "path": "dist/erie-hls-generator-v0.1.7/skills/erie-hls-generator/runtime/hls_generator/verifier.py",
+      "sha256": "cd81295ddaebb783ea27022fc03d922e890dbaeb45b9c2442955e130086f1d21"
+    },
+    {
+      "path": "dist/erie-hls-generator-v0.1.7/skills/erie-hls-generator/runtime/hls_generator/vitis_rules.py",
+      "sha256": "e2feae9da12b8b73a83bd2db54e93131c88d82b4db7620b7406f440b1fc0ab75"
+    },
+    {
+      "path": "dist/erie-hls-generator-v0.1.7/skills/erie-hls-generator/runtime/hls_generator/workflow.py",
+      "sha256": "61e4e1fab1e0fb9b745ebdeda11ab838c46eac80a5b9613806d871667d1e8cf6"
+    },
+    {
+      "path": "dist/erie-hls-generator-v0.1.7/skills/erie-hls-generator/runtime/hls_generator/workspace.py",
+      "sha256": "9a1c5596f94ad01e2c5257f0850d235a1821df0ddcd8330bb3ad3477d7e3cae1"
+    },
+    {
+      "path": "dist/erie-hls-generator-v0.1.7/skills/erie-hls-generator/scripts/confidence_loop.py",
+      "sha256": "8a0f7de165110ae0812057a9a659db87546b603f0978783a378f9b23abb4c7c6"
+    },
+    {
+      "path": "dist/erie-hls-generator-v0.1.7/skills/erie-hls-generator/scripts/prepare_release.py",
+      "sha256": "f195aa263ba1e1011e5561241d8cd273805ff76a175dc9a99ac0b1595e708f4d"
+    },
+    {
+      "path": "dist/erie-hls-generator-v0.1.7/skills/erie-hls-generator/scripts/remote_vitis_acceptance.py",
+      "sha256": "8b72e689bcdf2080c1ca5fdb3633f87bdb29ede7a1fb8ef10e051cdd9d6dafd4"
+    },
+    {
+      "path": "dist/erie-hls-generator-v0.1.7/skills/erie-hls-generator/SKILL.md",
+      "sha256": "8b8c17a17aa149e4201a2962fc34205fc3fadb8b952872fbdbaa49d2396b18e3"
+    },
+    {
+      "path": "dist/erie-hls-generator-v0.1.7/skills/erie-hls-generator/smoke/run_smoke.py",
+      "sha256": "afbe25939f138566ab4935b0226d26ea2b1cae9d77a0a64a7d7d151089b90dcc"
+    },
+    {
+      "path": "dist/erie-hls-generator-v0.1.7/skills/erie-hls-generator/tests/test_confidence_loop.py",
+      "sha256": "68f740bdd4c80c3ba63e6ed93bf08086868d0dc438a022e604ae8e9c2e46f787"
+    },
+    {
+      "path": "dist/erie-hls-generator-v0.1.7/skills/erie-hls-generator/tests/test_prepare_release.py",
+      "sha256": "f8b861caf7249ab1c0e7fe1106f41d15c366ddff5100889d9b70e7c68954b6e4"
+    },
+    {
+      "path": "dist/erie-hls-generator-v0.1.7/skills/erie-hls-generator/tests/test_remote_vitis_acceptance.py",
+      "sha256": "af71f6cae130d74cffdea7f51ab45e47a243706b2bcbb210a98b79dd8faf4c14"
+    },
+    {
+      "path": "dist/erie-hls-generator-v0.1.7/skills/erie-hls-generator/tests/test_skill_dependencies.py",
+      "sha256": "3902ab67bf7136f2851d2547bae0ba22a2f6970ab6dd752853da1f2f923be864"
+    },
+    {
+      "path": "dist/erie-hls-generator-v0.1.7.zip",
+      "sha256": "e6a147fa85338759e19766f86d5ad5b29e19dbd6f1688ffb1e0372b8b5ef6dc9"
+    },
+    {
+      "path": "dist/erie-hls-generator-v0.1.8/checksums.sha256",
+      "sha256": "40b6bfe0125db134b34de6cedeef93c709c4a033a6096b4844f5a8167b6ce948"
+    },
+    {
+      "path": "dist/erie-hls-generator-v0.1.8/RELEASE_MANIFEST.json",
+      "sha256": "ebb3951c6dd5c1d55812cf9e9a6e795fda8100f75b3020d85fac5cc2fd2725fa"
+    },
+    {
+      "path": "dist/erie-hls-generator-v0.1.8/skills/erie-hls-generator/.gitignore",
+      "sha256": "9c99732a61888573a3daf62d096168e061feacfa1ad0aaa93d79b712b8a7b590"
+    },
+    {
+      "path": "dist/erie-hls-generator-v0.1.8/skills/erie-hls-generator/agents/openai.yaml",
+      "sha256": "57ae4f6215d94a450e47d4f4fbef1eb671cf2d9d9c4a5c45d0c8dd319cd1cbd5"
+    },
+    {
+      "path": "dist/erie-hls-generator-v0.1.8/skills/erie-hls-generator/assets/examples/hls_array_reshape_vector_scale_spec.json",
+      "sha256": "ffc92b412ca7e645ed27f8be1a95e4bb3104c0806017e23b0dbf90a514c6e8c1"
+    },
+    {
+      "path": "dist/erie-hls-generator-v0.1.8/skills/erie-hls-generator/assets/examples/hls_axis_increment_spec.json",
+      "sha256": "541457801560d17309beb213a422579d9123c3f7e03c169063bf531b857e296d"
+    },
+    {
+      "path": "dist/erie-hls-generator-v0.1.8/skills/erie-hls-generator/assets/examples/hls_dataflow_axis_spec.json",
+      "sha256": "393e9ceca421d21d95fabe1a605853e6d872f145e33daec51a75851882736de9"
+    },
+    {
+      "path": "dist/erie-hls-generator-v0.1.8/skills/erie-hls-generator/assets/examples/hls_fixed_point_scale_spec.json",
+      "sha256": "2f15306a422ca2737beb3e43c0febc034a912d6002d47c2d6d08582aa1076783"
+    },
+    {
+      "path": "dist/erie-hls-generator-v0.1.8/skills/erie-hls-generator/assets/examples/hls_multi_m_axi_add_spec.json",
+      "sha256": "fe9a6a6f53d4b32a1e753cfb0be42aef9aa1e2652e61dfa041bd6830c3391686"
+    },
+    {
+      "path": "dist/erie-hls-generator-v0.1.8/skills/erie-hls-generator/assets/examples/hls_partition_vector_scale_spec.json",
+      "sha256": "a8d00b6b28747b11bf927cfea4a65f701ede2c87d9f3e1441033ea718d8bdf48"
+    },
+    {
+      "path": "dist/erie-hls-generator-v0.1.8/skills/erie-hls-generator/assets/examples/hls_vector_scale_mock_spec.json",
+      "sha256": "3355aa978961f634d668db5bad133dfe3835051be1d8e5818710d1f7c02e56ef"
+    },
+    {
+      "path": "dist/erie-hls-generator-v0.1.8/skills/erie-hls-generator/assets/examples/hls_vector_scale_spec.json",
+      "sha256": "ccc74d7cd0e1f7c9b52d01dcd7269041a06caecc7f109aecf563644be4f0b986"
+    },
+    {
+      "path": "dist/erie-hls-generator-v0.1.8/skills/erie-hls-generator/DESIGN_GOALS.md",
+      "sha256": "cdf34df374356c8c0a7eb5fa37ea7af4e67c36110722790418d7cafa3e337659"
+    },
+    {
+      "path": "dist/erie-hls-generator-v0.1.8/skills/erie-hls-generator/integration/__init__.py",
+      "sha256": "bc2f88fc551d438ee45a529941c3d7ee8b7218fa86d4dfeef103168a5509d6ef"
+    },
+    {
+      "path": "dist/erie-hls-generator-v0.1.8/skills/erie-hls-generator/integration/default_workflow_config.json",
+      "sha256": "50de84c5ba0232a84622667d661272e3544a8fcc1d23e00619afa2c3b32e5690"
+    },
+    {
+      "path": "dist/erie-hls-generator-v0.1.8/skills/erie-hls-generator/integration/hls_adapter.py",
+      "sha256": "77fc3eb1d5fad297719ca538fc580b3d41d8aca5b695274ee4a508b269b2a9bc"
+    },
+    {
+      "path": "dist/erie-hls-generator-v0.1.8/skills/erie-hls-generator/references/configuration.md",
+      "sha256": "a93472bc289695c5d7652f442bc7d9b52c476411084c95c6b3e8579af70d0cb1"
+    },
+    {
+      "path": "dist/erie-hls-generator-v0.1.8/skills/erie-hls-generator/references/hls-comment-style.md",
+      "sha256": "4d4861fc836ff30790871e9ab681f5b519a22077c8e9c32c3c3abf1e3d7fd759"
+    },
+    {
+      "path": "dist/erie-hls-generator-v0.1.8/skills/erie-hls-generator/references/hls-device-migration-strategy.md",
+      "sha256": "ab43350dab073709fa5a8b671be912cbb7e28fa9ad5ea05acb298feff9c92f33"
+    },
+    {
+      "path": "dist/erie-hls-generator-v0.1.8/skills/erie-hls-generator/references/hls-library-policy.md",
+      "sha256": "af1fb53a8647f6ab08c46694c1871ef017d25775773e24099c572136b346415e"
+    },
+    {
+      "path": "dist/erie-hls-generator-v0.1.8/skills/erie-hls-generator/references/hls-modeling-strategy.md",
+      "sha256": "f0b9531822f0c6a4474ced955013f5174b8253dd8049938418bcc1fd6fc60b49"
+    },
+    {
+      "path": "dist/erie-hls-generator-v0.1.8/skills/erie-hls-generator/references/hls-optimization-patterns.md",
+      "sha256": "c5674200026bdbd1268772b6ef27215fbbf25315cbc68f947e7bf63e4ebee1b9"
+    },
+    {
+      "path": "dist/erie-hls-generator-v0.1.8/skills/erie-hls-generator/references/hls-report-driven-optimization.md",
+      "sha256": "3b0ad89a4fe9cced8916e66a6a49b26cf44a3f63d649d94545eb13eda682d6e1"
+    },
+    {
+      "path": "dist/erie-hls-generator-v0.1.8/skills/erie-hls-generator/references/hls-task-parallel-strategy.md",
+      "sha256": "8d32c04f21ade18c536baf205a31b1115a81e59e5f86b72141bf12f43a3ece9d"
+    },
+    {
+      "path": "dist/erie-hls-generator-v0.1.8/skills/erie-hls-generator/references/integration.md",
+      "sha256": "46d09547acd4053545ce81cb1f44e978666a41969665d9348051bcaeb6b19c7f"
+    },
+    {
+      "path": "dist/erie-hls-generator-v0.1.8/skills/erie-hls-generator/references/vitis-hls-2024-2-script-guide.md",
+      "sha256": "0e1bed0df8e13bf1ee1a096eb4834eb3d96b7adeaa86ebe8d64e64eb78339ee6"
+    },
+    {
+      "path": "dist/erie-hls-generator-v0.1.8/skills/erie-hls-generator/references/workflow-contracts.md",
+      "sha256": "f0607ba8c22193274ca3e087fe5d863e999f82195304833a8f999f36ef8777da"
+    },
+    {
+      "path": "dist/erie-hls-generator-v0.1.8/skills/erie-hls-generator/runtime/__init__.py",
+      "sha256": "bbac4643de7d4e94a78094973d78482bf0bbf3694d18ab704b4dcfd265b129e7"
+    },
+    {
+      "path": "dist/erie-hls-generator-v0.1.8/skills/erie-hls-generator/runtime/hls_generator/__init__.py",
+      "sha256": "57e9b173380827e0fc2831253f13eb562dbbb6c81551ec3ff3e2f9cbef488715"
+    },
+    {
+      "path": "dist/erie-hls-generator-v0.1.8/skills/erie-hls-generator/runtime/hls_generator/__main__.py",
+      "sha256": "9dbb2b94e18a1b4c981e4277684bc93089b7a2e0a127118d273fc9a7723ed601"
+    },
+    {
+      "path": "dist/erie-hls-generator-v0.1.8/skills/erie-hls-generator/runtime/hls_generator/cli.py",
+      "sha256": "b09db99af65e3b24cd20ac5496d4122ba2e0ba6c924d0656b84fccbbd4f8823c"
+    },
+    {
+      "path": "dist/erie-hls-generator-v0.1.8/skills/erie-hls-generator/runtime/hls_generator/config.py",
+      "sha256": "e10f0a74055a066be8bea40afdd6ae97378aa16d3c51705a56670e41d101c2a5"
+    },
+    {
+      "path": "dist/erie-hls-generator-v0.1.8/skills/erie-hls-generator/runtime/hls_generator/extractor.py",
+      "sha256": "2e7df8bef1c23719f7e7c4c86116802020d78bfff4cf64870948514c2684e036"
+    },
+    {
+      "path": "dist/erie-hls-generator-v0.1.8/skills/erie-hls-generator/runtime/hls_generator/hls_cfg.py",
+      "sha256": "20db67ccae54028ebae18dd580d869ef62e9afd13b10a4bec18a2134f5784b68"
+    },
+    {
+      "path": "dist/erie-hls-generator-v0.1.8/skills/erie-hls-generator/runtime/hls_generator/hls_profile.py",
+      "sha256": "d28dc56212edf3e5ef03173e2d91e5d075ad625ad7a77f4da25f045ef49efd1f"
+    },
+    {
+      "path": "dist/erie-hls-generator-v0.1.8/skills/erie-hls-generator/runtime/hls_generator/hls_reports.py",
+      "sha256": "7002f128e57c4bf462e0bc6c1b343d6ab5135eeefeed47fd84e488204ba016bc"
+    },
+    {
+      "path": "dist/erie-hls-generator-v0.1.8/skills/erie-hls-generator/runtime/hls_generator/hls_tcl.py",
+      "sha256": "e9910f44657464346790e9f4ae8dbc098ac1b8cf4dfececb336f2bfbc230f441"
+    },
+    {
+      "path": "dist/erie-hls-generator-v0.1.8/skills/erie-hls-generator/runtime/hls_generator/interface_contract.py",
+      "sha256": "c3bbade98d6f7a9e91bd0962385554136bdfac7617491f18cc79b6d83bb9bdf5"
+    },
+    {
+      "path": "dist/erie-hls-generator-v0.1.8/skills/erie-hls-generator/runtime/hls_generator/intervention.py",
+      "sha256": "4ee84988b2f19bf5e7456fea185eca9ab5a7862e3db81f024d61eda9537a897c"
+    },
+    {
+      "path": "dist/erie-hls-generator-v0.1.8/skills/erie-hls-generator/runtime/hls_generator/model_provider.py",
+      "sha256": "f2a994df373b729fa2962861126efc6bb4db967f0b2529e16d3405310f64efd6"
+    },
+    {
+      "path": "dist/erie-hls-generator-v0.1.8/skills/erie-hls-generator/runtime/hls_generator/planning.py",
+      "sha256": "c1f2abc2fdff7ae03b6825bb5e9bb06d128fd0a7bb30bf5dd2873fe633dd5261"
+    },
+    {
+      "path": "dist/erie-hls-generator-v0.1.8/skills/erie-hls-generator/runtime/hls_generator/prompt.py",
+      "sha256": "5a5f41dd9c34d12c64fc481b3b62b7d3b853eb5a5cc02f86cd2a7bac2f08bede"
+    },
+    {
+      "path": "dist/erie-hls-generator-v0.1.8/skills/erie-hls-generator/runtime/hls_generator/reference_contract.py",
+      "sha256": "0311756342233183accc806e683f388e7cdb1fd7e407e776379986f041fcd94f"
+    },
+    {
+      "path": "dist/erie-hls-generator-v0.1.8/skills/erie-hls-generator/runtime/hls_generator/requirements.py",
+      "sha256": "45821b59a8a74576dd5e008289111d0855604914d1941156e5a6bd3b53a9fbeb"
+    },
+    {
+      "path": "dist/erie-hls-generator-v0.1.8/skills/erie-hls-generator/runtime/hls_generator/runtime_config.json",
+      "sha256": "837f7400dd484fa17fe2f13633d907fde11fc2b6943c0898616169c668566d01"
+    },
+    {
+      "path": "dist/erie-hls-generator-v0.1.8/skills/erie-hls-generator/runtime/hls_generator/skill_dependencies.py",
+      "sha256": "da979525443d2071e3ce6c4c3952e1118c770144a5f0e4d9ba96137b122c542c"
+    },
+    {
+      "path": "dist/erie-hls-generator-v0.1.8/skills/erie-hls-generator/runtime/hls_generator/spec.py",
+      "sha256": "fb5c212d8df454f5a167f6447986a623e6edc05a7f1ce137695f3435c6659a05"
+    },
+    {
+      "path": "dist/erie-hls-generator-v0.1.8/skills/erie-hls-generator/runtime/hls_generator/trace.py",
+      "sha256": "cc773b2a3813f02a9591b3917e77f953d652b24219b03ea92577cea3142de088"
+    },
+    {
+      "path": "dist/erie-hls-generator-v0.1.8/skills/erie-hls-generator/runtime/hls_generator/user_config.py",
+      "sha256": "dbd992e3f2b10ce3814d6d6bf5f71bde25959b5c2398ac9e08c740c2de105b19"
+    },
+    {
+      "path": "dist/erie-hls-generator-v0.1.8/skills/erie-hls-generator/runtime/hls_generator/validation.py",
+      "sha256": "389eae43936e479a30aff7a9edc464b4768e5ca9d612bf3be172b44f3112c77e"
+    },
+    {
+      "path": "dist/erie-hls-generator-v0.1.8/skills/erie-hls-generator/runtime/hls_generator/vectors.py",
+      "sha256": "a455e5c842d9cbbd6f4cb381cbc900a051b814b6ddc2c9cac23f42dc32d63b1e"
+    },
+    {
+      "path": "dist/erie-hls-generator-v0.1.8/skills/erie-hls-generator/runtime/hls_generator/verifier.py",
+      "sha256": "cd81295ddaebb783ea27022fc03d922e890dbaeb45b9c2442955e130086f1d21"
+    },
+    {
+      "path": "dist/erie-hls-generator-v0.1.8/skills/erie-hls-generator/runtime/hls_generator/vitis_rules.py",
+      "sha256": "e2feae9da12b8b73a83bd2db54e93131c88d82b4db7620b7406f440b1fc0ab75"
+    },
+    {
+      "path": "dist/erie-hls-generator-v0.1.8/skills/erie-hls-generator/runtime/hls_generator/workflow.py",
+      "sha256": "61e4e1fab1e0fb9b745ebdeda11ab838c46eac80a5b9613806d871667d1e8cf6"
+    },
+    {
+      "path": "dist/erie-hls-generator-v0.1.8/skills/erie-hls-generator/runtime/hls_generator/workspace.py",
+      "sha256": "9a1c5596f94ad01e2c5257f0850d235a1821df0ddcd8330bb3ad3477d7e3cae1"
+    },
+    {
+      "path": "dist/erie-hls-generator-v0.1.8/skills/erie-hls-generator/scripts/confidence_loop.py",
+      "sha256": "c2f7c34000e6278d479c4ffef85ac686f78ee2b56ed572a24e2b951c81f930b0"
+    },
+    {
+      "path": "dist/erie-hls-generator-v0.1.8/skills/erie-hls-generator/scripts/prepare_release.py",
+      "sha256": "b67bcbd892153e9b74231c10f1d5f13e0065e559ebcbddfee2cbd896b96ff547"
+    },
+    {
+      "path": "dist/erie-hls-generator-v0.1.8/skills/erie-hls-generator/scripts/remote_vitis_acceptance.py",
+      "sha256": "ca51c34acee05ee0fabd8d7b27d822c487fc6f9cc54d4c762cf72a72d715ff63"
+    },
+    {
+      "path": "dist/erie-hls-generator-v0.1.8/skills/erie-hls-generator/SKILL.md",
+      "sha256": "7265fab1e853f457f688b9ea0688b4c12053aab1a2f542571fd77a0027dd04c7"
+    },
+    {
+      "path": "dist/erie-hls-generator-v0.1.8/skills/erie-hls-generator/smoke/run_smoke.py",
+      "sha256": "ce97e214bde4c7f0e4b82978b38c57c2fb072e68730a99631c068f18f1a0afc7"
+    },
+    {
+      "path": "dist/erie-hls-generator-v0.1.8/skills/erie-hls-generator/tests/test_confidence_loop.py",
+      "sha256": "67d0ff0c1c494df47ecdf5f8f64cf7820c45da62e4decb220a9d61f02811007c"
+    },
+    {
+      "path": "dist/erie-hls-generator-v0.1.8/skills/erie-hls-generator/tests/test_prepare_release.py",
+      "sha256": "4d1fbe28571c5cad86ff40feee5d513e291b3ec063e59c61847a5568a288ffff"
+    },
+    {
+      "path": "dist/erie-hls-generator-v0.1.8/skills/erie-hls-generator/tests/test_remote_vitis_acceptance.py",
+      "sha256": "e73fd8ad9976ad543a81f32888094b9799eb712d114db862c1205e94cac79ed8"
+    },
+    {
+      "path": "dist/erie-hls-generator-v0.1.8/skills/erie-hls-generator/tests/test_runtime_config.py",
+      "sha256": "135019b476e1bf383db2904b008878ebd3cd5bb755e650f27bc0191078ab8f7a"
+    },
+    {
+      "path": "dist/erie-hls-generator-v0.1.8/skills/erie-hls-generator/tests/test_skill_dependencies.py",
+      "sha256": "3902ab67bf7136f2851d2547bae0ba22a2f6970ab6dd752853da1f2f923be864"
+    },
+    {
+      "path": "dist/erie-hls-generator-v0.1.8.zip",
+      "sha256": "f96e5e2f2ce31bef306914533b19418b683e17ebb8a2040b5503dd59ff76043c"
+    },
+    {
+      "path": "dist/erie-hls-generator-v0.1.9/.gitignore",
+      "sha256": "9c99732a61888573a3daf62d096168e061feacfa1ad0aaa93d79b712b8a7b590"
+    },
+    {
+      "path": "dist/erie-hls-generator-v0.1.9/agents/openai.yaml",
+      "sha256": "57ae4f6215d94a450e47d4f4fbef1eb671cf2d9d9c4a5c45d0c8dd319cd1cbd5"
+    },
+    {
+      "path": "dist/erie-hls-generator-v0.1.9/assets/examples/hls_2d_block_transform_spec.json",
+      "sha256": "95720a9f2bd8199a8923c58409e5297d4241fbbdd52ede0ad0ea1427845cc43a"
+    },
+    {
+      "path": "dist/erie-hls-generator-v0.1.9/assets/examples/hls_array_reshape_vector_scale_spec.json",
+      "sha256": "56d568220aafb65c771f2f1d5c980d00f794016b54951cf866826ec273b4db23"
+    },
+    {
+      "path": "dist/erie-hls-generator-v0.1.9/assets/examples/hls_axi4_burst_vector_scale_spec.json",
+      "sha256": "5f556bcba443114d05c113b3b1bf26ae215e7edbaedea8dc3ee7ed5fa048d11d"
+    },
+    {
+      "path": "dist/erie-hls-generator-v0.1.9/assets/examples/hls_axis_increment_spec.json",
+      "sha256": "541457801560d17309beb213a422579d9123c3f7e03c169063bf531b857e296d"
+    },
+    {
+      "path": "dist/erie-hls-generator-v0.1.9/assets/examples/hls_dataflow_axis_spec.json",
+      "sha256": "2f104844288acf9e1610d69239b36c6ef7f1ba9a490f3d375ba2d26364fe364c"
+    },
+    {
+      "path": "dist/erie-hls-generator-v0.1.9/assets/examples/hls_directio_freerun_axis_spec.json",
+      "sha256": "782d70b61e37687553ad6e365ef59fa91519e280ff96fc51f949c6c0bb614f1d"
+    },
+    {
+      "path": "dist/erie-hls-generator-v0.1.9/assets/examples/hls_fence_ordering_spec.json",
+      "sha256": "7a548588ad1c627fd09471eced0c5a41d488cc5ad53be6bf124587c32af5ef50"
+    },
+    {
+      "path": "dist/erie-hls-generator-v0.1.9/assets/examples/hls_fixed_point_scale_spec.json",
+      "sha256": "e23dbbf5ce9ff585f92c2484bfaf7807ad61a1cfa085ee893068e37661a64036"
+    },
+    {
+      "path": "dist/erie-hls-generator-v0.1.9/assets/examples/hls_host_kernel_split_spec.json",
+      "sha256": "929e2e5e45f424c998978183cfca1d110ad2580de47a6f6cc26fedb1510c3796"
+    },
+    {
+      "path": "dist/erie-hls-generator-v0.1.9/assets/examples/hls_line_buffer_stencil_spec.json",
+      "sha256": "78f9958006b0859f6c5d9ee29366e44f4674de6f690fe6040e4acfb88cd6d7d1"
+    },
+    {
+      "path": "dist/erie-hls-generator-v0.1.9/assets/examples/hls_minimal_vitis_pipeline_spec.json",
+      "sha256": "f7628cfb4df762af0fcc9c0c05318bf7de89b8414687f54b78953f38a366ddf7"
+    },
+    {
+      "path": "dist/erie-hls-generator-v0.1.9/assets/examples/hls_multi_m_axi_add_spec.json",
+      "sha256": "0326c565ad1537051a7c9aabf88606d32873042651f02dda3956a871c7a31b75"
+    },
+    {
+      "path": "dist/erie-hls-generator-v0.1.9/assets/examples/hls_partition_vector_scale_spec.json",
+      "sha256": "a25624eb36b8a046313ed2c91a81f69b0a538167c3b150ff0d36594eaadfdb53"
+    },
+    {
+      "path": "dist/erie-hls-generator-v0.1.9/assets/examples/hls_reduction_tree_sum_spec.json",
+      "sha256": "d7f15ed42872689facc36926cf56a927a41cdc7b4a96e418f5ab4e3e9842eec7"
+    },
+    {
+      "path": "dist/erie-hls-generator-v0.1.9/assets/examples/hls_streamofblocks_axis_spec.json",
+      "sha256": "13a26d817ef25201a4deecf9522392a38c916c3638172e0f90f8746c0fcc6244"
+    },
+    {
+      "path": "dist/erie-hls-generator-v0.1.9/assets/examples/hls_task_graph_axis_spec.json",
+      "sha256": "4552819a3af522db2e35d3d2c3db22dd02c22b4ab9ca7d5c157107d366692549"
+    },
+    {
+      "path": "dist/erie-hls-generator-v0.1.9/assets/examples/hls_tiled_gemm_spec.json",
+      "sha256": "8b37f8797ce7d95af20a0a5aab7e5c4aefc1b003e28bc8e425c8b5b3001f9973"
+    },
+    {
+      "path": "dist/erie-hls-generator-v0.1.9/assets/examples/hls_vector_lane_add_spec.json",
+      "sha256": "c77363b8b80370a3a1561479e93dc0d2faabd6f2cf5e9e0e853adf4f02ebfc6c"
+    },
+    {
+      "path": "dist/erie-hls-generator-v0.1.9/assets/examples/hls_vector_scale_mock_spec.json",
+      "sha256": "3355aa978961f634d668db5bad133dfe3835051be1d8e5818710d1f7c02e56ef"
+    },
+    {
+      "path": "dist/erie-hls-generator-v0.1.9/assets/examples/hls_vector_scale_spec.json",
+      "sha256": "ccc74d7cd0e1f7c9b52d01dcd7269041a06caecc7f109aecf563644be4f0b986"
+    },
+    {
+      "path": "dist/erie-hls-generator-v0.1.9/assets/templates/hls_array_partition_template.json",
+      "sha256": "8e585509ea58209f5dbccf5b93ee8d11b69defdb2ba35ee898d9844ab655d10e"
+    },
+    {
+      "path": "dist/erie-hls-generator-v0.1.9/assets/templates/hls_array_reshape_template.json",
+      "sha256": "0423e2c0456542bc0096235bd1ac2885ddea4f30787a77b3baf025482165b792"
+    },
+    {
+      "path": "dist/erie-hls-generator-v0.1.9/assets/templates/hls_axi4_burst_template.json",
+      "sha256": "0f6a455bca8d58448a5271543b5b4a7a9748acb57294813001af5b30663e0307"
+    },
+    {
+      "path": "dist/erie-hls-generator-v0.1.9/assets/templates/hls_dataflow_template.json",
+      "sha256": "43375c3f3c2e75b6921772cac8e3e4ea9afb04e92e2eb02228fa2d600d32a1fd"
+    },
+    {
+      "path": "dist/erie-hls-generator-v0.1.9/assets/templates/hls_directio_freerun_template.json",
+      "sha256": "d71dec24a6e9615a733c1294d505425d1044c3686a30869eb6588bdb6f601fa8"
+    },
+    {
+      "path": "dist/erie-hls-generator-v0.1.9/assets/templates/hls_fence_ordering_template.json",
+      "sha256": "9158f8fe805a860fe30ab73dd8856bdf33697511e9364ddf5c1794bba5e6a2a8"
+    },
+    {
+      "path": "dist/erie-hls-generator-v0.1.9/assets/templates/hls_fixed_point_template.json",
+      "sha256": "041dacf086b700fcdd46be63a85f6f00791d3767012d2c3650be645e700bdd5c"
+    },
+    {
+      "path": "dist/erie-hls-generator-v0.1.9/assets/templates/hls_host_kernel_split_template.json",
+      "sha256": "05f6349077eb095d53c9cd13ff286b4ca53163cae32b58cfd25efea0ef3c06e8"
+    },
+    {
+      "path": "dist/erie-hls-generator-v0.1.9/assets/templates/hls_line_buffer_stencil_template.json",
+      "sha256": "b830c0933cef8a1e359afd3e2c5fefa7b29ed8a8f8d228aed4a5678f2bb292a5"
+    },
+    {
+      "path": "dist/erie-hls-generator-v0.1.9/assets/templates/hls_minimal_vitis_pipeline_template.json",
+      "sha256": "703de1fe2bc2bc469a96595da1952a5acb23ebaf0a9353b060206c61a2087086"
+    },
+    {
+      "path": "dist/erie-hls-generator-v0.1.9/assets/templates/hls_multi_m_axi_template.json",
+      "sha256": "7e705f2f9b45bcd2a73729d625de65a638f9446baeb55cc3d0c721f05449096f"
+    },
+    {
+      "path": "dist/erie-hls-generator-v0.1.9/assets/templates/hls_reduction_tree_template.json",
+      "sha256": "450434c7a1099476eea050b16b3f4140fdc53eb8f5697b0df15f5967b0e44a42"
+    },
+    {
+      "path": "dist/erie-hls-generator-v0.1.9/assets/templates/hls_streamofblocks_template.json",
+      "sha256": "9b8549cdf88a046687105c6778c289495ec7eb20934ac43f57138d6f0d314ab6"
+    },
+    {
+      "path": "dist/erie-hls-generator-v0.1.9/assets/templates/hls_task_graph_template.json",
+      "sha256": "8f9996bbb5c00d687e06df8229af3ca16de1b79c3e0e4426c2ef7cf067279779"
+    },
+    {
+      "path": "dist/erie-hls-generator-v0.1.9/assets/templates/hls_tiled_gemm_template.json",
+      "sha256": "987597a0a9bad31ccf8a785f0ebcf3c0cbdc151dd389e950353e0cf5f7af378b"
+    },
+    {
+      "path": "dist/erie-hls-generator-v0.1.9/assets/templates/hls_vector_lane_template.json",
+      "sha256": "8464fe562c116955887897b71c318386076d8bd7c7953fe9dd85ca83d7da21d4"
+    },
+    {
+      "path": "dist/erie-hls-generator-v0.1.9/DESIGN_GOALS.md",
+      "sha256": "cdf34df374356c8c0a7eb5fa37ea7af4e67c36110722790418d7cafa3e337659"
+    },
+    {
+      "path": "dist/erie-hls-generator-v0.1.9/integration/__init__.py",
+      "sha256": "bc2f88fc551d438ee45a529941c3d7ee8b7218fa86d4dfeef103168a5509d6ef"
+    },
+    {
+      "path": "dist/erie-hls-generator-v0.1.9/integration/default_workflow_config.json",
+      "sha256": "50de84c5ba0232a84622667d661272e3544a8fcc1d23e00619afa2c3b32e5690"
+    },
+    {
+      "path": "dist/erie-hls-generator-v0.1.9/integration/hls_adapter.py",
+      "sha256": "77fc3eb1d5fad297719ca538fc580b3d41d8aca5b695274ee4a508b269b2a9bc"
+    },
+    {
+      "path": "dist/erie-hls-generator-v0.1.9/references/configuration.md",
+      "sha256": "b1bff5b5466b368044c6d3897ff96a2554a6b44409b7f0a371770a6ceb2c1457"
+    },
+    {
+      "path": "dist/erie-hls-generator-v0.1.9/references/hls-advanced-library-patterns.md",
+      "sha256": "f325b992589d8eee501d6eb7ad6c187515912236ac6349a454c1281f20a060ab"
+    },
+    {
+      "path": "dist/erie-hls-generator-v0.1.9/references/hls-comment-style.md",
+      "sha256": "4d4861fc836ff30790871e9ab681f5b519a22077c8e9c32c3c3abf1e3d7fd759"
+    },
+    {
+      "path": "dist/erie-hls-generator-v0.1.9/references/hls-device-migration-strategy.md",
+      "sha256": "51f06b10157ac64702d9f72defd5dd2b0009bc41e0d00808a8a36762c60625d4"
+    },
+    {
+      "path": "dist/erie-hls-generator-v0.1.9/references/hls-library-policy.md",
+      "sha256": "af1fb53a8647f6ab08c46694c1871ef017d25775773e24099c572136b346415e"
+    },
+    {
+      "path": "dist/erie-hls-generator-v0.1.9/references/hls-memory-burst-and-layout.md",
+      "sha256": "5014566a5ebb2ab6214b079ada464fb666553ad488d5adda3c7cf0e0af6d2f24"
+    },
+    {
+      "path": "dist/erie-hls-generator-v0.1.9/references/hls-modeling-strategy.md",
+      "sha256": "5ee3552faddf0f80e251c5f868f8cee68d3046d5049beb9e4498d1d3c4d6e4cc"
+    },
+    {
+      "path": "dist/erie-hls-generator-v0.1.9/references/hls-optimization-patterns.md",
+      "sha256": "ccf3123b228ce9c1600ecd58626b5bdf3e182bc621df9abafc7eb006cb42c309"
+    },
+    {
+      "path": "dist/erie-hls-generator-v0.1.9/references/hls-project-structure-patterns.md",
+      "sha256": "363ee4301ff2e46a9f9ed3436c540108af147e2681c40c130ace60aab5f739f1"
+    },
+    {
+      "path": "dist/erie-hls-generator-v0.1.9/references/hls-report-driven-optimization.md",
+      "sha256": "9b19c9c3790d40632b57e21868ac53bea9f35a35de827ca31c057456ed82f39d"
+    },
+    {
+      "path": "dist/erie-hls-generator-v0.1.9/references/hls-stencil-reduction-gemm-patterns.md",
+      "sha256": "245bf89e6a347aa87cec6b194e3b9133e1f2d82ded186f1847ac8314a8c72a66"
+    },
+    {
+      "path": "dist/erie-hls-generator-v0.1.9/references/hls-task-parallel-strategy.md",
+      "sha256": "bc3ca8d11f86aba2885666dde25aaff7a0fb3919edf53329198663f4cebaeeda"
+    },
+    {
+      "path": "dist/erie-hls-generator-v0.1.9/references/hls-tutorial-derived-templates.md",
+      "sha256": "d6fcb883d4c02c687cf242e360971d733899d9086611a116a506b7afa42e39a9"
+    },
+    {
+      "path": "dist/erie-hls-generator-v0.1.9/references/integration.md",
+      "sha256": "9048e4581b44066c3dd157650ef15ba6b007944ec4210e5465faf725ece83fbb"
+    },
+    {
+      "path": "dist/erie-hls-generator-v0.1.9/references/vitis-hls-2024-2-script-guide.md",
+      "sha256": "e0e398dcc259b6912db81f46eeb99329bf7cccd85139cd042e1b121a97c2b835"
+    },
+    {
+      "path": "dist/erie-hls-generator-v0.1.9/references/workflow-contracts.md",
+      "sha256": "3e0586a261ac8a0cebe61a1e0824512372205cf0da5cbc44c0962d8a91f501a8"
+    },
+    {
+      "path": "dist/erie-hls-generator-v0.1.9/RELEASE_RECEIPT.json",
+      "sha256": "3a7b2ddc4a0e32b2e21c03d7f5df9386fe55865f76544d4a88d798e89920f079"
+    },
+    {
+      "path": "dist/erie-hls-generator-v0.1.9/runtime/__init__.py",
+      "sha256": "bbac4643de7d4e94a78094973d78482bf0bbf3694d18ab704b4dcfd265b129e7"
+    },
+    {
+      "path": "dist/erie-hls-generator-v0.1.9/runtime/hls_generator/__init__.py",
+      "sha256": "144be495756dc344763239fd312c7182b0d3acb52ffb592f8499733de8fda073"
+    },
+    {
+      "path": "dist/erie-hls-generator-v0.1.9/runtime/hls_generator/__main__.py",
+      "sha256": "9dbb2b94e18a1b4c981e4277684bc93089b7a2e0a127118d273fc9a7723ed601"
+    },
+    {
+      "path": "dist/erie-hls-generator-v0.1.9/runtime/hls_generator/cli.py",
+      "sha256": "7efd85930244c73334e65de5a71d799847927465c5e763e33acf18d62e037b1f"
+    },
+    {
+      "path": "dist/erie-hls-generator-v0.1.9/runtime/hls_generator/config.py",
+      "sha256": "cdebe359f3b43500c512466edeafb5bb616ba7575a4bac615ae30b583206f520"
+    },
+    {
+      "path": "dist/erie-hls-generator-v0.1.9/runtime/hls_generator/extractor.py",
+      "sha256": "2e7df8bef1c23719f7e7c4c86116802020d78bfff4cf64870948514c2684e036"
+    },
+    {
+      "path": "dist/erie-hls-generator-v0.1.9/runtime/hls_generator/hls_cfg.py",
+      "sha256": "20db67ccae54028ebae18dd580d869ef62e9afd13b10a4bec18a2134f5784b68"
+    },
+    {
+      "path": "dist/erie-hls-generator-v0.1.9/runtime/hls_generator/hls_profile.py",
+      "sha256": "37da5b123215e628af134cbfb6034eff0ee06d4806085c276fe3c39e17a5f355"
+    },
+    {
+      "path": "dist/erie-hls-generator-v0.1.9/runtime/hls_generator/hls_reports.py",
+      "sha256": "7002f128e57c4bf462e0bc6c1b343d6ab5135eeefeed47fd84e488204ba016bc"
+    },
+    {
+      "path": "dist/erie-hls-generator-v0.1.9/runtime/hls_generator/hls_tcl.py",
+      "sha256": "e9910f44657464346790e9f4ae8dbc098ac1b8cf4dfececb336f2bfbc230f441"
+    },
+    {
+      "path": "dist/erie-hls-generator-v0.1.9/runtime/hls_generator/interface_contract.py",
+      "sha256": "c3bbade98d6f7a9e91bd0962385554136bdfac7617491f18cc79b6d83bb9bdf5"
+    },
+    {
+      "path": "dist/erie-hls-generator-v0.1.9/runtime/hls_generator/intervention.py",
+      "sha256": "4ee84988b2f19bf5e7456fea185eca9ab5a7862e3db81f024d61eda9537a897c"
+    },
+    {
+      "path": "dist/erie-hls-generator-v0.1.9/runtime/hls_generator/model_provider.py",
+      "sha256": "3fb4c28c9d624780ddac9d6565fe09f9fc82d4e65754e457f88c163ad71788e9"
+    },
+    {
+      "path": "dist/erie-hls-generator-v0.1.9/runtime/hls_generator/patterns.py",
+      "sha256": "43357c290c637deea32a42096a5ec760a434dc40d88bad8a3302ae5261f0a638"
+    },
+    {
+      "path": "dist/erie-hls-generator-v0.1.9/runtime/hls_generator/planning.py",
+      "sha256": "c1f2abc2fdff7ae03b6825bb5e9bb06d128fd0a7bb30bf5dd2873fe633dd5261"
+    },
+    {
+      "path": "dist/erie-hls-generator-v0.1.9/runtime/hls_generator/prompt.py",
+      "sha256": "f46e635c7f7a31e10ee4b18e3a27cf8c2918541ce716e277d92ed48735ebfc3b"
+    },
+    {
+      "path": "dist/erie-hls-generator-v0.1.9/runtime/hls_generator/reference_contract.py",
+      "sha256": "0311756342233183accc806e683f388e7cdb1fd7e407e776379986f041fcd94f"
+    },
+    {
+      "path": "dist/erie-hls-generator-v0.1.9/runtime/hls_generator/remote_directory_contract.py",
+      "sha256": "2d160d173d8a7848e6312e6f943708ddda46d390c9be97c2672ae299434f53e8"
+    },
+    {
+      "path": "dist/erie-hls-generator-v0.1.9/runtime/hls_generator/requirements.py",
+      "sha256": "385fda389f4e9c7a18066aec9982ea3ac13f69e436a59bca235652879c149620"
+    },
+    {
+      "path": "dist/erie-hls-generator-v0.1.9/runtime/hls_generator/runtime_config.json",
+      "sha256": "2b7fca30913168f977523b918de3a3da952b064e692379d87bf6349689b0d6d5"
+    },
+    {
+      "path": "dist/erie-hls-generator-v0.1.9/runtime/hls_generator/skill_dependencies.py",
+      "sha256": "da979525443d2071e3ce6c4c3952e1118c770144a5f0e4d9ba96137b122c542c"
+    },
+    {
+      "path": "dist/erie-hls-generator-v0.1.9/runtime/hls_generator/spec.py",
+      "sha256": "fb5c212d8df454f5a167f6447986a623e6edc05a7f1ce137695f3435c6659a05"
+    },
+    {
+      "path": "dist/erie-hls-generator-v0.1.9/runtime/hls_generator/trace.py",
+      "sha256": "cc773b2a3813f02a9591b3917e77f953d652b24219b03ea92577cea3142de088"
+    },
+    {
+      "path": "dist/erie-hls-generator-v0.1.9/runtime/hls_generator/user_config.py",
+      "sha256": "dbd992e3f2b10ce3814d6d6bf5f71bde25959b5c2398ac9e08c740c2de105b19"
+    },
+    {
+      "path": "dist/erie-hls-generator-v0.1.9/runtime/hls_generator/validation.py",
+      "sha256": "b2b35b3375fcc63aacde139b0a0fd34947ac57b3f1a9e5bd7e2012dd0eef6864"
+    },
+    {
+      "path": "dist/erie-hls-generator-v0.1.9/runtime/hls_generator/vectors.py",
+      "sha256": "a455e5c842d9cbbd6f4cb381cbc900a051b814b6ddc2c9cac23f42dc32d63b1e"
+    },
+    {
+      "path": "dist/erie-hls-generator-v0.1.9/runtime/hls_generator/verifier.py",
+      "sha256": "cd81295ddaebb783ea27022fc03d922e890dbaeb45b9c2442955e130086f1d21"
+    },
+    {
+      "path": "dist/erie-hls-generator-v0.1.9/runtime/hls_generator/vitis_rules.py",
+      "sha256": "7ef5a9490f0dc359515d4da5ffaaab51ac147ca3548db1dda76dc190e52abbf6"
+    },
+    {
+      "path": "dist/erie-hls-generator-v0.1.9/runtime/hls_generator/workflow.py",
+      "sha256": "61e4e1fab1e0fb9b745ebdeda11ab838c46eac80a5b9613806d871667d1e8cf6"
+    },
+    {
+      "path": "dist/erie-hls-generator-v0.1.9/runtime/hls_generator/workspace.py",
+      "sha256": "9a1c5596f94ad01e2c5257f0850d235a1821df0ddcd8330bb3ad3477d7e3cae1"
+    },
+    {
+      "path": "dist/erie-hls-generator-v0.1.9/scripts/_skill_tool_delegate.py",
+      "sha256": "d65506ae17945c91459b2102be84042e7f12c01a2760aebd27c2956e28ac0300"
+    },
+    {
+      "path": "dist/erie-hls-generator-v0.1.9/scripts/audit_skill.py",
+      "sha256": "b3a97fcc4f50dc39e10cd39ed42f39fdf97ffabd7702591286d5cda67ee63b6a"
+    },
+    {
+      "path": "dist/erie-hls-generator-v0.1.9/scripts/confidence_loop.py",
+      "sha256": "e73e1bc35471e20f8cca3aa8abfc11dba7d9d2f28f7ab7f63e7de0434b5ac472"
+    },
+    {
+      "path": "dist/erie-hls-generator-v0.1.9/scripts/evaluate_skill.py",
+      "sha256": "5e7b26fc5bc7e6526a544db2c9c670b43a89d2b540dcfd110f689d839a5851c2"
+    },
+    {
+      "path": "dist/erie-hls-generator-v0.1.9/scripts/inspect_project.py",
+      "sha256": "c0831453c6b2b9dec4e8e3df1e7f213f2d8764843182e78b19602bfad6ce34a3"
+    },
+    {
+      "path": "dist/erie-hls-generator-v0.1.9/scripts/manage_dirs.py",
+      "sha256": "3016313a7a88b4b0bea33bcc2beceb7d1e552cff3875b2d3e2d23ab358232643"
+    },
+    {
+      "path": "dist/erie-hls-generator-v0.1.9/scripts/manage_docs.py",
+      "sha256": "af0beba82aa0f70ae9ffe06333bf32f1fcdb8d1e8fe33a10507b290c6f39d6f2"
+    },
+    {
+      "path": "dist/erie-hls-generator-v0.1.9/scripts/prepare_release.py",
+      "sha256": "b67bcbd892153e9b74231c10f1d5f13e0065e559ebcbddfee2cbd896b96ff547"
+    },
+    {
+      "path": "dist/erie-hls-generator-v0.1.9/scripts/quick_validate.py",
+      "sha256": "f16139008c712a710144c8f01b9163aaa322b1998b310ffe10c13d842a05f6b1"
+    },
+    {
+      "path": "dist/erie-hls-generator-v0.1.9/scripts/remote_vitis_acceptance.py",
+      "sha256": "dc3c8a6dd23910c48a8bc1886f4b434d2f58229a35ed9d07958c8fc7726cb87a"
+    },
+    {
+      "path": "dist/erie-hls-generator-v0.1.9/scripts/render_agents.py",
+      "sha256": "dca4daf202b36bd8e1de30f7b947689267b45c9febb99165cc9da34bdf7102f8"
+    },
+    {
+      "path": "dist/erie-hls-generator-v0.1.9/scripts/verify_agents.py",
+      "sha256": "653e2003b8fd56d1eb746d25f59338fe9a7c926c160624d0e92db6f92392ff79"
+    },
+    {
+      "path": "dist/erie-hls-generator-v0.1.9/SKILL.md",
+      "sha256": "be4eb07f075fffea1b3ecd46d1d8ee40d6889fd3201e92e0881cb36c7d71aa87"
+    },
+    {
+      "path": "dist/erie-hls-generator-v0.1.9/smoke/run_smoke.py",
+      "sha256": "42a259c24e158643f19835b5259e57a0b98a78760ca9009d9fab6c3f765d5d59"
+    },
+    {
+      "path": "dist/erie-hls-generator-v0.1.9/tests/test_confidence_loop.py",
+      "sha256": "ae47e1ea23941d06ade1caa05ff8c4d4f275da5c6ae335f071e4f5c81d0953bc"
+    },
+    {
+      "path": "dist/erie-hls-generator-v0.1.9/tests/test_hls_pattern_contracts.py",
+      "sha256": "40d68428bd633d997a6e3ef7216e8f53608706997d08a67d15f332333335f66f"
+    },
+    {
+      "path": "dist/erie-hls-generator-v0.1.9/tests/test_prepare_release.py",
+      "sha256": "56189e39e04072bbccae5344a14abb51c0151c8fc9dda3160138585f6b1ff60c"
+    },
+    {
+      "path": "dist/erie-hls-generator-v0.1.9/tests/test_remote_vitis_acceptance.py",
+      "sha256": "2ff5096de1892df6ac26c1e6afc7584db4c84f6a41ae35582d78848cc9967b2c"
+    },
+    {
+      "path": "dist/erie-hls-generator-v0.1.9/tests/test_runtime_config.py",
+      "sha256": "30aed5cc18104c3756cc6ef1f87ae5783818f82fb23dd13d4c347af7b61f90f9"
+    },
+    {
+      "path": "dist/erie-hls-generator-v0.1.9/tests/test_skill_dependencies.py",
+      "sha256": "3902ab67bf7136f2851d2547bae0ba22a2f6970ab6dd752853da1f2f923be864"
+    },
+    {
+      "path": "dist/erie-hls-generator-v0.1.9.zip",
+      "sha256": "97aa15b5aaf408baddc388d2055a9b33311a561cf9c7088ffd91b9807bac9891"
+    }
+  ]
+}

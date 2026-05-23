@@ -1,6 +1,6 @@
 # HLS Optimization Pattern Notes
 
-Source note: distilled from imported HLS optimization material. Keep this file as a compact skill reference.
+Source note: keep this file as a compact HLS optimization reference.
 
 ## Optimization Discipline
 

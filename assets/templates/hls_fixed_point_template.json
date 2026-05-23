@@ -1,0 +1,157 @@
+{
+  "name": "template_fixed_point_kernel",
+  "target": "hls",
+  "design_requirements": {
+    "target": "hls",
+    "pipeline_required": true,
+    "streamability": "streamable",
+    "interface_family": "axi4",
+    "interface_profile": {
+      "axi4_variant": "axi4_full",
+      "role": "master",
+      "read_write_mode": "read_write",
+      "data_width": 32,
+      "addr_width": 32,
+      "id_width": 1,
+      "burst_support": false,
+      "clock_reset_domain": {
+        "clock": "i_axi_aclk",
+        "reset": "i_axi_arstn"
+      }
+    },
+    "confirmed_by_user": true,
+    "confirmation_notes": "Use fixed-point math only after confirming range, quantization, overflow, and error budget."
+  },
+  "streamability": "streamable",
+  "interface_family": "axi4",
+  "interface_profile": {
+    "axi4_variant": "axi4_full",
+    "role": "master",
+    "read_write_mode": "read_write",
+    "data_width": 32,
+    "addr_width": 32,
+    "id_width": 1,
+    "burst_support": false,
+    "clock_reset_domain": {
+      "clock": "i_axi_aclk",
+      "reset": "i_axi_arstn"
+    }
+  },
+  "pipeline_required": true,
+  "codegen_plan_required": true,
+  "description": "Template for a fixed-point kernel with explicit numeric-contract metadata.",
+  "interfaces": {
+    "top_function": "template_fixed_point_kernel",
+    "arguments": [
+      {
+        "name": "input",
+        "type": "const ap_fixed<16,8, AP_RND, AP_SAT> *",
+        "direction": "input",
+        "interface": "m_axi",
+        "bundle": "gmem0",
+        "depth": 1024
+      },
+      {
+        "name": "output",
+        "type": "ap_fixed<16,8, AP_RND, AP_SAT> *",
+        "direction": "output",
+        "interface": "m_axi",
+        "bundle": "gmem1",
+        "depth": 1024
+      },
+      {
+        "name": "scale",
+        "type": "ap_fixed<16,4, AP_RND, AP_SAT>",
+        "direction": "input",
+        "interface": "s_axilite"
+      },
+      {
+        "name": "length",
+        "type": "int",
+        "direction": "input",
+        "interface": "s_axilite"
+      }
+    ],
+    "control": "s_axilite"
+  },
+  "behavior": [
+    "Replace these sample semantics with the confirmed fixed-point kernel behavior.",
+    "Keep the numeric contract reviewable in comments and test vectors."
+  ],
+  "clock": {
+    "period_ns": 10.0,
+    "uncertainty_ns": 1.0
+  },
+  "reset": {
+    "strategy": "tool_default"
+  },
+  "constraints": [
+    "Preserve the confirmed quantization and overflow policy.",
+    "Do not enable unsafe math unless the user explicitly confirms the approximation."
+  ],
+  "outputs": [
+    {
+      "path": "src/template_fixed_point_kernel.h",
+      "kind": "header",
+      "language": "cpp"
+    },
+    {
+      "path": "src/template_fixed_point_kernel.cpp",
+      "kind": "source",
+      "language": "cpp"
+    },
+    {
+      "path": "tb/template_fixed_point_kernel_tb.cpp",
+      "kind": "testbench",
+      "language": "cpp"
+    },
+    {
+      "path": "hls_config.cfg",
+      "kind": "config",
+      "language": "ini"
+    }
+  ],
+  "notes": [],
+  "subfunctions": [],
+  "workflow": {
+    "board_acceptance": {
+      "profile": "u55c_m_axi_host",
+      "host_template": "vector_scale_host"
+    }
+  },
+  "performance": {
+    "target_ii": 1,
+    "max_length": 1024
+  },
+  "hls_profile": {
+    "example_pattern": "fixed_point",
+    "allowed_libraries": [
+      "ap_int.h",
+      "ap_fixed.h"
+    ],
+    "required_headers": [
+      "ap_fixed.h"
+    ],
+    "required_pragmas": [
+      "#pragma HLS PIPELINE II=1"
+    ],
+    "required_metadata_fields": [
+      "numeric_range",
+      "integer_bits",
+      "quantization_mode",
+      "overflow_mode",
+      "error_budget"
+    ],
+    "metadata": {
+      "numeric_range": "Input and output values stay within the normalized range [-128, 128).",
+      "integer_bits": 8,
+      "quantization_mode": "AP_RND",
+      "overflow_mode": "AP_SAT",
+      "error_budget": "Maximum absolute error must stay within 1 LSB of the chosen ap_fixed format."
+    },
+    "forbidden_combinations": [],
+    "required_cfg_entries": [
+      "clock=10.0"
+    ]
+  }
+}

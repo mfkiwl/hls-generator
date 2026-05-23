@@ -43,9 +43,28 @@
   "interfaces": {
     "top_function": "line_buffer_stencil_kernel",
     "arguments": [
-      {"name": "input", "type": "const ap_uint<32> *", "direction": "input", "interface": "m_axi", "bundle": "gmem0", "depth": 1024},
-      {"name": "output", "type": "ap_uint<32> *", "direction": "output", "interface": "m_axi", "bundle": "gmem1", "depth": 1024},
-      {"name": "length", "type": "int", "direction": "input", "interface": "s_axilite"}
+      {
+        "name": "input",
+        "type": "const ap_uint<32> *",
+        "direction": "input",
+        "interface": "m_axi",
+        "bundle": "gmem0",
+        "depth": 1024
+      },
+      {
+        "name": "output",
+        "type": "ap_uint<32> *",
+        "direction": "output",
+        "interface": "m_axi",
+        "bundle": "gmem1",
+        "depth": 1024
+      },
+      {
+        "name": "length",
+        "type": "int",
+        "direction": "input",
+        "interface": "s_axilite"
+      }
     ],
     "control": "s_axilite"
   },
@@ -54,32 +73,69 @@
     "Use a local line buffer to make stencil reuse visible in comments and pragmas.",
     "Keep the stencil loop pipelined with a clear boundary policy."
   ],
-  "clock": {"period_ns": 8.0, "uncertainty_ns": 0.8},
-  "reset": {"strategy": "tool_default"},
+  "clock": {
+    "period_ns": 8.0,
+    "uncertainty_ns": 0.8
+  },
+  "reset": {
+    "strategy": "tool_default"
+  },
   "constraints": [
     "Use Vitis HLS compatible C++.",
     "Do not combine ARRAY_PARTITION and ARRAY_RESHAPE on the same line buffer.",
     "Avoid dynamic allocation and recursion."
   ],
   "outputs": [
-    {"path": "src/line_buffer_stencil_kernel.h", "kind": "header", "language": "cpp"},
-    {"path": "src/line_buffer_stencil_kernel.cpp", "kind": "source", "language": "cpp"},
-    {"path": "tb/line_buffer_stencil_kernel_tb.cpp", "kind": "testbench", "language": "cpp"},
-    {"path": "hls_config.cfg", "kind": "config", "language": "ini"}
+    {
+      "path": "src/line_buffer_stencil_kernel.h",
+      "kind": "header",
+      "language": "cpp"
+    },
+    {
+      "path": "src/line_buffer_stencil_kernel.cpp",
+      "kind": "source",
+      "language": "cpp"
+    },
+    {
+      "path": "tb/line_buffer_stencil_kernel_tb.cpp",
+      "kind": "testbench",
+      "language": "cpp"
+    },
+    {
+      "path": "hls_config.cfg",
+      "kind": "config",
+      "language": "ini"
+    }
   ],
   "notes": [],
   "subfunctions": [],
-  "workflow": {},
+  "workflow": {
+    "board_acceptance": {
+      "profile": "not_board_runnable",
+      "reason": "Stencil border-policy validation is currently covered by HLS-level vectors and report review only."
+    }
+  },
   "performance": {
     "target_ii": 1,
     "max_length": 1024
   },
   "hls_profile": {
     "example_pattern": "line_buffer_stencil",
-    "allowed_libraries": ["ap_int.h"],
-    "required_headers": ["ap_int.h"],
-    "required_pragmas": ["#pragma HLS PIPELINE II=1", "#pragma HLS ARRAY_PARTITION variable=line_buf complete dim=1"],
-    "required_metadata_fields": ["window_shape", "border_policy", "line_buffer_name"],
+    "allowed_libraries": [
+      "ap_int.h"
+    ],
+    "required_headers": [
+      "ap_int.h"
+    ],
+    "required_pragmas": [
+      "#pragma HLS PIPELINE II=1",
+      "#pragma HLS ARRAY_PARTITION variable=line_buf complete dim=1"
+    ],
+    "required_metadata_fields": [
+      "window_shape",
+      "border_policy",
+      "line_buffer_name"
+    ],
     "metadata": {
       "window_shape": "3-tap",
       "border_policy": "clamp",
@@ -94,6 +150,8 @@
         "message": "Do not partition and reshape the same stencil line buffer."
       }
     ],
-    "required_cfg_entries": ["clock=8.0"]
+    "required_cfg_entries": [
+      "clock=8.0"
+    ]
   }
 }

@@ -1,0 +1,148 @@
+{
+  "name": "template_host_kernel_split_kernel",
+  "target": "hls",
+  "design_requirements": {
+    "target": "hls",
+    "pipeline_required": true,
+    "streamability": "streamable",
+    "interface_family": "axi4",
+    "interface_profile": {
+      "axi4_variant": "axi4_full",
+      "role": "master",
+      "read_write_mode": "read_write",
+      "data_width": 32,
+      "addr_width": 32,
+      "id_width": 1,
+      "burst_support": false,
+      "clock_reset_domain": {
+        "clock": "ap_clk",
+        "reset": "ap_rst_n"
+      }
+    },
+    "confirmed_by_user": true,
+    "confirmation_notes": "Keep the top source, helper headers, and hotspot files structurally distinct while staying HLS-only."
+  },
+  "streamability": "streamable",
+  "interface_family": "axi4",
+  "interface_profile": {
+    "axi4_variant": "axi4_full",
+    "role": "master",
+    "read_write_mode": "read_write",
+    "data_width": 32,
+    "addr_width": 32,
+    "id_width": 1,
+    "burst_support": false,
+    "clock_reset_domain": {
+      "clock": "ap_clk",
+      "reset": "ap_rst_n"
+    }
+  },
+  "pipeline_required": true,
+  "codegen_plan_required": true,
+  "description": "Template for a kernel structure that separates top-source ownership from helper-header responsibilities.",
+  "interfaces": {
+    "top_function": "template_host_kernel_split_kernel",
+    "arguments": [
+      {
+        "name": "input",
+        "type": "const ap_uint<32> *",
+        "direction": "input",
+        "interface": "m_axi",
+        "bundle": "gmem0",
+        "depth": 1024
+      },
+      {
+        "name": "output",
+        "type": "ap_uint<32> *",
+        "direction": "output",
+        "interface": "m_axi",
+        "bundle": "gmem1",
+        "depth": 1024
+      },
+      {
+        "name": "length",
+        "type": "int",
+        "direction": "input",
+        "interface": "s_axilite"
+      }
+    ],
+    "control": "s_axilite"
+  },
+  "behavior": [
+    "Replace these sample semantics with the confirmed kernel behavior.",
+    "Keep helper headers responsible for reusable support while hotspot pragmas stay in a focused source file."
+  ],
+  "clock": {
+    "period_ns": 10.0,
+    "uncertainty_ns": 1.0
+  },
+  "reset": {
+    "strategy": "tool_default"
+  },
+  "constraints": [
+    "Do not generate host or package files.",
+    "Do not distribute complex pragmas uniformly across every file."
+  ],
+  "outputs": [
+    {
+      "path": "src/template_host_kernel_split_kernel.h",
+      "kind": "header",
+      "language": "cpp"
+    },
+    {
+      "path": "src/template_host_kernel_split_kernel.cpp",
+      "kind": "source",
+      "language": "cpp"
+    },
+    {
+      "path": "tb/template_host_kernel_split_kernel_tb.cpp",
+      "kind": "testbench",
+      "language": "cpp"
+    },
+    {
+      "path": "hls_config.cfg",
+      "kind": "config",
+      "language": "ini"
+    }
+  ],
+  "notes": [],
+  "subfunctions": [],
+  "workflow": {
+    "board_acceptance": {
+      "profile": "u55c_m_axi_host",
+      "host_template": "vector_increment_host"
+    }
+  },
+  "performance": {
+    "target_ii": 1,
+    "max_length": 1024
+  },
+  "hls_profile": {
+    "example_pattern": "host_kernel_split",
+    "allowed_libraries": [
+      "ap_int.h"
+    ],
+    "required_headers": [
+      "ap_int.h"
+    ],
+    "required_pragmas": [
+      "#pragma HLS INTERFACE m_axi port=input bundle=gmem0",
+      "#pragma HLS INTERFACE m_axi port=output bundle=gmem1",
+      "#pragma HLS PIPELINE II=1"
+    ],
+    "required_metadata_fields": [
+      "kernel_source_boundary",
+      "helper_header_role",
+      "hotspot_file_strategy"
+    ],
+    "metadata": {
+      "kernel_source_boundary": "The top kernel source owns the interface contract and visible hotspot pragmas.",
+      "helper_header_role": "Helper headers support reusable stage or type logic rather than host/package flow.",
+      "hotspot_file_strategy": "Keep pragma-heavy optimization logic concentrated in dedicated hotspot files."
+    },
+    "forbidden_combinations": [],
+    "required_cfg_entries": [
+      "clock=10.0"
+    ]
+  }
+}

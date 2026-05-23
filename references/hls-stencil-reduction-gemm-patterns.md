@@ -1,6 +1,6 @@
 # HLS Stencil, Reduction, And GEMM Pattern Notes
 
-Source note: distilled from imported compute-structure examples. This file records stable architecture rules, not tutorial names.
+Source note: this file records stable compute-structure rules, not tutorial names.
 
 ## Stencil And Window Patterns
 
